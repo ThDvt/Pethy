@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Đăng nhập - Pethy</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/css/pethy.css">
+</head>
+<body>
+<header class="khung dau"><a class="logo" href="/">Pethy</a></header>
+<main class="hop-dn">
+  <h1 id="tieu-de">Đăng nhập</h1>
+  <div class="tab" role="tablist">
+    <button role="tab" id="tab-dn" aria-selected="true" aria-controls="form">Đăng nhập</button>
+    <button role="tab" id="tab-dk" aria-selected="false" aria-controls="form">Tạo tài khoản</button>
+  </div>
+  <form id="form" novalidate>
+    <div class="truong dk" hidden><label for="ho-ten">Họ tên</label><input id="ho-ten" autocomplete="name"></div>
+    <div class="truong dk" hidden><label for="sdt">Số điện thoại</label><input id="sdt" inputmode="tel" autocomplete="tel" placeholder="0901234567"></div>
+    <div class="truong"><label for="email">Email</label><input id="email" type="email" autocomplete="email" required></div>
+    <div class="truong"><label for="mat-khau">Mật khẩu</label><input id="mat-khau" type="password" autocomplete="current-password" required minlength="8"></div>
+    <p class="loi" id="loi" role="alert" hidden></p>
+    <p class="ghi-chu" id="thong-bao" role="status" hidden></p>
+    <button class="nut chinh" id="gui" type="submit" style="width:100%">Đăng nhập</button>
+  </form>
+  <p class="ghi-chu" style="margin-top:20px">Nhân viên phòng khám đăng nhập bằng tài khoản do quản trị viên cấp.</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/dang-nhap.js"></script>
+</body>
+</html>

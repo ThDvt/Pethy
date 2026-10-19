@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pethy - Phòng khám thú y</title>
+<meta name="description" content="Đặt lịch khám cho thú cưng trong một phút. Lịch khám, sổ tiêm và đơn thuốc trong một tài khoản.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/css/pethy.css">
+<style>
+.hero{padding-top:56px;padding-bottom:88px;display:flex;flex-wrap:wrap;gap:56px;align-items:flex-end}
+.hero h1{margin:0;font-size:clamp(42px,7vw,84px);line-height:1;font-weight:800;letter-spacing:-.035em}
+.hero p{margin:28px 0 36px;font-size:19px;line-height:1.55;color:var(--xam);max-width:520px}
+.buoc{border-top:2px solid var(--muc);padding-top:16px}
+.buoc ol{margin:20px 0 0;padding:0;list-style:none}
+.buoc li{padding:14px 0;border-top:1px solid var(--vach);display:flex;gap:16px}
+.buoc li:last-child{border-bottom:1px solid var(--vach)}
+.buoc .stt{font:500 15px var(--so);color:var(--xam);min-width:24px}
+.bao-tri{background:var(--nhan);color:#fff;padding:12px 0;font-size:15px}
+.bs{display:flex;flex-wrap:wrap;gap:20px 28px;align-items:center;padding:24px 0;border-top:1px solid var(--vach)}
+.bs:first-child{border-top:2px solid var(--muc)} .bs:last-child{border-bottom:1px solid var(--vach)}
+.anh{width:88px;height:88px;background:var(--anh);object-fit:cover;display:flex;align-items:center;justify-content:center;font:12px var(--so);color:var(--xam)}
+</style>
+</head>
+<body>
+<div id="bao-tri" class="bao-tri" hidden><div class="khung" id="bao-tri-nd"></div></div>
+
+<header class="khung dau">
+  <a class="logo" href="/">Pethy</a>
+  <nav class="menu" aria-label="Chính">
+    <a href="#dich-vu">Dịch vụ</a>
+    <a href="#bac-si">Bác sĩ</a>
+    <a href="#gio-mo-cua">Giờ mở cửa</a>
+    <a href="/dang-nhap.html">Đăng nhập</a>
+    <a class="nut" href="/dang-nhap.html?dang-ky=1">Đặt lịch khám</a>
+  </nav>
+</header>
+
+<main>
+<section class="khung hero">
+  <div style="flex:999 1 560px;min-width:0">
+    <div class="so ghi-chu" style="letter-spacing:.04em;margin-bottom:28px">PHÒNG KHÁM THÚ Y<br>Yên Vinh, Quang Minh, Hà Nội</div>
+    <h1>Đặt lịch khám cho thú cưng trong một phút.</h1>
+    <p>Chọn bác sĩ, chọn giờ còn trống, nhận xác nhận từ phòng khám. Lịch khám, sổ tiêm và đơn thuốc của thú cưng nằm trong một tài khoản.</p>
+    <a class="nut chinh lon" href="/dang-nhap.html?dang-ky=1">Đặt lịch ngay</a>
+  </div>
+  <div class="buoc" style="flex:1 1 340px;min-width:0">
+    <div style="font-weight:700;font-size:16px">Đặt lịch gồm ba bước</div>
+    <ol>
+      <li><span class="stt">01</span><span>Tạo tài khoản và thêm thú cưng của bạn.</span></li>
+      <li><span class="stt">02</span><span>Chọn dịch vụ, bác sĩ và một khung giờ còn trống.</span></li>
+      <li><span class="stt">03</span><span>Chờ phòng khám xác nhận. Bạn đổi hoặc hủy được trước giờ hẹn 2 tiếng.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="dich-vu" class="muc-lon nen"><div class="khung bo-cuc">
+  <div class="nhan"><h2>Dịch vụ</h2><p class="ghi-chu" style="max-width:260px">Giá chưa gồm thuốc và vaccine, được tính riêng theo đơn.</p></div>
+  <div class="noi-dung" id="ds-dich-vu"><p class="trang-thai-tai">Đang tải…</p></div>
+</div></section>
+
+<section id="bac-si" class="muc-lon"><div class="khung bo-cuc">
+  <div class="nhan"><h2>Bác sĩ</h2></div>
+  <div class="noi-dung" id="ds-bac-si"><p class="trang-thai-tai">Đang tải…</p></div>
+</div></section>
+</main>
+
+<footer id="gio-mo-cua" class="chan">
+  <div class="khung" style="padding-top:72px;padding-bottom:40px;display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between">
+    <div style="flex:1 1 360px">
+      <div class="nho">GIỜ MỞ CỬA</div>
+      <div class="so" style="margin-top:20px;font-size:28px;line-height:1.5">8:00 đến 17:00</div>
+      <div id="dat-truoc" style="margin-top:8px;color:#B8BAB4"></div>
+    </div>
+    <div style="flex:1 1 300px">
+      <div class="nho">LIÊN HỆ</div>
+      <div style="margin-top:20px;font-size:22px;line-height:1.6">Yên Vinh, Quang Minh, Hà Nội<br>0961 143 105<br>237480201005@hpu2.edu.vn</div>
+    </div>
+  </div>
+  <div class="khung" style="padding-top:24px;padding-bottom:32px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:13px;color:#B8BAB4;border-top:1px solid #3A3D42">
+    <div>© Pethy. Đồ án học phần.</div>
+    <a href="/dang-nhap.html">Đăng nhập nhân viên</a>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/trang-chu.js"></script>
+</body>
+</html>

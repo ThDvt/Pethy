@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thu ngân - Pethy</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/css/pethy.css">
+<style>
+.cot-chinh{flex:999 1 560px;min-width:0;padding:28px 36px}
+.cot-phu{flex:1 1 300px;min-width:0;background:var(--nen-nhat);padding:28px 24px}
+@media(max-width:760px){.cot-chinh,.cot-phu{padding:20px}}
+.muc h2{font-size:14px;margin:0;color:var(--xam);border-bottom:2px solid var(--muc);padding-bottom:8px}
+.muc{margin-top:32px}.muc:first-of-type{margin-top:20px}
+.hang{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:14px 0;border-bottom:1px solid var(--vach)}
+.hang .ct{flex:2 1 220px;min-width:0}.hang .ten{font-weight:700}
+.tien{font:500 16px var(--so);text-align:right;flex:0 0 120px}
+.nho{font-size:13px;color:var(--xam)}
+.tt{display:inline-block;font-size:12px;font-weight:700;border:1px solid var(--muc);padding:1px 6px;border-radius:2px}
+.tong{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-top:2px solid var(--muc);font-weight:800;font-size:20px}
+.ct-hd{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--vach);font-size:14px}
+.ct-hd .m{flex:1}.ct-hd .s{font-family:var(--so);white-space:nowrap}
+dialog{border:1px solid var(--muc);border-radius:2px;padding:24px;max-width:560px;width:calc(100% - 40px)}
+dialog::backdrop{background:rgba(20,22,26,.5)}
+.so-thu{font-family:var(--so);font-size:20px}
+</style>
+</head>
+<body>
+<div class="bo-khu" id="khung-khu">
+  <main class="cot-chinh">
+    <h1 style="margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em">Thu ngân</h1>
+    <p class="nho" style="margin:6px 0 0;font-size:15px">Lịch đã khám xong trong 7 ngày gần đây và hóa đơn chưa thu đủ.</p>
+    <p id="loi-chung" class="loi" role="alert" hidden></p>
+    <section class="muc" aria-labelledby="h-lap"><h2 id="h-lap">Chờ lập hóa đơn</h2><div id="ds-lap"><p class="trang-thai-tai">Đang tải…</p></div></section>
+    <section class="muc" aria-labelledby="h-thu"><h2 id="h-thu">Chờ thanh toán</h2><div id="ds-thu"></div></section>
+    <section class="muc" aria-labelledby="h-xong"><h2 id="h-xong">Hóa đơn đã thanh toán</h2><div id="ds-xong"></div></section>
+  </main>
+  <aside class="cot-phu" aria-labelledby="h-hn">
+    <h2 id="h-hn" style="font-size:14px;margin:0">Thu hôm nay</h2>
+    <div id="hom-nay" style="margin-top:14px"></div>
+  </aside>
+</div>
+<dialog id="hop"><div id="hop-nd"></div></dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/js/config.js"></script><script src="/js/app.js"></script><script src="/js/mau.js"></script><script src="/js/khu.js"></script>
+<script src="/js/thu-ngan.js"></script>
+</body>
+</html>

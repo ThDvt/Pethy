@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /le-tan/
+Disallow: /bac-si/
+Disallow: /thu-ngan/
+Disallow: /kho/
+Disallow: /chu-nuoi/

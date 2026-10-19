@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lịch trong ngày - Pethy</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/css/pethy.css">
+<style>
+.cot-chinh{flex:999 1 560px;min-width:0;padding:28px 36px}
+.cot-phu{flex:1 1 300px;min-width:0;background:var(--nen-nhat);padding:28px 24px}
+@media(max-width:760px){.cot-chinh,.cot-phu{padding:20px}}
+.cho{border-top:2px solid var(--nhan);padding-top:14px;margin-top:28px}
+.cho h2{font-size:14px;margin:0;color:var(--nhan)}
+.hang{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:14px 0;border-top:1px solid var(--vach)}
+.gio{flex:0 0 64px;font:500 18px var(--so)}
+.hang .ct{flex:2 1 220px;min-width:0}
+.hang .ten{font-weight:700}
+.nho{font-size:13px;color:var(--xam)}
+.bang{margin-top:10px;font-size:14px}
+.bang .hang{padding:12px 0;gap:8px 16px;align-items:baseline}
+.bang .tieu{font-size:12px;font-weight:700;color:var(--xam);letter-spacing:.04em;border-top:2px solid var(--muc)}
+.bang .qua{color:var(--xam)}
+.bang .bay-gio{background:var(--nen-nhat);border-top:1px solid var(--muc);border-bottom:1px solid var(--muc);font-size:13px;font-weight:700;letter-spacing:.04em}
+.c-ct{flex:2 1 170px;min-width:0}.c-dv{flex:2 1 140px}.c-bs{flex:1 1 110px}.c-tt{flex:1 1 130px}
+.nhac{padding:14px 0;border-top:1px solid var(--vach)}
+.nhac:first-of-type{border-top:2px solid var(--muc)}
+dialog{border:1px solid var(--muc);border-radius:2px;padding:24px;max-width:420px;width:calc(100% - 40px)}
+dialog::backdrop{background:rgba(20,22,26,.5)}
+</style>
+</head>
+<body>
+<div class="bo-khu" id="khung-khu">
+  <main class="cot-chinh">
+    <div style="display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:baseline">
+      <h1 id="ngay" style="margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em"></h1>
+      <div id="dem" class="ghi-chu" style="font-size:15px"></div>
+    </div>
+    <p id="loi-chung" class="loi" role="alert" hidden></p>
+    <section class="cho" aria-labelledby="h-cho"><h2 id="h-cho">Cần xác nhận</h2><div id="ds-cho"><p class="trang-thai-tai">Đang tải…</p></div></section>
+    <section style="margin-top:40px" aria-labelledby="h-hom-nay">
+      <h2 id="h-hom-nay" style="font-size:14px;margin:0;color:var(--xam)">Toàn bộ lịch hôm nay</h2>
+      <div class="bang" id="bang"></div>
+    </section>
+  </main>
+  <aside class="cot-phu" aria-labelledby="h-nhac">
+    <h2 id="h-nhac" style="font-size:14px;margin:0">Việc cần nhắc</h2>
+    <p class="nho" style="margin:6px 0 18px;line-height:1.5">Lịch trong 2 ngày tới và mũi tiêm đến hạn trong 7 ngày tới, chưa nhắc.</p>
+    <div id="ds-nhac"></div>
+  </aside>
+</div>
+<dialog id="hop"><form method="dialog" id="form-hop">
+  <h2 id="hop-tieu" style="margin:0 0 8px;font-size:20px"></h2>
+  <p class="ghi-chu" id="hop-mo-ta" style="margin:0 0 16px"></p>
+  <div class="truong"><label for="ly-do">Lý do (gửi kèm khi hủy)</label><input id="ly-do" maxlength="200" placeholder="Ví dụ: bác sĩ bận, vui lòng chọn giờ khác"></div>
+  <p class="loi" id="hop-loi" hidden></p>
+  <div style="display:flex;gap:16px;justify-content:flex-end"><button class="lien-ket" type="button" id="hop-dong">Quay lại</button><button class="nut" id="hop-xn" type="submit">Từ chối lịch</button></div>
+</form></dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/js/config.js"></script><script src="/js/app.js"></script><script src="/js/mau.js"></script><script src="/js/khu.js"></script>
+<script src="/js/le-tan.js"></script>
+</body></html>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tự tấn công bằng khóa anon</title>
+<style>body{font:16px/1.5 system-ui,sans-serif;max-width:760px;margin:32px auto;padding:0 16px;color:#14161A}
+table{border-collapse:collapse;width:100%;margin-top:16px}td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left}
+.ok{color:#146c2e;font-weight:700}.bad{color:#b42318;font-weight:700}code{background:#f2f2ee;padding:1px 4px}</style></head>
+<body>
+<h1>Tự tấn công bằng khóa anon</h1>
+<p>Trang này đóng vai kẻ lạ chưa đăng nhập, chỉ có URL và khóa anon (thứ ai cũng lấy được từ trình duyệt). Nó thử đọc mọi bảng và gọi các hàm nhạy cảm. Chỉ <code>cau_hinh</code>, <code>dich_vu</code>, <code>bac_si_cong_khai</code> được phép trả dữ liệu.</p>
+<button id="chay" style="padding:10px 20px;font-size:16px">Chạy kiểm tra</button>
+<div id="kq"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const C = {SUPABASE_URL:'https://xxspygmpbbfzifiyulpr.supabase.co', SUPABASE_ANON_KEY:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4c3B5Z21wYmJmemlmaXl1bHByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNjA5NzMsImV4cCI6MjEwNzkzNjk3M30.8JScAUylhMciS--vzHnQfn5-SV8BBphcBPwZOnpl57Y'}, db = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY, {auth:{persistSession:false}});
+const BANG = 'tai_khoan chu_nuoi ho_so_bac_si lich_lam_viec cau_hinh thu_cung dich_vu thuoc lo_thuoc lich_hen ho_so_kham don_thuoc ct_don_thuoc mui_tiem bien_dong_kho hoa_don ct_hoa_don thanh_toan nhat_ky nhac_lich gioi_han_goi tin_nhan doc_tin_nhan bac_si_cong_khai ton_kho_lo ton_kho_thuoc canh_bao_kho lich_can_nhac cong_no_hoa_don hop_thu_noi_bo'.split(' ');
+const CHO_PHEP = ['cau_hinh','dich_vu','bac_si_cong_khai'];
+const HAM = [['xem_ho_so_kham',{p_thu_cung:'00000000-0000-0000-0000-000000000000'}],['doanh_thu_theo_thang',{p_tu:'2026-01-01',p_den:'2026-12-31'}],['khung_gio_trong',{p_bac_si:'00000000-0000-0000-0000-000000000000',p_ngay:'2026-12-01'}],['dat_vai_tro',{p_tai_khoan:'00000000-0000-0000-0000-000000000000',p_vai_tro:'admin'}],['nhap_kho',{p_thuoc:'00000000-0000-0000-0000-000000000000',p_so_lo:'x',p_han_dung:'2030-01-01',p_so_luong:1}]];
+const hang = (ten, ok, ghi) => `<tr><td><code>${ten}</code></td><td class="${ok?'ok':'bad'}">${ok?'AN TOÀN':'LỘ'}</td><td>${ghi}</td></tr>`;
+document.getElementById('chay').onclick = async () => {
+  const kq = document.getElementById('kq'); kq.textContent = 'Đang chạy…'; let h = '<table><tr><th>Mục thử</th><th>Kết quả</th><th>Ghi chú</th></tr>', xau = 0;
+  for (const b of BANG) {
+    const r = await db.from(b).select('*').limit(1), coDL = !r.error && r.data && r.data.length > 0, duocPhep = CHO_PHEP.includes(b);
+    const ok = duocPhep || !coDL; if (!ok) xau++;
+    h += hang('đọc ' + b, ok, r.error ? 'bị chặn (' + (r.error.code || r.error.message) + ')' : coDL ? 'đọc được ' + r.data.length + ' dòng' + (duocPhep ? ' (được phép)' : '') : 'không có dòng nào');
+  }
+  const w = await db.from('tai_khoan').update({vai_tro:'admin'}).neq('id','00000000-0000-0000-0000-000000000000');
+  const wOk = !!w.error || !w.data || w.data.length === 0; if (!wOk) xau++; h += hang('sửa vai_tro trong tai_khoan', wOk, w.error ? 'bị chặn' : 'không sửa được dòng nào');
+  for (const [ten, tham] of HAM) {
+    const r = await db.rpc(ten, tham), ok = !!r.error; if (!ok) xau++;
+    h += hang('gọi ' + ten, ok, r.error ? 'bị chặn: ' + (r.error.message || r.error.code) : 'chạy được');
+  }
+  kq.innerHTML = '<h2 class="' + (xau ? 'bad' : 'ok') + '">' + (xau ? 'Có ' + xau + ' mục bị lộ, KHÔNG triển khai' : 'Không mục nào bị lộ') + '</h2>' + h + '</table>';
+};
+</script></body></html>
