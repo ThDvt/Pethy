@@ -10,7 +10,8 @@ PostgreSQL trên Supabase. Toàn bộ nghiệp vụ và phân quyền nằm ở 
 | `02_logic.sql` | Hàm hỗ trợ, 26 hàm nghiệp vụ (RPC) gọi được từ trình duyệt, view, trigger, phân quyền thực thi hàm |
 | `03_rls.sql` | Bật RLS, quyền theo bảng/cột, chính sách theo vai trò |
 | `04_storage.sql` | Bucket `avatar-bac-si` và chính sách ảnh đại diện bác sĩ |
-| `test/` | Stub Supabase, `reset.sh`, `10_behavior.sql` (151 kiểm thử), `11_reports_chat.sql` (75 kiểm thử), `12_security.sql` (53 kiểm thử, gồm quét RLS và quyền) |
+| `05_mfa_admin.sql` | Bản vá cho CSDL đã cài trước: bắt buộc mã xác thực hai lớp với admin đã đăng ký TOTP (bản cài mới đã có trong `02_logic.sql`) |
+| `test/` | Stub Supabase, `reset.sh`, `10_behavior.sql` (151 kiểm thử), `11_reports_chat.sql` (75 kiểm thử), `12_security.sql` (62 kiểm thử, gồm quét RLS và quyền) |
 
 ## Cài lên Supabase
 
@@ -44,7 +45,7 @@ psql -h /var/tmp/pgtest-vet -p 5544 -U postgres -d vettest -q -f test/11_reports
 psql -h /var/tmp/pgtest-vet -p 5544 -U postgres -d vettest -q -f test/12_security.sql        # chạy sau file 11
 ```
 
-Kết quả cuối cùng: 151/151, 75/75 và 53/53 (tổng 279 kiểm thử, 0 lỗi). Ba file test phải chạy theo thứ tự 10, 11, 12 trên cơ sở dữ liệu vừa `reset.sh`; chạy lại một file riêng sẽ cho kết quả sai vì dữ liệu đã thay đổi. Ngoài ra đã chạy thử 8 phiên đồng thời cùng đặt một khung giờ: đúng 1 thành công, 7 nhận `KHUNG_GIO_DA_DAT`.
+Kết quả cuối cùng: 151/151, 75/75 và 62/62 (tổng 288 kiểm thử, 0 lỗi). Ba file test phải chạy theo thứ tự 10, 11, 12 trên cơ sở dữ liệu vừa `reset.sh`; chạy lại một file riêng sẽ cho kết quả sai vì dữ liệu đã thay đổi. Ngoài ra đã chạy thử 8 phiên đồng thời cùng đặt một khung giờ: đúng 1 thành công, 7 nhận `KHUNG_GIO_DA_DAT`.
 
 Bộ kiểm thử bao gồm: quyền từng vai trò, cô lập dữ liệu giữa các chủ nuôi, đặt trùng giờ, quy tắc hủy/đổi, giới hạn lịch chờ, kho FEFO, kê đơn thiếu hàng (hoàn tác toàn bộ), kê lại đơn (hoàn kho), hóa đơn/thanh toán nhiều lần, bảng chỉ-thêm, chế độ bảo trì, khách chưa đăng nhập, trigger đăng ký không tin vai trò từ client, khóa/xóa tài khoản, nhật ký.
 

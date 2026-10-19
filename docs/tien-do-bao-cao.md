@@ -113,3 +113,14 @@
 - Mọi nhân viên (lễ tân, bác sĩ, thu ngân, thủ kho): trang Trao đổi với quản trị, mỗi người một luồng riêng; menu của bốn vai nhân viên được gom về một chỗ trong khu.js.
 - Chưa làm (để ngỏ, ghi vào phạm vi mở rộng): gộp hồ sơ khách trực tiếp với tài khoản (hàm gop_chu_nuoi đã có ở cơ sở dữ liệu), sửa hoặc xóa thú cưng, quên mật khẩu.
 - Toàn bộ giao diện mới thử trên dữ liệu mẫu. Bước tiếp theo là dựng Supabase thật và kiểm thử tích hợp.
+
+## Cập nhật: dựng cơ sở dữ liệu thật và chuẩn bị triển khai
+- Đã chạy bốn file SQL trên Supabase thật (project của tác giả), tạo tài khoản admin đầu tiên bằng bảng điều khiển Supabase.
+- Đã chạy tools/kiem-tra-anon.html bằng khóa anon từ trình duyệt: không mục nào bị lộ (30 bảng và view, thử sửa vai trò, 5 hàm nhạy cảm).
+- Đã thêm web/_headers (CSP, chống nhúng khung, HSTS), trang 404, robots.txt; thay các chỗ giữ chỗ bằng thông tin liên hệ thật của phòng khám.
+- Mã nguồn đã commit vào nhánh them-ma-nguon-pethy của kho ThDvt/Pethy ở máy phiên làm việc nhưng chưa đẩy được vì ứng dụng GitHub của Claude chưa được cấp quyền ghi.
+- Còn lại: triển khai Cloudflare Pages, thử toàn bộ luồng nghiệp vụ trên hệ thống thật, đưa thư viện Supabase về tự lưu trữ hoặc thêm SRI, viết chương 7 và 8, chèn hình vào báo cáo, hoàn thiện profile GitHub.
+
+## Cập nhật: củng cố bảo mật trong khuôn khổ miễn phí
+- Rà soát 20 điểm kiểm tra bảo mật (docs/ra-soat-20-diem-bao-mat.md): 9 đạt, 2 chờ kiểm tra sau triển khai, 7 một phần, 2 chưa đạt theo đúng nghĩa (sao lưu tự động của Supabase và cookie httpOnly, do giới hạn gói miễn phí và kiến trúc không có máy chủ).
+- Đã bổ sung: tự đăng xuất khi không thao tác, xác thực hai lớp cho admin (có ràng buộc ở cơ sở dữ liệu, 288 kiểm thử đạt), công cụ thử IDOR bằng hai tài khoản, quy trình sao lưu hằng ngày bằng GitHub Actions.

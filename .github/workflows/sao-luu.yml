@@ -1,0 +1,54 @@
+# Sao lưu cơ sở dữ liệu mỗi ngày và giữ dự án Supabase hoạt động (gói miễn phí bị tạm dừng sau 1 tuần không dùng).
+# Cần hai GitHub Secrets (Settings, Secrets and variables, Actions):
+#   SUPABASE_DB_URL     chuỗi kết nối PostgreSQL dạng "Session pooler" (hỗ trợ IPv4), có mật khẩu
+#   BACKUP_PASSPHRASE   cụm mật khẩu dài, ngẫu nhiên, để mã hóa bản sao lưu (hãy lưu một bản ở nơi an toàn khác)
+# Bản sao lưu được mã hóa rồi lưu thành artifact riêng tư của lần chạy, không bao giờ nằm trong mã nguồn.
+name: Sao lưu và giữ hoạt động
+
+on:
+  schedule:
+    - cron: "17 19 * * *"   # 02:17 giờ Việt Nam mỗi ngày
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sao-luu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Cài công cụ PostgreSQL 17
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install -y -qq postgresql-client-17
+
+      - name: Xuất cơ sở dữ liệu và mã hóa
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PASS: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          test -n "$DB_URL" && test -n "$PASS"
+          NGAY=$(TZ=Asia/Ho_Chi_Minh date +%Y%m%d-%H%M)
+          pg_dump "$DB_URL" --schema=public --no-owner --no-privileges --format=custom -f "pethy-$NGAY.dump"
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$PASS" --symmetric --cipher-algo AES256 -o "pethy-$NGAY.dump.gpg" "pethy-$NGAY.dump"
+          rm -f "pethy-$NGAY.dump"
+          ls -l pethy-*.gpg
+
+      - name: Gọi API công khai một lần (giữ dự án hoạt động)
+        run: |
+          curl -fsS "https://xxspygmpbbfzifiyulpr.supabase.co/rest/v1/cau_hinh?select=khoa&limit=1" \
+            -H "apikey: $ANON" -H "Authorization: Bearer $ANON" > /dev/null
+        env:
+          ANON: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4c3B5Z21wYmJmemlmaXl1bHByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNjA5NzMsImV4cCI6MjEwNzkzNjk3M30.8JScAUylhMciS--vzHnQfn5-SV8BBphcBPwZOnpl57Y
+
+      - name: Lưu bản sao lưu (mã hóa, giữ 30 ngày)
+        uses: actions/upload-artifact@v4
+        with:
+          name: pethy-sao-luu
+          path: pethy-*.dump.gpg
+          retention-days: 30
+          if-no-files-found: error

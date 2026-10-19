@@ -116,6 +116,32 @@ SELECT t.bang('thu ngan: canh_bao_kho trong (chi admin, thu kho)', 'SELECT count
 SELECT t.bang('thu ngan: lich_can_nhac trong (chi le tan, admin)', 'SELECT count(*)::text FROM lich_can_nhac','0');
 RESET ROLE;
 
+-- ===== (5) XÁC THỰC HAI LỚP CHO ADMIN =====
+RESET ROLE;
+SELECT set_config('request.jwt.claims','',false);
+SET ROLE authenticated; SELECT t.as_(:a1);
+SELECT t.bang('chua co TOTP: admin doc duoc tham so rieng', $$SELECT count(*)::text FROM cau_hinh WHERE khoa='canh_bao_han_dung_ngay'$$,'1');
+RESET ROLE;
+INSERT INTO auth.mfa_factors (user_id,status) VALUES (:a1,'unverified');
+SET ROLE authenticated; SELECT t.as_(:a1);
+SELECT t.bang('TOTP chua xac minh: khong anh huong', $$SELECT count(*)::text FROM cau_hinh WHERE khoa='canh_bao_han_dung_ngay'$$,'1');
+RESET ROLE;
+UPDATE auth.mfa_factors SET status='verified' WHERE user_id=:a1;
+SET ROLE authenticated; SELECT t.as_(:a1);
+SELECT t.bang('co TOTP, phien aal1: mat vai tro admin', $$SELECT coalesce(vai_tro_hieu_luc(),'(trong)')$$,'(trong)');
+SELECT t.bang('co TOTP, phien aal1: khong doc duoc tham so rieng', $$SELECT count(*)::text FROM cau_hinh WHERE khoa='canh_bao_han_dung_ngay'$$,'0');
+SELECT t.loi('co TOTP, phien aal1: khong goi duoc ham admin', $$SELECT * FROM doanh_thu_theo_thang(hom_nay()-30,hom_nay())$$,'TAI_KHOAN_BI_KHOA');
+SELECT set_config('request.jwt.claims','{"aal":"aal1"}',false);
+SELECT t.bang('claim aal1 ro rang: van bi chan', $$SELECT coalesce(vai_tro_hieu_luc(),'(trong)')$$,'(trong)');
+SELECT set_config('request.jwt.claims','{"aal":"aal2"}',false);
+SELECT t.bang('co TOTP, phien aal2: la admin', $$SELECT vai_tro_hieu_luc()$$,'admin');
+SELECT t.ok('co TOTP, phien aal2: goi duoc ham admin', $$SELECT * FROM doanh_thu_theo_thang(hom_nay()-30,hom_nay())$$);
+SELECT t.as_(:bs1);
+SELECT t.bang('vai tro khac khong bi anh huong boi yeu to cua admin', $$SELECT vai_tro_hieu_luc()$$,'bac_si');
+RESET ROLE;
+SELECT set_config('request.jwt.claims','',false);
+DELETE FROM auth.mfa_factors WHERE user_id=:a1;
+
 \echo ---KET QUA---
 SELECT CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END AS kq, ten, chi_tiet FROM t.kq WHERE NOT ok ORDER BY 1;
 SELECT count(*) FILTER (WHERE ok) AS pass, count(*) FILTER (WHERE NOT ok) AS fail FROM t.kq;

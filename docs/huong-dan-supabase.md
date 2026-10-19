@@ -52,3 +52,18 @@ Mục đích: kiểm tra đúng kiểu tấn công trong video, tức là kẻ l
 - 5 dòng **"gọi ..."**: thử gọi hàm xem hồ sơ khám, xem doanh thu, xem giờ trống, đổi vai trò, nhập kho. Cả năm phải là AN TOÀN, ghi chú "bị chặn: ...".
 
 **Nếu bảng báo toàn "bị chặn" kể cả `cau_hinh`** thì thường là bốn file SQL chưa chạy xong hoặc chạy sai thứ tự; quay lại bước 1. Nếu trang báo lỗi mạng hoặc không hiện bảng, nhấn F12, chọn thẻ Console, chụp dòng đỏ gửi lại.
+
+## 6. Bật xác thực hai lớp cho admin
+1. Chạy file `db/05_mfa_admin.sql` trong SQL Editor (một lần). Trước khi chạy, kiểm tra quyền đọc bảng yếu tố bằng câu `select count(*) from auth.mfa_factors;`: phải chạy được, không báo lỗi quyền.
+2. Đăng nhập admin, vào **Bảo mật tài khoản**, bấm **Bật xác thực hai lớp**, quét mã QR bằng ứng dụng xác thực, nhập mã 6 số.
+3. Đăng xuất rồi đăng nhập lại: sẽ hiện ô nhập mã 6 số. Từ đây, biết mật khẩu mà không có mã thì máy chủ không công nhận quyền admin, kể cả khi gọi thẳng API.
+4. Nếu mất điện thoại: dùng SQL Editor chạy `delete from auth.mfa_factors where user_id = (select id from auth.users where email = 'email-admin');`.
+
+## 7. Kiểm tra IDOR và nâng quyền
+Tạo hai tài khoản chủ nuôi thử A và B trên web, xác nhận email. Đăng nhập A, thêm một thú cưng, đặt một lịch. Mở `tools/kiem-tra-idor.html`, nhập email và mật khẩu của A và B, bấm **Chạy kiểm tra**. Kết quả đạt là dòng xanh "Không mục nào bị lộ". Chỉ dùng tài khoản thử.
+
+## 8. Sao lưu hằng ngày và giữ dự án hoạt động
+1. Supabase, **Connect**, chọn **Session pooler**, sao chép chuỗi kết nối và thay mật khẩu bằng mật khẩu cơ sở dữ liệu của bạn.
+2. Trên GitHub: **Settings, Secrets and variables, Actions, New repository secret**, thêm `SUPABASE_DB_URL` (chuỗi kết nối) và `BACKUP_PASSPHRASE` (một cụm mật khẩu dài ngẫu nhiên, hãy lưu một bản ở nơi an toàn khác).
+3. Tab **Actions**, chọn workflow **Sao lưu và giữ hoạt động**, bấm **Run workflow**. Chạy xong, mở lần chạy để tải artifact `pethy-sao-luu` (đã mã hóa, giữ 30 ngày). Thử khôi phục một lần vào một project trống để chắc rằng bản sao lưu dùng được.
+Workflow cũng chạy mỗi ngày nên dự án không bị tạm dừng vì không hoạt động.
