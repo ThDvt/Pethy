@@ -21,6 +21,7 @@
     <div class="truong dk" hidden><label for="sdt">Số điện thoại</label><input id="sdt" inputmode="tel" autocomplete="tel" placeholder="0901234567"></div>
     <div class="truong"><label for="email">Email</label><input id="email" type="email" autocomplete="email" required></div>
     <div class="truong"><label for="mat-khau">Mật khẩu</label><input id="mat-khau" type="password" autocomplete="current-password" required minlength="8"></div>
+    <div class="truong" id="khoi-2fa" hidden><label for="ma-2fa">Mã xác thực 6 số từ ứng dụng xác thực</label><input id="ma-2fa" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}"></div>
     <p class="loi" id="loi" role="alert" hidden></p>
     <p class="ghi-chu" id="thong-bao" role="status" hidden></p>
     <button class="nut chinh" id="gui" type="submit" style="width:100%">Đăng nhập</button>

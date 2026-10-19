@@ -31,7 +31,20 @@
       muc.map(m => el('a',{href:m.href,'aria-current': m.href === hien ? 'page' : null}, m.ten)),
       el('button',{class:'lien-ket dang-xuat',style:'color:#B8BAB4;text-align:left;font-size:15px;padding:10px 0',onclick:dangXuat},'Đăng xuất'));
     document.getElementById('khung-khu').prepend(nav);
+    if (Pethy.thuc) giamSatNhanRoi(vt === 'chu_nuoi' ? 60 : 30);
     return vt;
+  }
+  // Hết phiên phía trình duyệt khi không thao tác (gói Supabase miễn phí không có hết phiên phía máy chủ).
+  function giamSatNhanRoi(phut){
+    let cuoi = Date.now();
+    const ghi = () => { cuoi = Date.now(); };
+    ['pointerdown','keydown','scroll','touchstart'].forEach(e => addEventListener(e, ghi, { passive: true }));
+    const kiem = async () => {
+      if (Date.now() - cuoi < phut * 60000) return;
+      try { await Pethy.db.auth.signOut(); } finally { location.replace('/dang-nhap.html?het-phien=1'); }
+    };
+    setInterval(kiem, 30000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) kiem(); });
   }
   Pethy.khu = { loiRpc, khoiDong, MENU_NV };
 })();

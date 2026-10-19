@@ -35,10 +35,16 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public, pg_temp AS $$
 $$;
 
 -- Vai trò của người đang đăng nhập; trống nếu chưa đăng nhập hoặc tài khoản bị khóa.
+-- Admin đã đăng ký xác thực hai lớp (TOTP) mà phiên mới ở mức aal1 (chưa nhập mã) thì chưa có
+-- vai trò: biết mật khẩu thôi không đủ, kể cả khi gọi thẳng API mà bỏ qua giao diện.
 CREATE FUNCTION vai_tro_hien_tai() RETURNS text
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public, pg_temp AS $$
   SELECT t.vai_tro FROM tai_khoan t
    WHERE t.id = auth.uid() AND t.trang_thai = 'hoat_dong'
+     AND NOT (t.vai_tro = 'admin'
+              AND coalesce(auth.jwt() ->> 'aal', 'aal1') <> 'aal2'
+              AND EXISTS (SELECT 1 FROM auth.mfa_factors f
+                           WHERE f.user_id = t.id AND f.status = 'verified'))
 $$;
 
 -- Vai trò có hiệu lực: như trên, nhưng khi đang bảo trì thì chỉ admin còn hiệu lực.

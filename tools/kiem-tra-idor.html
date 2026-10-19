@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kiểm tra IDOR và nâng quyền</title>
+<style>body{font:16px/1.5 system-ui,sans-serif;max-width:820px;margin:32px auto;padding:0 16px;color:#14161A}
+input{padding:8px;font-size:16px;width:100%;box-sizing:border-box;margin:4px 0 12px}fieldset{border:1px solid #ccc;margin:0 0 16px;padding:12px 16px}
+table{border-collapse:collapse;width:100%;margin-top:16px}td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}
+.ok{color:#146c2e;font-weight:700}.bad{color:#b42318;font-weight:700}code{background:#f2f2ee;padding:1px 4px}button{padding:10px 20px;font-size:16px}</style></head>
+<body>
+<h1>Kiểm tra IDOR và nâng quyền</h1>
+<p>Đóng vai chủ nuôi B cố đọc, sửa, xóa dữ liệu của chủ nuôi A, rồi thử gọi các hàm quản trị. Mọi thử nghiệm đều phải bị chặn.</p>
+<p><b>Chuẩn bị:</b> tạo hai tài khoản chủ nuôi thử A và B trên web (đã xác nhận email). Đăng nhập A, thêm một thú cưng và đặt một lịch khám. Chỉ dùng tài khoản thử, không dùng tài khoản admin. Nếu có mục báo LỘ, phép thử có thể đã thay đổi dữ liệu của tài khoản thử.</p>
+<fieldset><legend>Chủ nuôi A (có thú cưng và lịch)</legend>Email<input id="ea" type="email" autocomplete="off">Mật khẩu<input id="pa" type="password" autocomplete="off"></fieldset>
+<fieldset><legend>Chủ nuôi B (kẻ tấn công)</legend>Email<input id="eb" type="email" autocomplete="off">Mật khẩu<input id="pb" type="password" autocomplete="off"></fieldset>
+<button id="chay">Chạy kiểm tra</button><div id="kq"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const C = {SUPABASE_URL:'https://xxspygmpbbfzifiyulpr.supabase.co', SUPABASE_ANON_KEY:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4c3B5Z21wYmJmemlmaXl1bHByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNjA5NzMsImV4cCI6MjEwNzkzNjk3M30.8JScAUylhMciS--vzHnQfn5-SV8BBphcBPwZOnpl57Y'};
+const mk = () => supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY, {auth:{persistSession:false,autoRefreshToken:false}});
+const Z = '00000000-0000-0000-0000-000000000000', $ = id => document.getElementById(id);
+const hang = (ten, ok, ghi) => `<tr><td>${ten}</td><td class="${ok?'ok':'bad'}">${ok?'AN TOÀN':'LỘ'}</td><td>${ghi}</td></tr>`;
+$('chay').onclick = async () => {
+  const kq = $('kq'); kq.textContent = 'Đang chạy…'; const A = mk(), B = mk(); let h = '', xau = 0;
+  const dn = async (c, e, p) => { const r = await c.auth.signInWithPassword({email:e,password:p}); return r.error ? null : r.data.user.id; };
+  const ua = await dn(A, $('ea').value.trim(), $('pa').value), ub = await dn(B, $('eb').value.trim(), $('pb').value);
+  if (!ua || !ub) { kq.innerHTML = '<p class="bad">Đăng nhập thất bại. Kiểm tra email, mật khẩu và đã xác nhận email chưa.</p>'; return; }
+  const vtB = (await B.rpc('vai_tro_hieu_luc')).data;
+  if (vtB !== 'chu_nuoi') { kq.innerHTML = '<p class="bad">Tài khoản B phải là chủ nuôi (hiện là: ' + vtB + '). Dừng để tránh thử nhầm trên tài khoản có quyền cao.</p>'; return; }
+  const ids = {};
+  for (const b of ['thu_cung','lich_hen','hoa_don','chu_nuoi']) { const r = await A.from(b).select('id').limit(5); ids[b] = (r.data||[]).map(x=>x.id); }
+  if (!ids.thu_cung.length || !ids.lich_hen.length) { kq.innerHTML = '<p class="bad">Tài khoản A cần có ít nhất một thú cưng và một lịch hẹn để phép thử có ý nghĩa.</p>'; return; }
+  const ghi = (ten, ok, g) => { if (!ok) xau++; h += hang(ten, ok, g); };
+  for (const b of ['thu_cung','lich_hen','hoa_don','chu_nuoi']) if (ids[b].length) {
+    const r = await B.from(b).select('id').in('id', ids[b]); ghi('B đọc ' + b + ' của A theo id', !r.error && (r.data||[]).length === 0, r.error ? 'bị chặn' : 'đọc được ' + r.data.length + ' dòng');
+  }
+  { const r = await B.from('thu_cung').update({ten:'BI-SUA'}).in('id', ids.thu_cung).select('id'); ghi('B sửa tên thú cưng của A', !!r.error || (r.data||[]).length === 0, r.error ? 'bị chặn' : 'sửa được ' + (r.data||[]).length + ' dòng'); }
+  { const r = await B.from('thu_cung').delete().in('id', ids.thu_cung).select('id'); ghi('B xóa thú cưng của A', !!r.error || (r.data||[]).length === 0, r.error ? 'bị chặn' : 'xóa được ' + (r.data||[]).length + ' dòng'); }
+  if (ids.chu_nuoi.length) { const r = await B.from('thu_cung').insert({chu_nuoi_id:ids.chu_nuoi[0],ten:'XAM-NHAP',loai:'cho'}).select('id'); ghi('B thêm thú cưng vào hồ sơ của A', !!r.error, r.error ? 'bị chặn' : 'thêm được'); }
+  { const r = await B.rpc('huy_lich', {p_lich: ids.lich_hen[0], p_ly_do:'thu'}); ghi('B hủy lịch của A', !!r.error, r.error ? 'bị chặn: ' + r.error.message : 'hủy được'); }
+  { const r = await B.rpc('doi_lich', {p_lich: ids.lich_hen[0], p_thoi_gian: new Date(Date.now()+5*864e5).toISOString()}); ghi('B đổi lịch của A', !!r.error, r.error ? 'bị chặn: ' + r.error.message : 'đổi được'); }
+  { const r = await B.rpc('xem_ho_so_kham', {p_thu_cung: ids.thu_cung[0]}); ghi('B xem hồ sơ khám thú cưng của A', !!r.error, r.error ? 'bị chặn: ' + r.error.message : 'đọc được'); }
+  for (const [ten, tham] of [['doanh_thu_theo_thang',{p_tu:'2026-01-01',p_den:'2026-12-31'}],['dat_vai_tro',{p_tai_khoan:ub,p_vai_tro:'admin'}],['khoa_tai_khoan',{p_tai_khoan:ua,p_khoa:true}],['xoa_tai_khoan',{p_tai_khoan:ua}],['nhap_kho',{p_thuoc:Z,p_so_lo:'x',p_han_dung:'2030-01-01',p_so_luong:1}],['lap_hoa_don',{p_lich:ids.lich_hen[0]}],['xac_nhan_lich',{p_lich:ids.lich_hen[0]}],['gui_tin_nhan',{p_nhan_vien:ua,p_noi_dung:'thu'}]]) {
+    const r = await B.rpc(ten, tham); ghi('B gọi ' + ten, !!r.error, r.error ? 'bị chặn: ' + (r.error.message||'').slice(0,80) : 'chạy được');
+  }
+  { const r = await B.from('tai_khoan').update({vai_tro:'admin'}).eq('id', ub).select('id'); ghi('B tự nâng vai_tro trong tai_khoan', !!r.error || (r.data||[]).length === 0, r.error ? 'bị chặn' : 'sửa được ' + (r.data||[]).length + ' dòng'); }
+  for (const b of ['nhat_ky','tai_khoan','bien_dong_kho','thanh_toan','tin_nhan','cong_no_hoa_don']) { const r = await B.from(b).select('*').limit(3); const n = (r.data||[]).length; const rieng = (b === 'tai_khoan') ? (r.data||[]).every(x => x.id === ub) : n === 0; ghi('B đọc ' + b, !!r.error || rieng, r.error ? 'bị chặn' : b === 'tai_khoan' ? 'chỉ thấy hồ sơ của chính mình' : n + ' dòng'); }
+  const vt2 = (await B.rpc('vai_tro_hieu_luc')).data; ghi('Vai trò của B sau tất cả phép thử', vt2 === 'chu_nuoi', vt2);
+  await A.auth.signOut(); await B.auth.signOut();
+  kq.innerHTML = '<h2 class="' + (xau ? 'bad' : 'ok') + '">' + (xau ? 'Có ' + xau + ' mục bị lộ, KHÔNG triển khai' : 'Không mục nào bị lộ') + '</h2><table><tr><th>Phép thử</th><th>Kết quả</th><th>Ghi chú</th></tr>' + h + '</table>';
+};
+</script></body></html>

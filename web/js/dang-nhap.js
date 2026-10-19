@@ -19,15 +19,38 @@
   const loi = m => { $('loi').textContent = m; $('loi').hidden = false; $('thong-bao').hidden = true; };
   const tb = m => { $('thong-bao').textContent = m; $('thong-bao').hidden = false; $('loi').hidden = true; };
 
+  let cho2fa = null;   // factorId đang chờ nhập mã
   async function vaoKhu(){
+    // Tài khoản có xác thực hai lớp: phải nhập mã trước khi được cấp vai trò.
+    const a = await db.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (!a.error && a.data.nextLevel === 'aal2' && a.data.currentLevel !== 'aal2') {
+      const f = await db.auth.mfa.listFactors();
+      const tot = f.data && f.data.totp && f.data.totp[0];
+      if (!tot) { loi('Không đọc được yếu tố xác thực. Vui lòng thử lại.'); await db.auth.signOut(); return false; }
+      cho2fa = tot.id; $('khoi-2fa').hidden = false; $('ma-2fa').focus();
+      $('gui').textContent = 'Xác nhận mã'; tb('Nhập mã 6 số trong ứng dụng xác thực của bạn.');
+      return false;
+    }
     const vt = await vaiTro();
     if (!vt) { loi('Hệ thống đang bảo trì hoặc tài khoản chưa được kích hoạt.'); await db.auth.signOut(); return; }
     location.href = KHU[vt] || '/';
+    return true;
   }
 
   $('form').addEventListener('submit', async ev => {
     ev.preventDefault();
     if (!thuc) { loi('Chưa cấu hình Supabase (js/config.js).'); return; }
+    if (cho2fa) {
+      const ma = $('ma-2fa').value.trim();
+      if (!/^[0-9]{6}$/.test(ma)) { loi('Mã gồm đúng 6 chữ số.'); return; }
+      $('gui').disabled = true;
+      try {
+        const { error } = await db.auth.mfa.challengeAndVerify({ factorId: cho2fa, code: ma });
+        if (error) { loi('Mã không đúng hoặc đã hết hạn. Thử mã mới.'); $('ma-2fa').value = ''; return; }
+        await vaoKhu();
+      } finally { $('gui').disabled = false; }
+      return;
+    }
     const email = $('email').value.trim(), mk = $('mat-khau').value;
     if (!email || mk.length < 8) { loi('Nhập email và mật khẩu (tối thiểu 8 ký tự).'); return; }
     $('gui').disabled = true;
@@ -46,4 +69,5 @@
       }
     } finally { $('gui').disabled = false; }
   });
+  if (new URLSearchParams(location.search).has('het-phien')) tb('Phiên đăng nhập đã kết thúc do lâu không thao tác. Vui lòng đăng nhập lại.');
 })();
