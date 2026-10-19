@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hồ sơ khám - Pethy</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/css/pethy.css">
+<style>
+.cot-trai{flex:1 1 280px;max-width:360px;min-width:0;background:var(--nen-nhat);padding:28px 24px}
+.cot-phai{flex:999 1 560px;min-width:0;padding:28px 40px 40px}
+@media(max-width:760px){.cot-trai{max-width:none;padding:20px}.cot-phai{padding:20px}}
+.cap{font-size:12px;font-weight:700;color:var(--xam);letter-spacing:.04em}
+.khoi{margin-top:20px;padding-top:12px;border-top:1px solid var(--vach);font-size:14px;line-height:1.6}
+.ls{padding:12px 0;border-top:1px solid var(--vach);font-size:14px}.ls:first-of-type{border-top:2px solid var(--muc)}.ls .d{font:13px var(--so);color:var(--xam)}
+.don{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--vach)}
+.don select,.don input{min-height:44px}.don .t{flex:3 1 200px}.don .sl{flex:0 0 90px}.don .ld{flex:3 1 200px}.don .tk{flex:0 0 70px;text-align:right;font:14px var(--so)}
+</style>
+</head>
+<body>
+<div class="bo-khu" id="khung-khu">
+  <aside class="cot-trai" id="thu-cung-kham"><p class="trang-thai-tai">Đang tải…</p></aside>
+  <main class="cot-phai">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:baseline"><h1 style="margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em">Hồ sơ khám</h1><div id="trang-thai" class="ghi-chu"></div></div>
+    <div id="vung"></div>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/js/config.js"></script><script src="/js/app.js"></script><script src="/js/mau.js"></script><script src="/js/khu.js"></script>
+<script src="/js/bac-si.js"></script><script src="/js/bac-si-kham.js"></script>
+</body></html>

@@ -1,0 +1,37 @@
+// Khung chung cho khu quản trị.
+Pethy.admin = (function(){
+  const { el } = Pethy;
+  const MUC = [
+    {ten:'Tổng quan',href:'/admin/'},{ten:'Doanh thu',href:'/admin/doanh-thu.html'},{ten:'Tài khoản',href:'/admin/tai-khoan.html'},
+    {ten:'Dịch vụ và giá',href:'/admin/dich-vu.html'},{ten:'Lịch làm việc',href:'/admin/lich-lam-viec.html'},
+    {ten:'Tham số hệ thống',href:'/admin/tham-so.html'},{ten:'Nhật ký',href:'/admin/nhat-ky.html'},{ten:'Trao đổi nội bộ',href:'/admin/trao-doi.html'}];
+  const $ = id => document.getElementById(id);
+  const ngay = iso => new Date(iso).toLocaleDateString('en-GB',{timeZone:'Asia/Ho_Chi_Minh'});
+  const homNay = () => new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Ho_Chi_Minh'});
+  const VAI = {admin:'Quản trị',bac_si:'Bác sĩ',le_tan:'Lễ tân',thu_ngan:'Thu ngân',kho:'Thủ kho',chu_nuoi:'Chủ nuôi'};
+  const baoLoi = m => { const p = $('loi-chung'); p.textContent = m || ''; p.hidden = !m; };
+  const rong = t => el('p',{class:'nho',style:'padding:14px 0'}, t);
+  const the = (n, v) => el('div',{}, el('div',{class:'n'}, n), el('div',{class:'v'}, v));
+  async function boot(href){
+    const vt = await Pethy.khu.khoiDong('admin', 'Quản trị', MUC, href);
+    return vt;
+  }
+  // Hộp thoại nhỏ dùng chung: truong là mảng phần tử .truong, hanhDong trả về chuỗi lỗi hoặc null.
+  function hop(tieuDe, moTa, truong, nutTen, hanhDong, lamMoi){
+    const loi = el('p',{class:'loi',role:'alert',hidden:true});
+    const ml = m => { loi.textContent = m || ''; loi.hidden = !m; };
+    const d = $('hop');
+    $('hop-nd').replaceChildren(el('h2',{style:'margin:0 0 4px;font-size:22px'}, tieuDe),
+      moTa ? el('div',{class:'nho',style:'margin-bottom:12px'}, moTa) : el('div',{style:'height:12px'}),
+      el('div',{class:'luoi'}, ...truong), loi,
+      el('div',{style:'display:flex;gap:16px;justify-content:flex-end;align-items:center;margin-top:20px'},
+        el('button',{class:'lien-ket',type:'button',onclick:() => d.close()}, 'Đóng'),
+        el('button',{class:'nut chinh',type:'button',onclick:async ev => {
+          ml(''); ev.currentTarget.disabled = true;
+          const e = await hanhDong(); if (e) { ev.currentTarget.disabled = false; return ml(e); }
+          d.close(); await lamMoi(); }}, nutTen)));
+    d.showModal();
+  }
+  const o = (id, nhan, ...c) => el('div',{class:'truong'}, el('label',{for:id}, nhan), ...c);
+  return { MUC, $, ngay, homNay, VAI, baoLoi, rong, the, boot, hop, o };
+})();
