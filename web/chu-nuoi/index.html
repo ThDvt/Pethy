@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tổng quan - Pethy</title><meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/css/pethy.css">
 <style>
@@ -14,14 +15,16 @@
 dialog{border:1px solid var(--muc);border-radius:2px;padding:24px;max-width:420px;width:calc(100% - 40px)}
 dialog::backdrop{background:rgba(20,22,26,.5)}
 </style>
+<link rel="stylesheet" href="/css/chuyen-dong.css"><script src="/js/chuyen-dong.js"></script>
 </head>
 <body>
 <div class="bo-khu" id="khung-khu">
+<script src="/js/thanh-ben-som.js"></script>
   <main class="noi-dung-khu" style="max-width:760px">
     <h1 style="margin:0 0 4px;font-size:28px;font-weight:800;letter-spacing:-.02em">Tổng quan</h1>
     <p class="ghi-chu" style="margin:0 0 32px">Lịch khám sắp tới và mũi tiêm sắp đến hạn của thú cưng.</p>
     <div id="thong-bao" class="loi" role="alert" hidden></div>
-    <section aria-labelledby="h-lich"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h2 id="h-lich" style="font-size:14px;margin:0;color:var(--nhan)">Lịch sắp tới</h2><a class="nut chinh" href="/chu-nuoi/dat-lich.html">Đặt lịch mới</a></div><div id="ds-lich" style="margin-top:14px"><p class="trang-thai-tai">Đang tải…</p></div></section>
+    <section aria-labelledby="h-lich"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h2 id="h-lich" style="font-size:14px;margin:0;color:var(--nhan)">Lịch sắp tới</h2><a class="nut chinh" href="/chu-nuoi/dat-lich.html">Đặt lịch mới</a></div><div id="ds-lich" style="margin-top:14px"><p class="trang-thai-tai" role="status">Đang tải…</p></div></section>
     <section aria-labelledby="h-tiem" style="margin-top:44px"><h2 id="h-tiem" style="font-size:14px;margin:0;color:var(--xam)">Mũi tiêm sắp đến hạn</h2><div id="ds-tiem" style="margin-top:14px"></div></section>
   </main>
 </div>

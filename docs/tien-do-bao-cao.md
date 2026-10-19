@@ -124,3 +124,18 @@
 ## Cập nhật: củng cố bảo mật trong khuôn khổ miễn phí
 - Rà soát 20 điểm kiểm tra bảo mật (docs/ra-soat-20-diem-bao-mat.md): 9 đạt, 2 chờ kiểm tra sau triển khai, 7 một phần, 2 chưa đạt theo đúng nghĩa (sao lưu tự động của Supabase và cookie httpOnly, do giới hạn gói miễn phí và kiến trúc không có máy chủ).
 - Đã bổ sung: tự đăng xuất khi không thao tác, xác thực hai lớp cho admin (có ràng buộc ở cơ sở dữ liệu, 288 kiểm thử đạt), công cụ thử IDOR bằng hai tài khoản, quy trình sao lưu hằng ngày bằng GitHub Actions.
+
+## Cập nhật 19/10/2026: đã deploy, đang làm hiệu ứng chuyển động (tạm dừng để chuẩn bị thuyết trình)
+
+Đã xong: web đã deploy lên Cloudflare Pages, admin đã bật xác thực hai lớp. Người dùng thử web và nhận xét giao diện bị "giật": bấm nút là đổi trang tĩnh, không có hiệu ứng chờ.
+
+Đã viết nhưng CHƯA kiểm tra bằng trình duyệt và CHƯA deploy (nằm trên nhánh `chuyen-dong-nhap`):
+- `web/css/chuyen-dong.css`: chuyển trang mờ dần (View Transitions), thanh bên đứng yên, hiện dần theo thứ tự khi dữ liệu về, nút nhấn có bóng cứng khi rê chuột, hộp thoại hiện và đóng mượt, skeleton thay chữ "Đang tải…" (bản `co-the` có khung thẻ số liệu cho admin tổng quan và doanh thu), tắt hết khi người dùng chọn giảm chuyển động.
+- `web/js/chuyen-dong.js`: thanh tiến trình đầu trang khi bấm liên kết, vòng xoay trên nút đang gửi, mục trang chủ hiện dần khi cuộn.
+- `web/js/thanh-ben-som.js`: dựng thanh bên ngay từ thực đơn đã lưu (sessionStorage `pethy.menu`) để không chờ kiểm tra vai trò.
+- `web/js/khu.js`: `khoiDong` dựng thanh bên trước khi kiểm tra vai trò, lưu và xóa thực đơn khi đăng xuất. `web/js/app.js`: xóa thực đơn khi đăng xuất.
+- 24 trang HTML đã gắn thêm file CSS/JS mới, preconnect tới Google Fonts và jsdelivr.
+
+Việc còn lại: chạy Playwright chụp ảnh các trang để kiểm tra skeleton và hiệu ứng (đặc biệt `.co-the`, hộp thoại, thanh bên), sửa lỗi nếu có, đóng gói zip, người dùng upload lại lên Cloudflare Pages. Sau đó: thử luồng thật với Supabase, chương 7 và 8, hồ sơ GitHub cá nhân.
+
+Ngày 20/10/2026: người dùng thuyết trình đợt 1 trước lớp (tổng quan dự án, công nghệ, nói qua thiết kế hệ thống).

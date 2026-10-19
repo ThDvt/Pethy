@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pethy - Phòng khám thú y</title>
 <meta name="description" content="Đặt lịch khám cho thú cưng trong một phút. Lịch khám, sổ tiêm và đơn thuốc trong một tài khoản.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/css/pethy.css">
 <style>
@@ -21,6 +22,7 @@
 .bs:first-child{border-top:2px solid var(--muc)} .bs:last-child{border-bottom:1px solid var(--vach)}
 .anh{width:88px;height:88px;background:var(--anh);object-fit:cover;display:flex;align-items:center;justify-content:center;font:12px var(--so);color:var(--xam)}
 </style>
+<link rel="stylesheet" href="/css/chuyen-dong.css"><script src="/js/chuyen-dong.js"></script>
 </head>
 <body>
 <div id="bao-tri" class="bao-tri" hidden><div class="khung" id="bao-tri-nd"></div></div>
@@ -56,12 +58,12 @@
 
 <section id="dich-vu" class="muc-lon nen"><div class="khung bo-cuc">
   <div class="nhan"><h2>Dịch vụ</h2><p class="ghi-chu" style="max-width:260px">Giá chưa gồm thuốc và vaccine, được tính riêng theo đơn.</p></div>
-  <div class="noi-dung" id="ds-dich-vu"><p class="trang-thai-tai">Đang tải…</p></div>
+  <div class="noi-dung" id="ds-dich-vu"><p class="trang-thai-tai" role="status">Đang tải…</p></div>
 </div></section>
 
 <section id="bac-si" class="muc-lon"><div class="khung bo-cuc">
   <div class="nhan"><h2>Bác sĩ</h2></div>
-  <div class="noi-dung" id="ds-bac-si"><p class="trang-thai-tai">Đang tải…</p></div>
+  <div class="noi-dung" id="ds-bac-si"><p class="trang-thai-tai" role="status">Đang tải…</p></div>
 </div></section>
 </main>
 

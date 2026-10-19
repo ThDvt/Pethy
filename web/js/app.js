@@ -29,7 +29,7 @@
     const { data, error } = await db.rpc('vai_tro_hieu_luc');
     return error ? null : data;   // null: chưa đăng nhập hoặc đang bảo trì
   }
-  async function dangXuat(){ if (db) await db.auth.signOut(); location.href = '/'; }
+  async function dangXuat(){ try { sessionStorage.removeItem('pethy.menu'); } catch (e) {} if (db) await db.auth.signOut(); location.href = '/'; }
 
   // Dữ liệu mẫu để xem giao diện khi chưa nối Supabase (chỉ dùng trên máy cá nhân).
   const MAU = {
