@@ -105,3 +105,11 @@ body.khach{
 .khach-khu .ghi-chu{color:var(--xam)}
 .khach-khu .tab-ngang button,.khach-khu select{border-radius:14px}
 @media(max-width:760px){.khach-khu .thanh-ben{border-radius:0 0 24px 24px}}
+/* đăng nhập: form ở giữa */
+.dn-luoi{display:block;max-width:480px;margin:0 auto;padding:8px 20px 64px}
+.khach .logo img{width:auto;height:44px}
+.khach body,body.khach{background-image:radial-gradient(circle at 15% 10%,#FFE29A55 0,transparent 40%),radial-gradient(circle at 90% 80%,#C9EFEA88 0,transparent 40%)}
+body.khach{background-attachment:fixed;min-height:100vh}
+.khach .logo img{height:52px}
+.dn-luoi{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 120px);max-width:none;padding:0 20px 48px}
+.dn-luoi .hop-dn{width:100%;max-width:460px}
