@@ -179,11 +179,8 @@ SELECT t.set('dv_tiem', id::text) FROM x;
 SELECT t.kt('admin tạo 2 dịch vụ', t.dem('dich_vu') = 2);
 SELECT t.loi('Giá dịch vụ không được âm',
   $q$INSERT INTO dich_vu (ten, loai, gia) VALUES ('Sai giá', 'kham', -1)$q$, '23514');
-SELECT t.loi('Loại dịch vụ ngoài danh sách bị từ chối',
-  $q$INSERT INTO dich_vu (ten, loai, gia) VALUES ('Linh tinh', 'linh_tinh', 1000)$q$, '23514');
-INSERT INTO dich_vu (ten, loai, gia) VALUES ('Xét nghiệm máu', 'xet_nghiem', 200000);
-SELECT t.kt('admin tạo được dịch vụ loại mới (xét nghiệm)', t.dem('dich_vu') = 3);
-DELETE FROM dich_vu WHERE loai = 'xet_nghiem';
+SELECT t.loi('Loại dịch vụ chỉ kham hoặc tiem',
+  $q$INSERT INTO dich_vu (ten, loai, gia) VALUES ('Spa', 'spa', 1000)$q$, '23514');
 
 SELECT t.as_user('le_tan');
 SELECT t.loi('le_tan không tạo được dịch vụ',

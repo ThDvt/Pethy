@@ -126,4 +126,3 @@ Lỗi nghiệp vụ có dạng `MA_LOI: mô tả`; mã nằm trong `error.hint` 
 ## Cập nhật cho cơ sở dữ liệu đã cài trước đó
 
 - `05_mfa_admin.sql`: bắt buộc mã xác thực hai lớp cho admin đã đăng ký.
-- `06_dich_vu_loai.sql`: mở rộng loại dịch vụ (khám, tiêm, xét nghiệm, phẫu thuật, spa, lưu chuồng, khác). Chạy một lần trong SQL Editor nếu muốn thêm các loại ngoài khám và tiêm.

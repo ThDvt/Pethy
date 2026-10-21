@@ -15,7 +15,7 @@
 
   try {
     const d = await lay();
-    const ICON = { kham:'icon-kham', tiem:'icon-tiem', xet_nghiem:'icon-kham', phau_thuat:'icon-kham' };
+    const ICON = { kham:'icon-kham', tiem:'icon-tiem' };
     const MAUNEN = ['var(--hong)','var(--bac)','var(--kem2)'];
     dv.replaceChildren(el('div',{class:'luoi-the'}, ...(d.dich_vu.length ? d.dich_vu : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
       x.ten ? el('div',{class:'the-dv'},

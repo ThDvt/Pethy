@@ -1,7 +1,7 @@
 (async function(){
   const { db, el, tien } = Pethy, A = Pethy.admin, $ = A.$;
   if (!await A.boot('/admin/dich-vu.html')) return;
-  const LOAI = {kham:'Khám bệnh',tiem:'Tiêm phòng',xet_nghiem:'Xét nghiệm, chẩn đoán hình ảnh',phau_thuat:'Phẫu thuật',spa:'Spa, cắt tỉa lông',luu_chuong:'Lưu chuồng, trông giữ',khac:'Dịch vụ khác'};
+  const LOAI = {kham:'Khám bệnh',tiem:'Tiêm phòng'};
   async function tai(){
     const r = await db.from('dich_vu').select('id,ten,loai,gia,dang_ap_dung').order('ten');
     if (r.error) return A.baoLoi('Không tải được danh sách dịch vụ.');
@@ -18,7 +18,7 @@
       }) : [A.rong('Chưa có dịch vụ nào.')])));
   }
   function them(){
-    const ten = el('input',{id:'d-t',placeholder:'Ví dụ: Cắt tỉa lông',maxlength:'100'}), loai = el('select',{id:'d-l'}, Object.entries(LOAI).map(([k, v]) => el('option',{value:k}, v))), gia = el('input',{id:'d-g',placeholder:'Ví dụ: 150000',inputmode:'numeric',class:'so'});
+    const ten = el('input',{id:'d-t',placeholder:'Ví dụ: Khám tổng quát',maxlength:'100'}), loai = el('select',{id:'d-l'}, Object.entries(LOAI).map(([k, v]) => el('option',{value:k}, v))), gia = el('input',{id:'d-g',placeholder:'Ví dụ: 150000',inputmode:'numeric',class:'so'});
     A.hop('Thêm dịch vụ', 'Loại "Tiêm phòng" sẽ hiện khối ghi mũi tiêm ở trang khám của bác sĩ.', [A.o('d-t','Tên dịch vụ',ten), A.o('d-l','Loại',loai), A.o('d-g','Giá (đ)',gia)], 'Thêm', async () => {
       const g = Number(gia.value); if (!ten.value.trim()) return 'Vui lòng nhập tên dịch vụ.'; if (!Number.isInteger(g) || g < 0) return 'Giá phải là số nguyên không âm.';
       const { error } = await db.from('dich_vu').insert({ ten: ten.value.trim(), loai: loai.value, gia: g });
