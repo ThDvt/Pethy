@@ -31,7 +31,7 @@
     for (const x of (f.data && f.data.all) || []) if (x.status === 'unverified') await db.auth.mfa.unenroll({ factorId: x.id });
     const r = await db.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Pethy quản trị' });
     if (r.error) { ev.currentTarget.disabled = false; return A.baoLoi('Không tạo được mã QR. Vui lòng thử lại.'); }
-    const ma = el('input',{id:'ma',inputmode:'numeric',maxlength:'6',autocomplete:'one-time-code',style:'max-width:160px;font-family:var(--so);font-size:22px;letter-spacing:.2em'});
+    const ma = el('input',{id:'ma',placeholder:'6 số',inputmode:'numeric',maxlength:'6',autocomplete:'one-time-code',style:'max-width:160px;font-family:var(--so);font-size:22px;letter-spacing:.2em'});
     const qr = el('img',{alt:'Mã QR để thêm vào ứng dụng xác thực',width:'200',height:'200',src:r.data.totp.qr_code,style:'display:block;border:1px solid var(--vach);background:#fff'});
     $('vung').replaceChildren(el('div',{style:'margin-top:20px;border-top:2px solid var(--muc);padding-top:16px;max-width:460px'},
       el('ol',{style:'padding-left:20px;line-height:1.7;margin:0 0 16px'},

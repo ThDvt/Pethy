@@ -237,7 +237,7 @@ BEGIN
       PERFORM _loi('VACCINE_KHONG_HOP_LE', 'Vaccine không tồn tại hoặc đã ngừng sử dụng');
     END IF;
   ELSIF p_vaccine IS NOT NULL THEN
-    PERFORM _loi('VACCINE_KHONG_HOP_LE', 'Dịch vụ khám bệnh không chọn vaccine');
+    PERFORM _loi('VACCINE_KHONG_HOP_LE', 'Chỉ dịch vụ tiêm phòng mới chọn vaccine');
   END IF;
 
   IF v_vt = 'chu_nuoi' THEN

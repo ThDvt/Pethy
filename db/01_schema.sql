@@ -86,7 +86,7 @@ CREATE INDEX idx_thu_cung_chu_nuoi ON thu_cung (chu_nuoi_id);
 CREATE TABLE dich_vu (
   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   ten           text NOT NULL UNIQUE CHECK (length(btrim(ten)) > 0),
-  loai          text NOT NULL CHECK (loai IN ('kham','tiem')),
+  loai          text NOT NULL CHECK (loai IN ('kham','tiem','xet_nghiem','phau_thuat','spa','luu_chuong','khac')),
   gia           integer NOT NULL CHECK (gia >= 0),
   dang_ap_dung  boolean NOT NULL DEFAULT true,
   created_at    timestamptz NOT NULL DEFAULT now()

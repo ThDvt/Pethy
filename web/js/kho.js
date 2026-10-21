@@ -65,8 +65,8 @@
 
   $('nhap').addEventListener('click', () => {
     const sel = el('select',{id:'n-t'}, el('option',{value:''}, 'Chọn thuốc'), thuocs.filter(t => t.dang_ap_dung).map(t => el('option',{value:t.thuoc_id}, t.ten + ' (' + t.don_vi + ')')));
-    const lo = el('input',{id:'n-lo',maxlength:'40'}), han = el('input',{id:'n-h',type:'date',min:new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Ho_Chi_Minh'})});
-    const sl = el('input',{id:'n-s',inputmode:'numeric',class:'so'});
+    const lo = el('input',{id:'n-lo',placeholder:'Số lô ghi trên hộp, ví dụ: LO2410A',maxlength:'40'}), han = el('input',{id:'n-h',type:'date',min:new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Ho_Chi_Minh'})});
+    const sl = el('input',{id:'n-s',placeholder:'Ví dụ: 50',inputmode:'numeric',class:'so'});
     khung('Nhập kho', [o('n-t','Thuốc / vaccine',sel), o('n-lo','Số lô',lo), o('n-h','Hạn dùng',han), o('n-s','Số lượng',sl)], 'Nhập kho', async () => {
       const n = Number(sl.value);
       if (!sel.value) return 'Vui lòng chọn thuốc.'; if (!lo.value.trim()) return 'Vui lòng nhập số lô.';
@@ -87,9 +87,9 @@
   }
 
   $('them-thuoc').addEventListener('click', () => {
-    const ten = el('input',{id:'t-t',maxlength:'100'}), dv = el('input',{id:'t-d',maxlength:'30',placeholder:'viên, chai, liều...'});
+    const ten = el('input',{id:'t-t',placeholder:'Ví dụ: Amoxicillin 250mg',maxlength:'100'}), dv = el('input',{id:'t-d',maxlength:'30',placeholder:'viên, chai, liều...'});
     const loai = el('select',{id:'t-l'}, el('option',{value:'thuoc'},'Thuốc'), el('option',{value:'vaccine'},'Vaccine'));
-    const gia = el('input',{id:'t-g',inputmode:'numeric',class:'so'}), nguong = el('input',{id:'t-n',inputmode:'numeric',class:'so',value:'10'});
+    const gia = el('input',{id:'t-g',placeholder:'Ví dụ: 25000',inputmode:'numeric',class:'so'}), nguong = el('input',{id:'t-n',placeholder:'Báo sắp hết khi tồn xuống mức này',inputmode:'numeric',class:'so',value:'10'});
     khung('Thêm thuốc mới', [o('t-t','Tên',ten), o('t-l','Loại',loai), o('t-d','Đơn vị',dv), o('t-g','Giá bán (đ)',gia), o('t-n','Cảnh báo khi tồn còn từ',nguong)], 'Thêm', async () => {
       const g = Number(gia.value), n = Number(nguong.value);
       if (!ten.value.trim() || !dv.value.trim()) return 'Vui lòng nhập tên và đơn vị.';

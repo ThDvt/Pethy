@@ -46,7 +46,7 @@
       el('div',{style:'font-weight:700;margin-bottom:6px'},'Thú cưng'), ...chonDS('pet', ds.pets, p => [p.ten, p.loai], S.pet),
       el('div',{style:'font-weight:700;margin:28px 0 6px'},'Dịch vụ'), ...chonDS('dv', ds.dvs, d => [d.ten, null, tien(d.gia)], S.dv), vcBox,
       el('div',{style:'font-weight:700;margin:28px 0 6px'},'Bác sĩ'), ...chonDS('bs', ds.bss, b => ['Bs. ' + b.ho_ten, b.chuyen_mon], S.bs),
-      el('div',{class:'truong',style:'margin-top:28px'}, el('label',{for:'gc'},'Ghi chú cho bác sĩ (không bắt buộc)'), el('textarea',{id:'gc',maxlength:'300',rows:'3'}, S.ghiChu)),
+      el('div',{class:'truong',style:'margin-top:28px'}, el('label',{for:'gc'},'Ghi chú cho bác sĩ (không bắt buộc)'), el('textarea',{id:'gc',placeholder:'Ví dụ: bé bỏ ăn từ hôm qua, hay sợ tiếng ồn',maxlength:'300',rows:'3'}, S.ghiChu)),
       loiBox(), el('button',{class:'nut chinh',type:'submit'},'Tiếp tục: chọn giờ'));
     const capNhatVc = () => {
       const dv = ds.dvs.find(d => d.id === (f.dv.value || ''));

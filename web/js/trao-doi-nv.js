@@ -7,7 +7,7 @@
   const me = (await db.auth.getUser()).data?.user?.id;
   const gio = iso => new Date(iso).toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Ho_Chi_Minh'});
   const hop = el('div',{style:'max-height:55vh;overflow:auto;padding:12px 0;border-top:2px solid var(--muc);margin-top:20px'});
-  const o = el('textarea',{rows:'2',maxlength:'1000','aria-label':'Nội dung tin nhắn',style:'width:100%'});
+  const o = el('textarea',{rows:'2',placeholder:'Nhập tin nhắn rồi bấm Gửi',maxlength:'1000','aria-label':'Nội dung tin nhắn',style:'width:100%'});
   let dem = -1;
   async function tai(tuDong){
     const r = await db.from('tin_nhan').select('id,nguoi_gui_id,noi_dung,created_at').eq('nhan_vien_id', me).order('created_at');

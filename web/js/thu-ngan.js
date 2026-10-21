@@ -62,7 +62,7 @@
     const loi = el('p',{class:'loi',role:'alert',hidden:true});
     const ml = m => { loi.textContent = m || ''; loi.hidden = !m; };
     const dong = () => hop.close();
-    const sotien = el('input',{id:'st',inputmode:'numeric',value:con,class:'so'});
+    const sotien = el('input',{id:'st',placeholder:'Số tiền khách trả, ví dụ: 150000',inputmode:'numeric',value:con,class:'so'});
     const pt = el('select',{id:'pt'}, Object.entries(PT).map(([k, v]) => el('option',{value:k}, v)));
     const thu = h.trang_thai === 'chua_thanh_toan' || h.trang_thai === 'thanh_toan_mot_phan';
     $('hop-nd').replaceChildren(...[
