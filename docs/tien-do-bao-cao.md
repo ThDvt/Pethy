@@ -139,3 +139,7 @@
 Việc còn lại: chạy Playwright chụp ảnh các trang để kiểm tra skeleton và hiệu ứng (đặc biệt `.co-the`, hộp thoại, thanh bên), sửa lỗi nếu có, đóng gói zip, người dùng upload lại lên Cloudflare Pages. Sau đó: thử luồng thật với Supabase, chương 7 và 8, hồ sơ GitHub cá nhân.
 
 Ngày 20/10/2026: người dùng thuyết trình đợt 1 trước lớp (tổng quan dự án, công nghệ, nói qua thiết kế hệ thống).
+
+## Cập nhật 21/10/2026: hiệu ứng chuyển động đã kiểm tra
+
+Đã chạy thử 22 trang bằng Playwright ở chế độ dữ liệu mẫu: không có lỗi JavaScript, thanh bên hiện ngay với đúng mục đang mở, skeleton hiện thay chữ "Đang tải…", nút có hiệu ứng khi rê chuột, hộp thoại hiện mượt, chuyển trang bằng liên kết hoạt động. Chưa kiểm tra trên Supabase thật. Bản zip mới đã gửi người dùng để tải lên Cloudflare Pages.
