@@ -7,11 +7,14 @@
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="/css/pethy.css">
+<link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/pethy.css"><link rel="stylesheet" href="/css/khach.css">
 <link rel="stylesheet" href="/css/chuyen-dong.css"><script src="/js/chuyen-dong.js"></script>
 </head>
-<body>
-<header class="khung dau"><a class="logo" href="/">Pethy</a></header>
+<body class="khach">
+<header class="khung dau"><a class="logo" href="/"><img src="/img/logo.svg" alt="" width="42" height="42">Pethy</a></header>
+<div class="dn-luoi">
+<aside class="dn-bien"><img class="hero-anh" src="/img/hero.svg" alt="" width="640" height="560"><h2>Chào mừng bạn và bé cưng trở lại.</h2><p>Đăng nhập để đặt lịch khám, xem sổ tiêm và đơn thuốc của bé.</p></aside>
 <main class="hop-dn">
   <h1 id="tieu-de">Đăng nhập</h1>
   <div class="tab" role="tablist">
@@ -30,6 +33,7 @@
   </form>
   <p class="ghi-chu" style="margin-top:20px">Nhân viên phòng khám đăng nhập bằng tài khoản do quản trị viên cấp.</p>
 </main>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="/js/config.js"></script>
 <script src="/js/app.js"></script>

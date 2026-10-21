@@ -7,7 +7,7 @@
     db.from('cau_hinh').select('khoa,gia_tri').eq('khoa','huy_doi_truoc_gio'),
     db.from('bac_si_cong_khai').select('id,ho_ten')
   ]);
-  const hanGio = Number((cfg.data||[])[0]?.gia_tri || 2);
+  const hanGio = (Number((cfg.data||[])[0]?.gia_tri) || 2);
   const tenBs = Object.fromEntries((bs.data||[]).map(b => [b.id, b.ho_ten]));
 
   async function taiLich(){

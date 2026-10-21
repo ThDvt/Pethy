@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 640 560" role="img" aria-label="Chú chó và chú mèo thò đầu qua quầy phòng khám">
+<defs>
+<symbol id="cho" viewBox="0 0 300 300">
+<ellipse cx="62" cy="130" rx="36" ry="72" fill="#A8571F" transform="rotate(14 62 130)"/>
+<ellipse cx="238" cy="130" rx="36" ry="72" fill="#A8571F" transform="rotate(-14 238 130)"/>
+<ellipse cx="150" cy="150" rx="92" ry="86" fill="#F4B363"/>
+<ellipse cx="116" cy="108" rx="14" ry="9" fill="#D98E3F"/><ellipse cx="184" cy="108" rx="14" ry="9" fill="#D98E3F"/>
+<ellipse cx="150" cy="188" rx="54" ry="42" fill="#FFE5C2"/>
+<circle cx="112" cy="132" r="11" fill="#2B1E1A"/><circle cx="188" cy="132" r="11" fill="#2B1E1A"/>
+<circle cx="116" cy="128" r="3.6" fill="#fff"/><circle cx="192" cy="128" r="3.6" fill="#fff"/>
+<circle cx="92" cy="170" r="14" fill="#F58F7B" opacity=".55"/><circle cx="208" cy="170" r="14" fill="#F58F7B" opacity=".55"/>
+<ellipse cx="150" cy="166" rx="21" ry="14" fill="#3A2822"/><ellipse cx="144" cy="161" rx="6" ry="3" fill="#fff" opacity=".5"/>
+<path d="M150 178v16M150 194c-12 12-28 8-30 0M150 194c12 12 28 8 30 0" fill="none" stroke="#3A2822" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M138 200c0 22 24 22 24 0z" fill="#F2707A"/>
+</symbol>
+<symbol id="meo" viewBox="0 0 300 300">
+<path d="M58 118 70 28 138 78z" fill="#AEB7C6"/><path d="M242 118 230 28 162 78z" fill="#AEB7C6"/>
+<path d="M76 100 82 54 116 80z" fill="#F7B6BF"/><path d="M224 100 218 54 184 80z" fill="#F7B6BF"/>
+<ellipse cx="150" cy="158" rx="98" ry="82" fill="#C3CAD7"/>
+<path d="M150 80v26M128 84l5 22M172 84l-5 22" stroke="#8D97A8" stroke-width="7" stroke-linecap="round"/>
+<ellipse cx="150" cy="190" rx="44" ry="32" fill="#EEF1F6"/>
+<ellipse cx="108" cy="140" rx="17" ry="20" fill="#fff"/><ellipse cx="192" cy="140" rx="17" ry="20" fill="#fff"/>
+<ellipse cx="108" cy="142" rx="12" ry="16" fill="#3FBF9B"/><ellipse cx="192" cy="142" rx="12" ry="16" fill="#3FBF9B"/>
+<ellipse cx="108" cy="142" rx="4.5" ry="12" fill="#1F2A2A"/><ellipse cx="192" cy="142" rx="4.5" ry="12" fill="#1F2A2A"/>
+<circle cx="112" cy="134" r="3.6" fill="#fff"/><circle cx="196" cy="134" r="3.6" fill="#fff"/>
+<circle cx="84" cy="176" r="13" fill="#F58F9B" opacity=".5"/><circle cx="216" cy="176" r="13" fill="#F58F9B" opacity=".5"/>
+<path d="M141 174h18l-9 11z" fill="#EF7D90"/>
+<path d="M150 185v8M150 193c-8 9-20 6-22 0M150 193c8 9 20 6 22 0" fill="none" stroke="#5B4650" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 178 20 170M60 190 22 196M240 178 280 170M240 190 278 196" stroke="#8D97A8" stroke-width="3.5" stroke-linecap="round"/>
+</symbol>
+<symbol id="tim" viewBox="0 0 32 30"><path d="M16 29C4 20 1 14 1 9a8 8 0 0 1 15-4 8 8 0 0 1 15 4c0 5-3 11-15 20z"/></symbol>
+<symbol id="chan" viewBox="0 0 64 64"><path d="M32 33c-8 0-14 7-14 12 0 5 5 6 8 5 3-1 4-1 6-1s3 0 6 1c3 1 8 0 8-5 0-5-6-12-14-12z"/><ellipse cx="18.5" cy="29" rx="4.2" ry="5.5" transform="rotate(-22 18.5 29)"/><ellipse cx="27" cy="20" rx="4.6" ry="6.2"/><ellipse cx="37" cy="20" rx="4.6" ry="6.2"/><ellipse cx="45.5" cy="29" rx="4.2" ry="5.5" transform="rotate(22 45.5 29)"/></symbol>
+</defs>
+<circle cx="320" cy="285" r="272" fill="#FFE29A"/>
+<circle cx="320" cy="285" r="226" fill="#FFC83D"/>
+<circle cx="570" cy="96" r="22" fill="#14A39A"/><circle cx="58" cy="420" r="16" fill="#F26B1D"/><circle cx="590" cy="470" r="12" fill="#14A39A"/>
+<use xlink:href="#tim" href="#tim" x="104" y="96" width="46" height="43" fill="#F26B1D" transform="rotate(-12 127 117)"/>
+<use xlink:href="#tim" href="#tim" x="500" y="150" width="34" height="32" fill="#fff" transform="rotate(14 517 166)"/>
+<use xlink:href="#chan" href="#chan" x="470" y="40" width="64" height="64" fill="#fff" opacity=".85" transform="rotate(18 502 72)"/>
+<use xlink:href="#chan" href="#chan" x="60" y="260" width="52" height="52" fill="#F26B1D" opacity=".9" transform="rotate(-20 86 286)"/>
+<use xlink:href="#meo" href="#meo" x="12" y="150" width="360" height="360"/>
+<use xlink:href="#cho" href="#cho" x="246" y="104" width="390" height="390"/>
+<rect x="40" y="398" width="560" height="96" rx="48" fill="#14A39A"/>
+<rect x="40" y="398" width="560" height="14" rx="7" fill="#0F8A82"/>
+<circle cx="320" cy="448" r="26" fill="#fff"/><path d="M320 432v32M304 448h32" stroke="#14A39A" stroke-width="9" stroke-linecap="round"/>
+</svg>
