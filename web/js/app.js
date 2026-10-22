@@ -46,5 +46,19 @@
       o.value = d.replace(/^(\d{4})(\d{1,3})?(\d{1,3})?$/, (m, a, b, c) => [a, b, c].filter(Boolean).join(' '));
     });
   }
-  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt };
+  // Hộp xác nhận thay cho confirm() của trình duyệt. Trả về true/false. kieu: 'nguy-hiem' (đỏ) hoặc 'chinh'.
+  function xacNhan(tieuDe, moTa, nutTen, kieu){
+    return new Promise(xong => {
+      const d = el('dialog',{class:'xac-nhan'});
+      const dong = kq => { d.close(); d.remove(); xong(kq); };
+      d.append(el('h2',{style:'margin:0 0 8px;font-size:20px'}, tieuDe),
+        el('p',{class:'ghi-chu',style:'margin:0 0 20px'}, moTa || ''),
+        el('div',{style:'display:flex;gap:12px;justify-content:flex-end'},
+          el('button',{class:'nut phu',type:'button',onclick:() => dong(false)}, 'Quay lại'),
+          el('button',{class:'nut ' + (kieu || 'nguy-hiem'),type:'button',onclick:() => dong(true)}, nutTen)));
+      d.addEventListener('cancel', ev => { ev.preventDefault(); dong(false); });
+      document.body.append(d); d.showModal();
+    });
+  }
+  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan };
 })();

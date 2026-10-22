@@ -115,3 +115,4 @@ body.khach{background-attachment:fixed;min-height:100vh}
 .dn-luoi .hop-dn{width:100%;max-width:460px}
 .khach .nut.nguy-hiem{background:#C62828;color:#fff}.khach .nut.nguy-hiem:hover{background:#9F1D1D;color:#fff}
 .khach .nut.phu{background:#F1E4D0;color:var(--muc)}.khach .nut.phu:hover{background:#E8D7BC;color:var(--muc)}
+dialog.xac-nhan{border:2px solid var(--muc);border-radius:24px}

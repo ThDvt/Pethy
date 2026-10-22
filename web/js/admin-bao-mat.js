@@ -13,7 +13,7 @@
           el('p',{style:'margin:12px 0 0'}, 'Mỗi lần đăng nhập, tài khoản quản trị phải nhập mã 6 số từ ứng dụng xác thực. Máy chủ cũng từ chối quyền quản trị với phiên chưa nhập mã.'),
           el('p',{class:'nho',style:'margin:8px 0 16px'}, 'Nếu mất điện thoại, gỡ yếu tố bằng SQL Editor của Supabase (xem db/05_mfa_admin.sql).'),
           el('button',{class:'lien-ket',type:'button',style:'color:var(--loi)',onclick:async () => {
-            if (!confirm('Tắt xác thực hai lớp? Tài khoản chỉ còn được bảo vệ bằng mật khẩu.')) return;
+            if (!await Pethy.xacNhan('Tắt xác thực hai lớp?', 'Tài khoản chỉ còn được bảo vệ bằng mật khẩu.', 'Tắt xác thực')) return;
             const { error } = await db.auth.mfa.unenroll({ factorId: ok.id });
             if (error) return A.baoLoi('Không tắt được. Hãy đăng nhập lại để nhập mã rồi thử lại.');
             await tai(); }}, 'Tắt xác thực hai lớp')));
