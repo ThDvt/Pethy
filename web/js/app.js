@@ -39,12 +39,13 @@
   };
 
   // Ô số điện thoại tự chia nhóm khi gõ: 0901 234 567 (số bắt đầu bằng + giữ nguyên).
+  // Chỉ định dạng khi rời khỏi ô (không sửa giá trị lúc đang gõ, vì một số bàn phím điện thoại sẽ lặp ký tự).
   function maSdt(o){
-    o.addEventListener('input', ev => {
-      if (ev.isComposing || o.value.trim().startsWith('+')) return;   // không chen vào lúc bàn phím điện thoại đang soạn chữ
-      const d = o.value.replace(/\D/g, '').slice(0, 10);
-      const m = d.replace(/^(\d{4})(\d{1,3})?(\d{1,3})?$/, (x, a, b, c) => [a, b, c].filter(Boolean).join(' '));
-      if (m !== o.value) o.value = m;
+    o.addEventListener('blur', () => {
+      const v = o.value.trim();
+      if (!v || v.startsWith('+')) return;
+      const d = v.replace(/\D/g, '').slice(0, 10);
+      o.value = d.replace(/^(\d{4})(\d{1,3})?(\d{1,3})?$/, (x, a, b, c) => [a, b, c].filter(Boolean).join(' '));
     });
   }
   // Hộp xác nhận thay cho confirm() của trình duyệt. Trả về true/false. kieu: 'nguy-hiem' (đỏ) hoặc 'chinh'.
