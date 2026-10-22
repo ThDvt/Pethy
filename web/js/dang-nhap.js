@@ -12,6 +12,7 @@
     $('gui').textContent = dangKy ? 'Tạo tài khoản' : 'Đăng nhập';
     $('mat-khau').autocomplete = dangKy ? 'new-password' : 'current-password';
     $('loi').hidden = $('thong-bao').hidden = true;
+    $('mat-khau-2').value = '';
   }
   $('tab-dn').onclick = () => { dangKy = false; hienChe(); };
   $('tab-dk').onclick = () => { dangKy = true; hienChe(); };
@@ -59,6 +60,7 @@
       if (dangKy) {
         const ten = $('ho-ten').value.trim(), sdt = $('sdt').value.replace(/\s/g, '');
         if (!ten) { loi('Vui lòng nhập họ tên.'); return; }
+        if ($('mat-khau-2').value !== mk) { loi('Hai mật khẩu chưa giống nhau. Nhập lại cho khớp.'); $('mat-khau-2').focus(); return; }
         if (!/^(\+84|0)[0-9]{9}$/.test(sdt)) { loi('Số điện thoại chưa hợp lệ (ví dụ 0901234567).'); return; }
         const { data, error } = await db.auth.signUp({ email, password: mk, options: { data: { ho_ten: ten, so_dien_thoai: sdt } } });
         if (error) { loi('Không tạo được tài khoản. Kiểm tra lại thông tin hoặc thử lại sau.'); return; }

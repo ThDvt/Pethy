@@ -119,3 +119,7 @@ dialog.xac-nhan{border:2px solid var(--muc);border-radius:24px}
 /* liên kết dạng nút giữ màu chữ khi rê chuột (không bị quy tắc a:hover làm mất chữ) */
 .khach a.nut:hover{color:#fff}
 .khach a.nut.trang:hover,.khach a.nut.phu:hover{color:var(--muc)}
+
+.khach .mang-xh{display:flex;gap:12px;margin-top:20px}
+.khach .mang-xh a{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:2px solid #3A6A6E;color:#fff}
+.khach .mang-xh a:hover{background:var(--vang);border-color:var(--vang);color:var(--toi)}
