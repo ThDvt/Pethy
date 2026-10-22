@@ -49,7 +49,7 @@
   const boxDon = el('div',{id:'don'});
   function themDong(pre){
     const sel = el('select',{'aria-label':'Thuốc'}, el('option',{value:''},'Chọn thuốc'), thuocs.map(t => el('option',{value:t.thuoc_id}, t.ten + ' (' + t.don_vi + ')')));
-    const sl = el('input',{type:'number',min:'1',step:'1',inputmode:'numeric','aria-label':'Số lượng',class:'so'});
+    const sl = el('input',{type:'number',min:'1',step:'1',inputmode:'numeric','aria-label':'Số lượng',placeholder:'SL',class:'so'});
     const ld = el('input',{type:'text',maxlength:'120','aria-label':'Liều dùng',placeholder:'Ví dụ: ngày 2 lần, sau ăn'});
     const tk = el('div',{class:'tk'}, '');
     const x = el('button',{type:'button',class:'lien-ket','aria-label':'Bỏ dòng thuốc'},'Bỏ');
@@ -62,10 +62,10 @@
     dongThuoc.push(o); boxDon.append(row);
   }
 
-  const inp = (idf, v, st) => el('input',{id:idf,value:v ?? '',inputmode:'decimal',style:'font-family:var(--so);' + (st||'')});
-  const cn = inp('cn', hienTai?.can_nang), nd = inp('nd', hienTai?.nhiet_do);
-  const cd = el('textarea',{id:'cd',rows:'5',style:'border-width:2px;font-size:17px;line-height:1.5',maxlength:'1000'}, hienTai?.chan_doan || '');
-  const gc = el('input',{id:'gc',value:hienTai?.ghi_chu || '',maxlength:'300'});
+  const inp = (idf, v, st, ph) => el('input',{id:idf,placeholder:ph||'',value:v ?? '',inputmode:'decimal',style:'font-family:var(--so);' + (st||'')});
+  const cn = inp('cn', hienTai?.can_nang, '', 'Ví dụ: 4.5 (kg)'), nd = inp('nd', hienTai?.nhiet_do, '', 'Ví dụ: 38.5 (°C)');
+  const cd = el('textarea',{id:'cd',placeholder:'Triệu chứng, kết quả khám, chẩn đoán...',rows:'5',style:'border-width:2px;font-size:17px;line-height:1.5',maxlength:'1000'}, hienTai?.chan_doan || '');
+  const gc = el('input',{id:'gc',placeholder:'Dặn dò thêm cho chủ nuôi',value:hienTai?.ghi_chu || '',maxlength:'300'});
   const loi = el('p',{class:'loi',role:'alert',hidden:true,style:'margin-top:16px'});
   const baoLoi = m => { loi.textContent = m; loi.hidden = !m; };
   const so = v => { v = String(v).trim().replace(',', '.'); return v === '' ? null : Number(v); };

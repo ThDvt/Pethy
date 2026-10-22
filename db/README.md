@@ -122,3 +122,7 @@ Lỗi nghiệp vụ có dạng `MA_LOI: mô tả`; mã nằm trong `error.hint` 
 - Nhắc lịch mới ở mức danh sách việc cần nhắc và ghi nhận thủ công; chưa tự gửi email/SMS.
 - Chưa hỗ trợ nhiều chi nhánh, thanh toán trực tuyến, hay bác sĩ nghỉ phép theo ngày cụ thể (lịch làm việc theo tuần cố định).
 - Bộ kiểm thử chạy trên PostgreSQL với stub Supabase; nên chạy lại các luồng chính trên Supabase thật khi triển khai.
+
+## Cập nhật cho cơ sở dữ liệu đã cài trước đó
+
+- `05_mfa_admin.sql`: bắt buộc mã xác thực hai lớp cho admin đã đăng ký.

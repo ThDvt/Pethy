@@ -1,4 +1,4 @@
-# Tiến độ dự án Pethy (cập nhật 16/10/2026, chiều)
+# Tiến độ dự án Pethy (cập nhật 22/10/2026)
 
 ## Đã xong
 - Cơ sở dữ liệu: 23 bảng, 26 hàm nghiệp vụ gọi được từ trình duyệt, RLS, lưu trữ ảnh. 279/279 kiểm thử đạt (db/test/10, 11, 12).
@@ -124,3 +124,33 @@
 ## Cập nhật: củng cố bảo mật trong khuôn khổ miễn phí
 - Rà soát 20 điểm kiểm tra bảo mật (docs/ra-soat-20-diem-bao-mat.md): 9 đạt, 2 chờ kiểm tra sau triển khai, 7 một phần, 2 chưa đạt theo đúng nghĩa (sao lưu tự động của Supabase và cookie httpOnly, do giới hạn gói miễn phí và kiến trúc không có máy chủ).
 - Đã bổ sung: tự đăng xuất khi không thao tác, xác thực hai lớp cho admin (có ràng buộc ở cơ sở dữ liệu, 288 kiểm thử đạt), công cụ thử IDOR bằng hai tài khoản, quy trình sao lưu hằng ngày bằng GitHub Actions.
+
+## Cập nhật 19/10/2026: đã deploy, đang làm hiệu ứng chuyển động (tạm dừng để chuẩn bị thuyết trình)
+
+Đã xong: web đã deploy lên Cloudflare Pages, admin đã bật xác thực hai lớp. Người dùng thử web và nhận xét giao diện bị "giật": bấm nút là đổi trang tĩnh, không có hiệu ứng chờ.
+
+Đã viết nhưng CHƯA kiểm tra bằng trình duyệt và CHƯA deploy (nằm trên nhánh `chuyen-dong-nhap`):
+- `web/css/chuyen-dong.css`: chuyển trang mờ dần (View Transitions), thanh bên đứng yên, hiện dần theo thứ tự khi dữ liệu về, nút nhấn có bóng cứng khi rê chuột, hộp thoại hiện và đóng mượt, skeleton thay chữ "Đang tải…" (bản `co-the` có khung thẻ số liệu cho admin tổng quan và doanh thu), tắt hết khi người dùng chọn giảm chuyển động.
+- `web/js/chuyen-dong.js`: thanh tiến trình đầu trang khi bấm liên kết, vòng xoay trên nút đang gửi, mục trang chủ hiện dần khi cuộn.
+- `web/js/thanh-ben-som.js`: dựng thanh bên ngay từ thực đơn đã lưu (sessionStorage `pethy.menu`) để không chờ kiểm tra vai trò.
+- `web/js/khu.js`: `khoiDong` dựng thanh bên trước khi kiểm tra vai trò, lưu và xóa thực đơn khi đăng xuất. `web/js/app.js`: xóa thực đơn khi đăng xuất.
+- 24 trang HTML đã gắn thêm file CSS/JS mới, preconnect tới Google Fonts và jsdelivr.
+
+Việc còn lại: chạy Playwright chụp ảnh các trang để kiểm tra skeleton và hiệu ứng (đặc biệt `.co-the`, hộp thoại, thanh bên), sửa lỗi nếu có, đóng gói zip, người dùng upload lại lên Cloudflare Pages. Sau đó: thử luồng thật với Supabase, chương 7 và 8, hồ sơ GitHub cá nhân.
+
+Ngày 20/10/2026: người dùng thuyết trình đợt 1 trước lớp (tổng quan dự án, công nghệ, nói qua thiết kế hệ thống).
+
+## Cập nhật 21/10/2026: hiệu ứng chuyển động đã kiểm tra
+
+Đã chạy thử 22 trang bằng Playwright ở chế độ dữ liệu mẫu: không có lỗi JavaScript, thanh bên hiện ngay với đúng mục đang mở, skeleton hiện thay chữ "Đang tải…", nút có hiệu ứng khi rê chuột, hộp thoại hiện mượt, chuyển trang bằng liên kết hoạt động. Chưa kiểm tra trên Supabase thật. Bản zip mới đã gửi người dùng để tải lên Cloudflare Pages.
+
+## Cập nhật 22/10/2026: giao diện cho khách và các cải tiến UX
+
+- Giao diện dành cho khách (trang chủ, đăng nhập, khu chủ nuôi) làm lại: nền kem ấm, nhiều màu (cam, xanh ngọc, vàng), nút bo tròn, thẻ dịch vụ và bác sĩ có biểu tượng; khu nhân viên giữ kiểu gọn. Mã ở `web/css/khach.css`; ảnh ở `web/img/` (nguồn ảnh ghi ở `web/img/NGUON-ANH.md`).
+- Logo mới (phương án E, chữ Pethy vẽ tay bằng nét tròn, đường điện tim và dấu chân): `logo-chu.svg`, `logo-chu-sang.svg`, `logo.svg` (biểu tượng nhỏ cho tab trình duyệt). Chữ đã chuyển thành nét vẽ nên không phụ thuộc phông.
+- Tranh trang chủ: tranh "Dog in vet clinic" của Scale by Flexiple (trang nguồn ghi miễn phí dùng thương mại, không cần ghi nguồn), đã đổi bảng màu. Cần đọc trang giấy phép chi tiết (quyền chỉnh sửa) một lần.
+- UX theo góp ý: nút nguy hiểm màu đỏ và nút phụ cho hộp thoại hủy; hộp xác nhận chung `Pethy.xacNhan` thay hết `confirm()` của trình duyệt (xóa ca, xóa/khóa tài khoản, đổi vai trò, bật bảo trì, tắt xác thực hai lớp, hủy hóa đơn); thanh tiến trình ba bước cho đặt lịch; ô số điện thoại tự chia nhóm (0901 234 567); khoảng cách ô nhập 24 px; nhãn menu ngắn lại; gợi ý (placeholder) trong các ô nhập.
+- Loại dịch vụ vẫn là hai loại (khám, tiêm), người dùng quyết định giữ nguyên cho phòng khám nhỏ.
+- Kiểm tra: 24 trang chạy ở chế độ dữ liệu mẫu, không có lỗi JavaScript; 288 kiểm thử cơ sở dữ liệu vẫn đạt. Chưa thử trên Supabase thật.
+- Mã ở nhánh `giao-dien-khach` (kho ThDvt/Pethy), chưa gộp vào `main`. Gộp các nhánh `them-ma-nguon-pethy`, `chuyen-dong-nhap`, `giao-dien-khach` bằng Pull Request rồi tải bản mới lên Cloudflare Pages.
+- Còn lại: thử luồng thật trên Supabase (đăng ký, đặt lịch, khám, hóa đơn), chương 7 và 8 của báo cáo, nhúng hình, cập nhật chương 10 và hạn chế, hồ sơ GitHub cá nhân, thêm địa chỉ web thật vào README.

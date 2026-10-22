@@ -5,11 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Đăng nhập - Pethy</title>
 <meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="/css/pethy.css">
+<link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/pethy.css"><link rel="stylesheet" href="/css/khach.css">
+<link rel="stylesheet" href="/css/chuyen-dong.css"><script src="/js/chuyen-dong.js"></script>
 </head>
-<body>
-<header class="khung dau"><a class="logo" href="/">Pethy</a></header>
+<body class="khach">
+<header class="khung dau"><a class="logo" href="/"><img src="/img/logo-chu.svg" alt="Pethy" width="150" height="76"></a></header>
+<div class="dn-luoi">
 <main class="hop-dn">
   <h1 id="tieu-de">Đăng nhập</h1>
   <div class="tab" role="tablist">
@@ -17,17 +21,18 @@
     <button role="tab" id="tab-dk" aria-selected="false" aria-controls="form">Tạo tài khoản</button>
   </div>
   <form id="form" novalidate>
-    <div class="truong dk" hidden><label for="ho-ten">Họ tên</label><input id="ho-ten" autocomplete="name"></div>
-    <div class="truong dk" hidden><label for="sdt">Số điện thoại</label><input id="sdt" inputmode="tel" autocomplete="tel" placeholder="0901234567"></div>
-    <div class="truong"><label for="email">Email</label><input id="email" type="email" autocomplete="email" required></div>
-    <div class="truong"><label for="mat-khau">Mật khẩu</label><input id="mat-khau" type="password" autocomplete="current-password" required minlength="8"></div>
-    <div class="truong" id="khoi-2fa" hidden><label for="ma-2fa">Mã xác thực 6 số từ ứng dụng xác thực</label><input id="ma-2fa" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}"></div>
+    <div class="truong dk" hidden><label for="ho-ten">Họ tên</label><input id="ho-ten" placeholder="Ví dụ: Nguyễn Văn An" autocomplete="name"></div>
+    <div class="truong dk" hidden><label for="sdt">Số điện thoại</label><input id="sdt" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="0901 234 567"></div>
+    <div class="truong"><label for="email">Email</label><input id="email" placeholder="ten@email.com" type="email" autocomplete="email" required></div>
+    <div class="truong"><label for="mat-khau">Mật khẩu</label><input id="mat-khau" placeholder="Ít nhất 8 ký tự" type="password" autocomplete="current-password" required minlength="8"></div>
+    <div class="truong" id="khoi-2fa" hidden><label for="ma-2fa">Mã xác thực 6 số từ ứng dụng xác thực</label><input id="ma-2fa" placeholder="6 số trong ứng dụng xác thực" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}"></div>
     <p class="loi" id="loi" role="alert" hidden></p>
     <p class="ghi-chu" id="thong-bao" role="status" hidden></p>
     <button class="nut chinh" id="gui" type="submit" style="width:100%">Đăng nhập</button>
   </form>
   <p class="ghi-chu" style="margin-top:20px">Nhân viên phòng khám đăng nhập bằng tài khoản do quản trị viên cấp.</p>
 </main>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="/js/config.js"></script>
 <script src="/js/app.js"></script>

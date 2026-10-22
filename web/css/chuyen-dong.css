@@ -1,0 +1,123 @@
+/* Pethy: chuyển động và màn hình chờ. Ngắn, dứt khoát, không nảy, không gradient màu. */
+:root{--ra:cubic-bezier(.2,.7,.2,1); --vao-ms:.28s}
+html{scroll-behavior:smooth}
+
+/* ---- chuyển trang (trình duyệt hỗ trợ sẽ mờ dần giữa hai trang, thanh bên đứng yên) ---- */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:mo-dan .12s ease-in both}
+::view-transition-new(root){animation:hien-dan .24s var(--ra) both}
+.thanh-ben{view-transition-name:thanh-ben}
+.dau{view-transition-name:dau}
+::view-transition-group(thanh-ben),::view-transition-group(dau){animation-duration:0s}
+::view-transition-old(thanh-ben),::view-transition-old(dau){display:none}
+::view-transition-new(thanh-ben),::view-transition-new(dau){animation:none}
+@keyframes mo-dan{to{opacity:0}}
+@keyframes hien-dan{from{opacity:0}}
+
+/* ---- thanh tiến trình đầu trang khi bấm liên kết ---- */
+.tien-do{position:fixed;left:0;top:0;height:3px;width:100%;background:var(--nhan);z-index:99;transform-origin:0 50%;
+  animation:tien-do 6s cubic-bezier(.1,.6,.2,1) both;pointer-events:none}
+@keyframes tien-do{from{transform:scaleX(0)}to{transform:scaleX(.92)}}
+
+/* ---- nội dung xuất hiện khi dữ liệu về ---- */
+@keyframes vao{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+:is(#vung,#ds,[id^="ds-"])>*,.the>div{animation:vao var(--vao-ms) var(--ra) backwards;animation-delay:calc(var(--i,0)*36ms)}
+:is(#vung,#ds,[id^="ds-"])>:nth-child(1),.the>:nth-child(1){--i:0}
+:is(#vung,#ds,[id^="ds-"])>:nth-child(2),.the>:nth-child(2){--i:1}
+:is(#vung,#ds,[id^="ds-"])>:nth-child(3),.the>:nth-child(3){--i:2}
+:is(#vung,#ds,[id^="ds-"])>:nth-child(4),.the>:nth-child(4){--i:3}
+:is(#vung,#ds,[id^="ds-"])>:nth-child(5){--i:4}
+:is(#vung,#ds,[id^="ds-"])>:nth-child(6){--i:5}
+:is(#vung,#ds,[id^="ds-"])>:nth-child(7){--i:6}
+:is(#vung,#ds,[id^="ds-"])>:nth-child(8){--i:7}
+:is(#vung,#ds,[id^="ds-"])>:nth-child(n+9){--i:8}
+.hop-dn form,.hop-dn h1{animation:vao .3s var(--ra) backwards}
+.hero h1{animation:vao .5s var(--ra) backwards}
+.hero p{animation:vao .5s var(--ra) .08s backwards}
+.hero .nut{animation:vao .5s var(--ra) .16s backwards}
+.hero .buoc{animation:vao .5s var(--ra) .12s backwards}
+/* vùng tự làm mới định kỳ (trao đổi): không chạy lại hiệu ứng mỗi lần làm mới */
+[data-tinh],[data-tinh] *{animation:none!important}
+/* hiện dần khi cuộn tới (chỉ khi script chạy được) */
+.co-js .hien-cuon{opacity:0;transform:translateY(14px);transition:opacity .5s var(--ra),transform .5s var(--ra)}
+.co-js .hien-cuon.da-hien{opacity:1;transform:none}
+
+/* ---- màn hình chờ dạng skeleton ---- */
+.trang-thai-tai{--b:var(--anh);position:relative;margin:0;padding:0;font-size:0;line-height:0;color:transparent;user-select:none;
+  height:248px;animation:xung 1.3s ease-in-out infinite;
+  background-repeat:repeat-y;
+  background-image:
+    linear-gradient(to bottom,var(--b) 0 15px,transparent 15px),
+    linear-gradient(to bottom,transparent 0 26px,var(--b) 26px 37px,transparent 37px),
+    linear-gradient(to bottom,transparent 0 4px,var(--b) 4px 19px,transparent 19px),
+    linear-gradient(to bottom,transparent calc(100% - 1px),var(--vach) calc(100% - 1px));
+  background-size:min(46%,320px) 62px,min(28%,200px) 62px,84px 62px,100% 62px;
+  background-position:0 0,0 0,100% 0,0 0}
+.trang-thai-tai.co-the{height:392px;padding-top:144px;background-origin:content-box;background-clip:border-box}
+.trang-thai-tai.co-the{background-position:0 144px,0 144px,100% 144px,0 144px;background-repeat:no-repeat,no-repeat,no-repeat,no-repeat;
+  background-image:none}
+.trang-thai-tai.co-the::before{content:"";position:absolute;left:0;right:0;top:0;height:112px;border-top:2px solid var(--muc);
+  background-repeat:no-repeat;
+  background-image:
+    linear-gradient(var(--b),var(--b)),linear-gradient(var(--b),var(--b)),
+    linear-gradient(var(--b),var(--b)),linear-gradient(var(--b),var(--b)),
+    linear-gradient(var(--b),var(--b)),linear-gradient(var(--b),var(--b)),
+    linear-gradient(var(--b),var(--b)),linear-gradient(var(--b),var(--b));
+  background-size:70px 11px,130px 28px,70px 11px,130px 28px,70px 11px,130px 28px,70px 11px,130px 28px;
+  background-position:0 20px,0 44px,25% 20px,25% 44px,50% 20px,50% 44px,75% 20px,75% 44px}
+.trang-thai-tai.co-the::after{content:"";position:absolute;left:0;right:0;top:144px;bottom:0;
+  background-repeat:repeat-y;
+  background-image:
+    linear-gradient(to bottom,var(--b) 0 15px,transparent 15px),
+    linear-gradient(to bottom,transparent 0 26px,var(--b) 26px 37px,transparent 37px),
+    linear-gradient(to bottom,transparent 0 4px,var(--b) 4px 19px,transparent 19px),
+    linear-gradient(to bottom,transparent calc(100% - 1px),var(--vach) calc(100% - 1px));
+  background-size:min(46%,320px) 62px,min(28%,200px) 62px,84px 62px,100% 62px;
+  background-position:0 0,0 0,100% 0,0 0}
+@keyframes xung{50%{opacity:.5}}
+.trang-thai-tai[hidden]{display:none}
+
+/* ---- nút, liên kết, biểu mẫu ---- */
+.nut{transition:background-color .15s,transform .12s var(--ra),box-shadow .12s var(--ra)}
+.nut:not([disabled]):hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--muc)}
+.nut.chinh:not([disabled]):hover{box-shadow:3px 3px 0 var(--muc)}
+.nut:not([disabled]):active{transform:translate(0,0);box-shadow:none;transition-duration:.04s}
+.nut[disabled]{transition:opacity .15s}
+.nut.dang-xu-ly{cursor:progress}
+.nut.dang-xu-ly::before{content:"";display:inline-block;width:12px;height:12px;margin-right:8px;vertical-align:-1px;
+  border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:quay .7s linear infinite}
+@keyframes quay{to{transform:rotate(360deg)}}
+.lien-ket{transition:color .15s}
+.lien-ket:hover{color:var(--nhan)}
+.menu a:not(.nut){background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .25s var(--ra),color .15s;padding-bottom:2px}
+.menu a:not(.nut):hover{background-size:100% 1px}
+.thanh-ben a{transition:color .15s,transform .2s var(--ra)}
+.thanh-ben a:hover{color:#fff;transform:translateX(3px)}
+.thanh-ben a[aria-current=page]:hover{transform:none}
+.hang,.dong,.bs,.lich,.nhac{transition:background-color .15s}
+.hang:hover,.bs:hover{background-color:var(--nen-nhat)}
+.tab button{transition:color .15s,border-color .2s}
+.tab button:hover{color:var(--muc)}
+input,select,textarea{transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--nhan);box-shadow:0 0 0 3px rgba(194,65,12,.18)}
+.tg button{transition:background-color .15s,color .15s,transform .1s}
+.tg button:not([aria-pressed=true]):hover{background:var(--nen-nhat)}
+.tg button:active{transform:scale(.97)}
+.chon{transition:background-color .15s}.chon:hover{background:var(--nen-nhat)}
+
+/* ---- hộp thoại: hiện và đóng mượt ---- */
+dialog{opacity:0;transform:translateY(10px);
+  transition:opacity .18s var(--ra),transform .18s var(--ra),overlay .18s allow-discrete,display .18s allow-discrete}
+dialog[open]{opacity:1;transform:none}
+dialog::backdrop{background:rgba(20,22,26,0);transition:background-color .18s,overlay .18s allow-discrete,display .18s allow-discrete}
+dialog[open]::backdrop{background:rgba(20,22,26,.5)}
+@starting-style{dialog[open]{opacity:0;transform:translateY(10px)}dialog[open]::backdrop{background:rgba(20,22,26,0)}}
+
+/* ---- người dùng tắt hiệu ứng ---- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;transition-duration:.001ms!important}
+  .trang-thai-tai{animation:none}
+  .co-js .hien-cuon{opacity:1;transform:none}
+  @view-transition{navigation:none}
+}

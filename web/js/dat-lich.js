@@ -14,7 +14,15 @@
 
   const homNay = () => new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Ho_Chi_Minh'});
   const cong = (d, n) => { const x = new Date(d + 'T00:00:00'); x.setDate(x.getDate() + n); return x.toLocaleDateString('en-CA'); };
-  function buoc(so, tieuDe){ $('buoc-so').textContent = 'BƯỚC ' + so + ' TRÊN ' + tongBuoc; $('tieu-de').textContent = tieuDe; }
+  function buoc(so, tieuDe){
+    const ds = [];
+    for (let i = 1; i <= tongBuoc; i++) {
+      if (i > 1) ds.push(el('span',{class:'d' + (i <= so ? ' xong' : '')}));
+      ds.push(el('span',{class:'b' + (i < so ? ' xong' : i === so ? ' nay' : ''),'aria-hidden':'true'}, i < so ? '✓' : String(i)));
+    }
+    const bn = $('buoc-so'); bn.className = 'tien-buoc'; bn.setAttribute('role','img'); bn.setAttribute('aria-label','Bước ' + so + ' trên ' + tongBuoc);
+    bn.replaceChildren(...ds); $('tieu-de').textContent = tieuDe;
+  }
   const loiBox = () => el('p',{class:'loi',id:'loi',role:'alert',hidden:true});
   const baoLoi = m => { const b = $('loi'); b.textContent = m; b.hidden = false; };
 
@@ -46,7 +54,7 @@
       el('div',{style:'font-weight:700;margin-bottom:6px'},'Thú cưng'), ...chonDS('pet', ds.pets, p => [p.ten, p.loai], S.pet),
       el('div',{style:'font-weight:700;margin:28px 0 6px'},'Dịch vụ'), ...chonDS('dv', ds.dvs, d => [d.ten, null, tien(d.gia)], S.dv), vcBox,
       el('div',{style:'font-weight:700;margin:28px 0 6px'},'Bác sĩ'), ...chonDS('bs', ds.bss, b => ['Bs. ' + b.ho_ten, b.chuyen_mon], S.bs),
-      el('div',{class:'truong',style:'margin-top:28px'}, el('label',{for:'gc'},'Ghi chú cho bác sĩ (không bắt buộc)'), el('textarea',{id:'gc',maxlength:'300',rows:'3'}, S.ghiChu)),
+      el('div',{class:'truong',style:'margin-top:28px'}, el('label',{for:'gc'},'Ghi chú cho bác sĩ (không bắt buộc)'), el('textarea',{id:'gc',placeholder:'Ví dụ: bé bỏ ăn từ hôm qua, hay sợ tiếng ồn',maxlength:'300',rows:'3'}, S.ghiChu)),
       loiBox(), el('button',{class:'nut chinh',type:'submit'},'Tiếp tục: chọn giờ'));
     const capNhatVc = () => {
       const dv = ds.dvs.find(d => d.id === (f.dv.value || ''));
@@ -122,7 +130,7 @@
     xong('Đã đổi lịch', 'Lịch của bạn đã được cập nhật và quay về trạng thái chờ xác nhận nếu cần.');
   }
   function xong(t, m){
-    $('buoc-so').textContent = ''; $('tieu-de').textContent = t;
+    $('buoc-so').replaceChildren(); $('buoc-so').removeAttribute('aria-label'); $('tieu-de').textContent = t;
     vung.replaceChildren(el('p',{style:'margin:0 0 24px'}, m), el('a',{class:'nut chinh',href:VE},DAT_HO ? 'Về danh sách khách' : 'Về Tổng quan'));
   }
 

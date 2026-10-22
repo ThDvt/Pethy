@@ -3,16 +3,19 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lịch khám của tôi - Pethy</title><meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/css/pethy.css">
 <style>.hang{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:14px 0;border-top:1px solid var(--vach)}.gio{flex:0 0 64px;font:500 18px var(--so)}.nho{font-size:13px;color:var(--xam)}.ngay-tieu{margin:32px 0 0;font-size:14px;font-weight:700}.ngay-tieu:first-of-type{margin-top:0}.nhom{border-bottom:1px solid var(--vach)}</style>
+<link rel="stylesheet" href="/css/chuyen-dong.css"><script src="/js/chuyen-dong.js"></script>
 </head>
 <body>
 <div class="bo-khu" id="khung-khu">
+<script src="/js/thanh-ben-som.js"></script>
   <main class="noi-dung-khu" style="max-width:820px">
     <h1 style="margin:0 0 4px;font-size:28px;font-weight:800;letter-spacing:-.02em">Lịch khám của tôi</h1>
     <p class="ghi-chu" style="margin:0 0 28px">Hôm nay và 7 ngày tới. Chỉ các lịch đã xác nhận mới ghi hồ sơ được.</p>
-    <div id="ds"><p class="trang-thai-tai">Đang tải…</p></div>
+    <div id="ds"><p class="trang-thai-tai" role="status">Đang tải…</p></div>
   </main>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>

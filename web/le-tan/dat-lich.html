@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Đặt lịch hộ - Pethy</title><meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/css/pethy.css">
 <style>
@@ -17,13 +18,15 @@
 .tomtat div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--vach)}
 .tomtat div:first-child{border-top:0}
 </style>
+<link rel="stylesheet" href="/css/chuyen-dong.css"><script src="/js/chuyen-dong.js"></script>
 </head>
 <body>
 <div class="bo-khu" id="khung-khu">
+<script src="/js/thanh-ben-som.js"></script>
   <main class="noi-dung-khu" style="max-width:640px">
     <div class="buoc-so" id="buoc-so"></div>
     <h1 id="tieu-de" style="margin:0 0 24px;font-size:28px;font-weight:800;letter-spacing:-.02em">Đặt lịch hộ khách</h1>
-    <div id="vung"><p class="trang-thai-tai">Đang tải…</p></div>
+    <div id="vung"><p class="trang-thai-tai" role="status">Đang tải…</p></div>
   </main>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>

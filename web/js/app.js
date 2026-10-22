@@ -29,7 +29,7 @@
     const { data, error } = await db.rpc('vai_tro_hieu_luc');
     return error ? null : data;   // null: chưa đăng nhập hoặc đang bảo trì
   }
-  async function dangXuat(){ if (db) await db.auth.signOut(); location.href = '/'; }
+  async function dangXuat(){ try { sessionStorage.removeItem('pethy.menu'); } catch (e) {} if (db) await db.auth.signOut(); location.href = '/'; }
 
   // Dữ liệu mẫu để xem giao diện khi chưa nối Supabase (chỉ dùng trên máy cá nhân).
   const MAU = {
@@ -38,5 +38,27 @@
     cau_hinh:{che_do_bao_tri:'false',dat_truoc_toi_da_ngay:'30'}
   };
 
-  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU };
+  // Ô số điện thoại tự chia nhóm khi gõ: 0901 234 567 (số bắt đầu bằng + giữ nguyên).
+  function maSdt(o){
+    o.addEventListener('input', () => {
+      if (o.value.trim().startsWith('+')) return;
+      const d = o.value.replace(/\D/g, '').slice(0, 10);
+      o.value = d.replace(/^(\d{4})(\d{1,3})?(\d{1,3})?$/, (m, a, b, c) => [a, b, c].filter(Boolean).join(' '));
+    });
+  }
+  // Hộp xác nhận thay cho confirm() của trình duyệt. Trả về true/false. kieu: 'nguy-hiem' (đỏ) hoặc 'chinh'.
+  function xacNhan(tieuDe, moTa, nutTen, kieu){
+    return new Promise(xong => {
+      const d = el('dialog',{class:'xac-nhan'});
+      const dong = kq => { d.close(); d.remove(); xong(kq); };
+      d.append(el('h2',{style:'margin:0 0 8px;font-size:20px'}, tieuDe),
+        el('p',{class:'ghi-chu',style:'margin:0 0 20px'}, moTa || ''),
+        el('div',{style:'display:flex;gap:12px;justify-content:flex-end'},
+          el('button',{class:'nut phu',type:'button',onclick:() => dong(false)}, 'Quay lại'),
+          el('button',{class:'nut ' + (kieu || 'nguy-hiem'),type:'button',onclick:() => dong(true)}, nutTen)));
+      d.addEventListener('cancel', ev => { ev.preventDefault(); dong(false); });
+      document.body.append(d); d.showModal();
+    });
+  }
+  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan };
 })();

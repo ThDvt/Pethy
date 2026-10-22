@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Hồ sơ khám - Pethy</title><meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/css/pethy.css">
 <style>
@@ -15,10 +16,12 @@
 .don{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--vach)}
 .don select,.don input{min-height:44px}.don .t{flex:3 1 200px}.don .sl{flex:0 0 90px}.don .ld{flex:3 1 200px}.don .tk{flex:0 0 70px;text-align:right;font:14px var(--so)}
 </style>
+<link rel="stylesheet" href="/css/chuyen-dong.css"><script src="/js/chuyen-dong.js"></script>
 </head>
 <body>
 <div class="bo-khu" id="khung-khu">
-  <aside class="cot-trai" id="thu-cung-kham"><p class="trang-thai-tai">Đang tải…</p></aside>
+<script src="/js/thanh-ben-som.js"></script>
+  <aside class="cot-trai" id="thu-cung-kham"><p class="trang-thai-tai" role="status">Đang tải…</p></aside>
   <main class="cot-phai">
     <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:baseline"><h1 style="margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em">Hồ sơ khám</h1><div id="trang-thai" class="ghi-chu"></div></div>
     <div id="vung"></div>

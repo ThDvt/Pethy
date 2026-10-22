@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lịch trong ngày - Pethy</title><meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/css/pethy.css">
 <style>
@@ -27,16 +28,18 @@
 dialog{border:1px solid var(--muc);border-radius:2px;padding:24px;max-width:420px;width:calc(100% - 40px)}
 dialog::backdrop{background:rgba(20,22,26,.5)}
 </style>
+<link rel="stylesheet" href="/css/chuyen-dong.css"><script src="/js/chuyen-dong.js"></script>
 </head>
 <body>
 <div class="bo-khu" id="khung-khu">
+<script src="/js/thanh-ben-som.js"></script>
   <main class="cot-chinh">
     <div style="display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:baseline">
       <h1 id="ngay" style="margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em"></h1>
       <div id="dem" class="ghi-chu" style="font-size:15px"></div>
     </div>
     <p id="loi-chung" class="loi" role="alert" hidden></p>
-    <section class="cho" aria-labelledby="h-cho"><h2 id="h-cho">Cần xác nhận</h2><div id="ds-cho"><p class="trang-thai-tai">Đang tải…</p></div></section>
+    <section class="cho" aria-labelledby="h-cho"><h2 id="h-cho">Cần xác nhận</h2><div id="ds-cho"><p class="trang-thai-tai" role="status">Đang tải…</p></div></section>
     <section style="margin-top:40px" aria-labelledby="h-hom-nay">
       <h2 id="h-hom-nay" style="font-size:14px;margin:0;color:var(--xam)">Toàn bộ lịch hôm nay</h2>
       <div class="bang" id="bang"></div>
@@ -53,7 +56,7 @@ dialog::backdrop{background:rgba(20,22,26,.5)}
   <p class="ghi-chu" id="hop-mo-ta" style="margin:0 0 16px"></p>
   <div class="truong"><label for="ly-do">Lý do (gửi kèm khi hủy)</label><input id="ly-do" maxlength="200" placeholder="Ví dụ: bác sĩ bận, vui lòng chọn giờ khác"></div>
   <p class="loi" id="hop-loi" hidden></p>
-  <div style="display:flex;gap:16px;justify-content:flex-end"><button class="lien-ket" type="button" id="hop-dong">Quay lại</button><button class="nut" id="hop-xn" type="submit">Từ chối lịch</button></div>
+  <div style="display:flex;gap:16px;justify-content:flex-end"><button class="nut phu" type="button" id="hop-dong">Quay lại</button><button class="nut nguy-hiem" id="hop-xn" type="submit">Từ chối lịch</button></div>
 </form></dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="/js/config.js"></script><script src="/js/app.js"></script><script src="/js/mau.js"></script><script src="/js/khu.js"></script>

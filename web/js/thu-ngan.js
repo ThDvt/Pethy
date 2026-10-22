@@ -62,7 +62,7 @@
     const loi = el('p',{class:'loi',role:'alert',hidden:true});
     const ml = m => { loi.textContent = m || ''; loi.hidden = !m; };
     const dong = () => hop.close();
-    const sotien = el('input',{id:'st',inputmode:'numeric',value:con,class:'so'});
+    const sotien = el('input',{id:'st',placeholder:'Số tiền khách trả, ví dụ: 150000',inputmode:'numeric',value:con,class:'so'});
     const pt = el('select',{id:'pt'}, Object.entries(PT).map(([k, v]) => el('option',{value:k}, v)));
     const thu = h.trang_thai === 'chua_thanh_toan' || h.trang_thai === 'thanh_toan_mot_phan';
     $('hop-nd').replaceChildren(...[
@@ -81,10 +81,11 @@
         loi) : null,
       el('div',{style:'display:flex;flex-wrap:wrap;gap:12px 20px;justify-content:space-between;align-items:center;margin-top:20px'},
         thu && h.trang_thai === 'chua_thanh_toan' ? el('button',{class:'lien-ket',type:'button',onclick:async ev => {
-          if (!confirm('Hủy hóa đơn này để lập lại?')) return;
-          ev.currentTarget.disabled = true; ml('');
+          const nutHuy = ev.currentTarget;
+          if (!await Pethy.xacNhan('Hủy hóa đơn này?', 'Hóa đơn sẽ bị hủy để lập lại hóa đơn mới.', 'Hủy hóa đơn')) return;
+          nutHuy.disabled = true; ml('');
           const { error } = await db.rpc('huy_hoa_don', { p_hoa_don: h.id });
-          if (error) { ev.currentTarget.disabled = false; return ml(loiRpc(error)); }
+          if (error) { nutHuy.disabled = false; return ml(loiRpc(error)); }
           dong(); await tai(); }}, 'Hủy hóa đơn') : el('span'),
         el('div',{style:'display:flex;gap:16px;align-items:center'},
           el('button',{class:'lien-ket',type:'button',onclick:dong}, 'Đóng'),

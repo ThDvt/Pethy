@@ -1,6 +1,7 @@
 (function(){
   const { db, thuc, KHU, vaiTro } = Pethy;
   const $ = id => document.getElementById(id);
+  Pethy.maSdt($('sdt'));
   let dangKy = new URLSearchParams(location.search).has('dang-ky');
 
   function hienChe(){
@@ -56,7 +57,7 @@
     $('gui').disabled = true;
     try {
       if (dangKy) {
-        const ten = $('ho-ten').value.trim(), sdt = $('sdt').value.trim();
+        const ten = $('ho-ten').value.trim(), sdt = $('sdt').value.replace(/\s/g, '');
         if (!ten) { loi('Vui lòng nhập họ tên.'); return; }
         if (!/^(\+84|0)[0-9]{9}$/.test(sdt)) { loi('Số điện thoại chưa hợp lệ (ví dụ 0901234567).'); return; }
         const { data, error } = await db.auth.signUp({ email, password: mk, options: { data: { ho_ten: ten, so_dien_thoai: sdt } } });

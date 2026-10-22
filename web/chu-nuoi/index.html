@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tổng quan - Pethy</title><meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="/css/pethy.css">
+<link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/pethy.css"><link rel="stylesheet" href="/css/khach.css">
 <style>
 .lich{padding:18px 0;border-top:1px solid var(--vach)}
 .lich:first-of-type{border-top:2px solid var(--muc)}
@@ -14,23 +16,25 @@
 dialog{border:1px solid var(--muc);border-radius:2px;padding:24px;max-width:420px;width:calc(100% - 40px)}
 dialog::backdrop{background:rgba(20,22,26,.5)}
 </style>
+<link rel="stylesheet" href="/css/chuyen-dong.css"><script src="/js/chuyen-dong.js"></script>
 </head>
-<body>
+<body class="khach khach-khu">
 <div class="bo-khu" id="khung-khu">
+<script src="/js/thanh-ben-som.js"></script>
   <main class="noi-dung-khu" style="max-width:760px">
     <h1 style="margin:0 0 4px;font-size:28px;font-weight:800;letter-spacing:-.02em">Tổng quan</h1>
     <p class="ghi-chu" style="margin:0 0 32px">Lịch khám sắp tới và mũi tiêm sắp đến hạn của thú cưng.</p>
     <div id="thong-bao" class="loi" role="alert" hidden></div>
-    <section aria-labelledby="h-lich"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h2 id="h-lich" style="font-size:14px;margin:0;color:var(--nhan)">Lịch sắp tới</h2><a class="nut chinh" href="/chu-nuoi/dat-lich.html">Đặt lịch mới</a></div><div id="ds-lich" style="margin-top:14px"><p class="trang-thai-tai">Đang tải…</p></div></section>
+    <section aria-labelledby="h-lich"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h2 id="h-lich" style="font-size:14px;margin:0;color:var(--nhan)">Lịch sắp tới</h2><a class="nut chinh" href="/chu-nuoi/dat-lich.html">Đặt lịch mới</a></div><div id="ds-lich" style="margin-top:14px"><p class="trang-thai-tai" role="status">Đang tải…</p></div></section>
     <section aria-labelledby="h-tiem" style="margin-top:44px"><h2 id="h-tiem" style="font-size:14px;margin:0;color:var(--xam)">Mũi tiêm sắp đến hạn</h2><div id="ds-tiem" style="margin-top:14px"></div></section>
   </main>
 </div>
 <dialog id="hop-huy"><form method="dialog" id="form-huy">
   <h2 style="margin:0 0 8px;font-size:20px">Hủy lịch này?</h2>
   <p class="ghi-chu" id="huy-mo-ta" style="margin:0 0 16px"></p>
-  <div class="truong"><label for="ly-do">Lý do (không bắt buộc)</label><input id="ly-do" maxlength="200"></div>
+  <div class="truong"><label for="ly-do">Lý do (không bắt buộc)</label><input id="ly-do" placeholder="Ví dụ: bận việc đột xuất" maxlength="200"></div>
   <p class="loi" id="huy-loi" hidden></p>
-  <div style="display:flex;gap:16px;justify-content:flex-end"><button class="lien-ket" value="dong" type="button" id="huy-dong">Giữ lịch</button><button class="nut" id="huy-xn" type="submit">Hủy lịch</button></div>
+  <div style="display:flex;gap:16px;justify-content:flex-end"><button class="nut phu" value="dong" type="button" id="huy-dong">Giữ lịch</button><button class="nut nguy-hiem" id="huy-xn" type="submit">Hủy lịch</button></div>
 </form></dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="/js/config.js"></script><script src="/js/app.js"></script><script src="/js/mau.js"></script><script src="/js/khu.js"></script>

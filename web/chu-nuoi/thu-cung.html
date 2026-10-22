@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Thú cưng - Pethy</title><meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="/css/pethy.css">
+<link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/pethy.css"><link rel="stylesheet" href="/css/khach.css">
 <style>
 .tg{display:flex;flex-wrap:wrap;gap:10px}
 .tg button{min-width:84px;min-height:48px;border:1px solid var(--muc);background:#fff;border-radius:2px;font:500 16px var(--so);cursor:pointer;color:var(--muc)}
@@ -17,15 +19,17 @@
 .tomtat div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--vach)}
 .tomtat div:first-child{border-top:0}
 </style>
+<link rel="stylesheet" href="/css/chuyen-dong.css"><script src="/js/chuyen-dong.js"></script>
 </head>
-<body>
+<body class="khach khach-khu">
 <div class="bo-khu" id="khung-khu">
+<script src="/js/thanh-ben-som.js"></script>
   <main class="noi-dung-khu" style="max-width:640px">
     <h1 style="margin:0 0 24px;font-size:28px;font-weight:800;letter-spacing:-.02em">Thú cưng</h1>
-    <div id="ds"><p class="trang-thai-tai">Đang tải…</p></div>
+    <div id="ds"><p class="trang-thai-tai" role="status">Đang tải…</p></div>
     <h2 style="font-size:14px;margin:40px 0 14px;color:var(--xam)">Thêm thú cưng</h2>
     <form id="form" novalidate>
-      <div class="truong"><label for="ten">Tên</label><input id="ten" maxlength="60"></div>
+      <div class="truong"><label for="ten">Tên</label><input id="ten" placeholder="Ví dụ: Mít" maxlength="60"></div>
       <div class="truong"><label for="loai">Loài</label><input id="loai" list="loai-goi-y" maxlength="40" placeholder="Chó, mèo, thỏ…"><datalist id="loai-goi-y"><option value="Chó"><option value="Mèo"><option value="Thỏ"><option value="Chim"></datalist></div>
       <div class="truong"><label for="ngay-sinh">Ngày sinh (không bắt buộc)</label><input id="ngay-sinh" type="date"></div>
       <p class="loi" id="loi" role="alert" hidden></p>

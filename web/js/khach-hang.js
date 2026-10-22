@@ -37,7 +37,7 @@
   }
 
   function themThuCung(c){
-    const ten = el('input',{id:'p-t',maxlength:'60'}), loai = el('input',{id:'p-l',maxlength:'40',placeholder:'Chó, mèo, thỏ...'}), ns = el('input',{id:'p-n',type:'date',max:A.homNay()});
+    const ten = el('input',{id:'p-t',placeholder:'Ví dụ: Mít',maxlength:'60'}), loai = el('input',{id:'p-l',maxlength:'40',placeholder:'Chó, mèo, thỏ...'}), ns = el('input',{id:'p-n',type:'date',max:A.homNay()});
     A.hop('Thêm thú cưng', 'Khách: ' + c.ho_ten, [A.o('p-t','Tên',ten), A.o('p-l','Loài',loai), A.o('p-n','Ngày sinh (nếu biết)',ns)], 'Thêm', async () => {
       if (!ten.value.trim() || !loai.value.trim()) return 'Vui lòng nhập tên và loài.';
       const { error } = await db.from('thu_cung').insert({ chu_nuoi_id: c.id, ten: ten.value.trim(), loai: loai.value.trim(), ngay_sinh: ns.value || null });
@@ -45,7 +45,8 @@
   }
 
   function themKhach(){
-    const ten = el('input',{id:'k-t',maxlength:'80'}), dt = el('input',{id:'k-d',inputmode:'tel',maxlength:'12',placeholder:'0901234567'}), dc = el('input',{id:'k-a',maxlength:'200'});
+    const ten = el('input',{id:'k-t',placeholder:'Ví dụ: Nguyễn Văn An',maxlength:'80'}), dt = el('input',{id:'k-d',inputmode:'tel',maxlength:'12',placeholder:'0901 234 567'}), dc = el('input',{id:'k-a',maxlength:'200',placeholder:'Số nhà, phường, quận (không bắt buộc)'});
+    Pethy.maSdt(dt);
     A.hop('Thêm khách đến trực tiếp', 'Tạo hồ sơ cho khách chưa có tài khoản.', [A.o('k-t','Họ tên',ten), A.o('k-d','Số điện thoại',dt), A.o('k-a','Địa chỉ (không bắt buộc)',dc)], 'Thêm khách', async () => {
       const d = dt.value.replace(/[\s.]/g, '');
       if (!ten.value.trim()) return 'Vui lòng nhập họ tên.';

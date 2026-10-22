@@ -12,7 +12,7 @@
       return el('section',{class:'muc'}, el('h2',{style:'display:flex;justify-content:space-between;align-items:baseline'}, el('span',{style:'color:var(--muc);font-size:16px'}, b.ho_ten),
         el('button',{class:'lien-ket',type:'button',onclick:() => them(b)}, 'Thêm ca')),
         ...(cs.length ? cs.map(c => el('div',{class:'hang'}, el('div',{class:'ten',style:'font-weight:500'}, THU[c.thu_trong_tuan]), el('div',{class:'so'}, gio(c.gio_bat_dau) + ' đến ' + gio(c.gio_ket_thuc)),
-          el('button',{class:'lien-ket',type:'button',onclick:async () => { if (!confirm('Xóa ca này?')) return; const { error } = await db.from('lich_lam_viec').delete().eq('id', c.id); A.baoLoi(error ? 'Không xóa được ca.' : ''); await tai(); }}, 'Xóa'))) : [A.rong('Chưa có ca nào, bác sĩ này chưa nhận được lịch đặt.')]));
+          el('button',{class:'lien-ket',type:'button',onclick:async () => { if (!await Pethy.xacNhan('Xóa ca này?', 'Ca làm việc sẽ bị xóa khỏi lịch.', 'Xóa ca')) return; const { error } = await db.from('lich_lam_viec').delete().eq('id', c.id); A.baoLoi(error ? 'Không xóa được ca.' : ''); await tai(); }}, 'Xóa'))) : [A.rong('Chưa có ca nào, bác sĩ này chưa nhận được lịch đặt.')]));
     }) : [A.rong('Chưa có tài khoản bác sĩ nào. Hãy phân vai bác sĩ ở trang Tài khoản.')]));
   }
   function them(b){
