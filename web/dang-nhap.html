@@ -22,7 +22,7 @@
   </div>
   <form id="form" novalidate>
     <div class="truong dk" hidden><label for="ho-ten">Họ tên</label><input id="ho-ten" placeholder="Ví dụ: Nguyễn Văn An" autocomplete="name"></div>
-    <div class="truong dk" hidden><label for="sdt">Số điện thoại</label><input id="sdt" inputmode="tel" autocomplete="tel" placeholder="0901234567"></div>
+    <div class="truong dk" hidden><label for="sdt">Số điện thoại</label><input id="sdt" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="0901 234 567"></div>
     <div class="truong"><label for="email">Email</label><input id="email" placeholder="ten@email.com" type="email" autocomplete="email" required></div>
     <div class="truong"><label for="mat-khau">Mật khẩu</label><input id="mat-khau" placeholder="Ít nhất 8 ký tự" type="password" autocomplete="current-password" required minlength="8"></div>
     <div class="truong" id="khoi-2fa" hidden><label for="ma-2fa">Mã xác thực 6 số từ ứng dụng xác thực</label><input id="ma-2fa" placeholder="6 số trong ứng dụng xác thực" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}"></div>

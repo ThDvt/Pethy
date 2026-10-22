@@ -12,10 +12,10 @@
   }
 
   // Menu cố định của bốn vai nhân viên (mọi trang của vai đó dùng chung).
-  const TRAO_DOI = {ten:'Trao đổi với quản trị',href:'/trao-doi.html'};
+  const TRAO_DOI = {ten:'Tin nhắn',href:'/trao-doi.html'};
   const MENU_NV = {
-    le_tan:[{ten:'Lịch trong ngày',href:'/le-tan/'},{ten:'Khách hàng',href:'/le-tan/khach-hang.html'},TRAO_DOI],
-    bac_si:[{ten:'Lịch khám của tôi',href:'/bac-si/'},TRAO_DOI],
+    le_tan:[{ten:'Lịch hôm nay',href:'/le-tan/'},{ten:'Khách hàng',href:'/le-tan/khach-hang.html'},TRAO_DOI],
+    bac_si:[{ten:'Lịch khám',href:'/bac-si/'},TRAO_DOI],
     thu_ngan:[{ten:'Thu ngân',href:'/thu-ngan/'},TRAO_DOI],
     kho:[{ten:'Tồn kho',href:'/kho/'},TRAO_DOI]
   };

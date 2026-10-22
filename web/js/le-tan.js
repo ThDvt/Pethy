@@ -1,7 +1,7 @@
 (async function(){
   const { db, el, gio } = Pethy, { loiRpc, khoiDong } = Pethy.khu;
   const $ = id => document.getElementById(id);
-  const MUC = [{ten:'Lịch trong ngày',href:'/le-tan/'}];
+  const MUC = [{ten:'Lịch hôm nay',href:'/le-tan/'}];
   const vt = await khoiDong('le_tan', 'Lễ tân', MUC, '/le-tan/');
   if (!vt) return;
 

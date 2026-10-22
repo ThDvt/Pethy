@@ -3,8 +3,8 @@ Pethy.admin = (function(){
   const { el } = Pethy;
   const MUC = [
     {ten:'Tổng quan',href:'/admin/'},{ten:'Doanh thu',href:'/admin/doanh-thu.html'},{ten:'Tài khoản',href:'/admin/tai-khoan.html'},
-    {ten:'Dịch vụ và giá',href:'/admin/dich-vu.html'},{ten:'Lịch làm việc',href:'/admin/lich-lam-viec.html'},
-    {ten:'Tham số hệ thống',href:'/admin/tham-so.html'},{ten:'Nhật ký',href:'/admin/nhat-ky.html'},{ten:'Trao đổi nội bộ',href:'/admin/trao-doi.html'},{ten:'Bảo mật tài khoản',href:'/admin/bao-mat.html'}];
+    {ten:'Dịch vụ',href:'/admin/dich-vu.html'},{ten:'Lịch làm',href:'/admin/lich-lam-viec.html'},
+    {ten:'Tham số',href:'/admin/tham-so.html'},{ten:'Nhật ký',href:'/admin/nhat-ky.html'},{ten:'Tin nhắn',href:'/admin/trao-doi.html'},{ten:'Bảo mật',href:'/admin/bao-mat.html'}];
   const $ = id => document.getElementById(id);
   const ngay = iso => new Date(iso).toLocaleDateString('en-GB',{timeZone:'Asia/Ho_Chi_Minh'});
   const homNay = () => new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Ho_Chi_Minh'});

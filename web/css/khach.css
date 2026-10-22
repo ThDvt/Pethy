@@ -113,3 +113,5 @@ body.khach{background-attachment:fixed;min-height:100vh}
 .khach .logo img{height:76px}
 .dn-luoi{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 120px);max-width:none;padding:0 20px 48px}
 .dn-luoi .hop-dn{width:100%;max-width:460px}
+.khach .nut.nguy-hiem{background:#C62828;color:#fff}.khach .nut.nguy-hiem:hover{background:#9F1D1D;color:#fff}
+.khach .nut.phu{background:#F1E4D0;color:var(--muc)}.khach .nut.phu:hover{background:#E8D7BC;color:var(--muc)}

@@ -24,13 +24,17 @@ a{color:var(--muc)} a:hover{color:var(--nhan)}
 .nut:hover{color:#fff;background:#000}
 .nut.chinh{background:var(--nhan)} .nut.chinh:hover{background:var(--nhan-dam)}
 .nut.lon{padding:18px 32px;font-size:18px}
+/* nút phụ (hủy bỏ) và nút nguy hiểm (màu đỏ, báo trước hậu quả) */
+.nut.phu{background:#E7E5DF;color:var(--muc)} .nut.phu:hover{background:#D5D2CA;color:var(--muc)}
+.nut.nguy-hiem{background:#C62828} .nut.nguy-hiem:hover{background:#9F1D1D}
 .nut[disabled]{opacity:.5;cursor:not-allowed}
 .lien-ket{background:none;border:0;padding:0;font:inherit;text-decoration:underline;cursor:pointer;color:var(--muc)}
 
 /* biểu mẫu */
-label{display:block;font-size:13px;color:var(--xam);margin-bottom:6px}
+label{display:block;font-size:13px;color:var(--xam);margin-bottom:8px}
 input,select,textarea{width:100%;font:16px var(--chu);padding:11px 12px;border:1px solid var(--muc);border-radius:2px;background:#fff;color:var(--muc);min-height:44px}
-.truong{margin-bottom:18px}
+.truong{margin-bottom:24px}
+form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 .loi{color:var(--loi);font-size:14px;margin:0 0 16px}
 .ghi-chu{color:var(--xam);font-size:14px}
 
@@ -67,3 +71,11 @@ input,select,textarea{width:100%;font:16px var(--chu);padding:11px 12px;border:1
 .noi-dung-khu{flex:999 1 560px;min-width:0;padding:28px 36px}
 @media(max-width:760px){.thanh-ben{flex:1 1 100%;flex-direction:row;flex-wrap:wrap;gap:4px 20px}.thanh-ben .vai{margin:0;width:100%}.noi-dung-khu{padding:20px}}
 .trang-thai-tai{padding:40px 0;color:var(--xam)}
+
+/* thanh tiến trình các bước */
+.tien-buoc{display:flex;align-items:center;margin:0 0 16px;font:700 14px var(--chu)}
+.tien-buoc .b{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 32px;background:#E7E5DF;color:var(--xam)}
+.tien-buoc .b.xong{background:var(--nhan);color:#fff}
+.tien-buoc .b.nay{background:var(--muc);color:#fff}
+.tien-buoc .d{height:3px;width:48px;background:#E7E5DF}
+.tien-buoc .d.xong{background:var(--nhan)}

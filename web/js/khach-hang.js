@@ -45,7 +45,8 @@
   }
 
   function themKhach(){
-    const ten = el('input',{id:'k-t',placeholder:'Ví dụ: Nguyễn Văn An',maxlength:'80'}), dt = el('input',{id:'k-d',inputmode:'tel',maxlength:'12',placeholder:'0901234567'}), dc = el('input',{id:'k-a',maxlength:'200',placeholder:'Số nhà, phường, quận (không bắt buộc)'});
+    const ten = el('input',{id:'k-t',placeholder:'Ví dụ: Nguyễn Văn An',maxlength:'80'}), dt = el('input',{id:'k-d',inputmode:'tel',maxlength:'12',placeholder:'0901 234 567'}), dc = el('input',{id:'k-a',maxlength:'200',placeholder:'Số nhà, phường, quận (không bắt buộc)'});
+    Pethy.maSdt(dt);
     A.hop('Thêm khách đến trực tiếp', 'Tạo hồ sơ cho khách chưa có tài khoản.', [A.o('k-t','Họ tên',ten), A.o('k-d','Số điện thoại',dt), A.o('k-a','Địa chỉ (không bắt buộc)',dc)], 'Thêm khách', async () => {
       const d = dt.value.replace(/[\s.]/g, '');
       if (!ten.value.trim()) return 'Vui lòng nhập họ tên.';

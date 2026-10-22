@@ -38,5 +38,13 @@
     cau_hinh:{che_do_bao_tri:'false',dat_truoc_toi_da_ngay:'30'}
   };
 
-  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU };
+  // Ô số điện thoại tự chia nhóm khi gõ: 0901 234 567 (số bắt đầu bằng + giữ nguyên).
+  function maSdt(o){
+    o.addEventListener('input', () => {
+      if (o.value.trim().startsWith('+')) return;
+      const d = o.value.replace(/\D/g, '').slice(0, 10);
+      o.value = d.replace(/^(\d{4})(\d{1,3})?(\d{1,3})?$/, (m, a, b, c) => [a, b, c].filter(Boolean).join(' '));
+    });
+  }
+  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt };
 })();
