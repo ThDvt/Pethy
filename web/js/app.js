@@ -40,10 +40,11 @@
 
   // Ô số điện thoại tự chia nhóm khi gõ: 0901 234 567 (số bắt đầu bằng + giữ nguyên).
   function maSdt(o){
-    o.addEventListener('input', () => {
-      if (o.value.trim().startsWith('+')) return;
+    o.addEventListener('input', ev => {
+      if (ev.isComposing || o.value.trim().startsWith('+')) return;   // không chen vào lúc bàn phím điện thoại đang soạn chữ
       const d = o.value.replace(/\D/g, '').slice(0, 10);
-      o.value = d.replace(/^(\d{4})(\d{1,3})?(\d{1,3})?$/, (m, a, b, c) => [a, b, c].filter(Boolean).join(' '));
+      const m = d.replace(/^(\d{4})(\d{1,3})?(\d{1,3})?$/, (x, a, b, c) => [a, b, c].filter(Boolean).join(' '));
+      if (m !== o.value) o.value = m;
     });
   }
   // Hộp xác nhận thay cho confirm() của trình duyệt. Trả về true/false. kieu: 'nguy-hiem' (đỏ) hoặc 'chinh'.
