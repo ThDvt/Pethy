@@ -81,3 +81,4 @@ form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 .tien-buoc .d.xong{background:var(--nhan)}
 dialog.xac-nhan{border:1px solid var(--muc);border-radius:2px;padding:24px;max-width:440px;width:calc(100% - 40px)}
 dialog.xac-nhan::backdrop{background:rgba(20,22,26,.5)}
+dialog.xac-nhan p{white-space:pre-line}
