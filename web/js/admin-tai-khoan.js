@@ -33,8 +33,10 @@
         if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return 'Email chưa đúng định dạng.';
         let id;
         if (window.supabase && window.PETHY_CONFIG && window.PETHY_CONFIG.SUPABASE_URL && !location.search.includes("mau=1")) {
-          const c = window.supabase.createClient(window.PETHY_CONFIG.SUPABASE_URL, window.PETHY_CONFIG.SUPABASE_ANON_KEY, { auth:{ persistSession:false, autoRefreshToken:false, detectSessionInUrl:false } });
-          const r = await c.auth.signUp({ email, password: mk.value, options:{ data:{ ho_ten: hoTen } } });
+          const c = window.supabase.createClient(window.PETHY_CONFIG.SUPABASE_URL, window.PETHY_CONFIG.SUPABASE_ANON_KEY, { auth:{ persistSession:false, autoRefreshToken:false, detectSessionInUrl:false, storageKey:'pethy-tao-nv' } });
+          const r = await Promise.race([c.auth.signUp({ email, password: mk.value, options:{ data:{ ho_ten: hoTen } } }),
+            new Promise(x => setTimeout(() => x({ error:{ message:'qua-lau' } }), 20000))]);
+          if (r.error && r.error.message === 'qua-lau') return 'Supabase phản hồi quá lâu (thường do gửi thư xác nhận chậm). Tài khoản có thể đã được tạo, hãy đóng hộp này và kiểm tra danh sách trước khi tạo lại.';
           if (r.error) return /rate|limit/i.test(r.error.message) ? 'Đã tạo quá nhiều tài khoản trong thời gian ngắn, thử lại sau ít phút.' : 'Không tạo được tài khoản: ' + r.error.message;
           if (!r.data.user || (r.data.user.identities || []).length === 0) return 'Email này đã có tài khoản.';
           id = r.data.user.id;
