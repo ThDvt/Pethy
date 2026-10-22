@@ -2,6 +2,18 @@
   const { db, thuc, KHU, vaiTro } = Pethy;
   const $ = id => document.getElementById(id);
   Pethy.maSdt($('sdt'));
+  // Dịch lỗi của Supabase sang câu dễ hiểu; phần mã lỗi gốc giữ lại trong ngoặc để dễ tra cứu.
+  function loiDangKy(e){
+    const m = String(e.message || ''), ma = e.code || e.status || '';
+    let nd = 'Không tạo được tài khoản. Thử lại sau ít phút.';
+    if (/already|registered|exists/i.test(m)) nd = 'Email này đã có tài khoản. Hãy đăng nhập.';
+    else if (/rate|limit|too many|over_email/i.test(m + ma)) nd = 'Hệ thống đang giới hạn số thư xác nhận. Thử lại sau khoảng 1 giờ.';
+    else if (/not authorized/i.test(m)) nd = 'Hệ thống thư chưa gửi được tới email này.';
+    else if (/password/i.test(m)) nd = 'Mật khẩu chưa đủ mạnh. Dùng ít nhất 8 ký tự, có cả chữ và số.';
+    else if (/invalid|valid email/i.test(m)) nd = 'Email chưa hợp lệ.';
+    else if (/database|saving new user/i.test(m)) nd = 'Lỗi hệ thống khi lưu tài khoản. Báo cho phòng khám.';
+    return nd + (ma ? ' (' + ma + ')' : '');
+  }
   let dangKy = new URLSearchParams(location.search).has('dang-ky');
 
   function hienChe(){
@@ -63,7 +75,7 @@
         if ($('mat-khau-2').value !== mk) { loi('Hai mật khẩu chưa giống nhau. Nhập lại cho khớp.'); $('mat-khau-2').focus(); return; }
         if (!/^(\+84|0)[0-9]{9}$/.test(sdt)) { loi('Số điện thoại chưa hợp lệ (ví dụ 0901234567).'); return; }
         const { data, error } = await db.auth.signUp({ email, password: mk, options: { data: { ho_ten: ten, so_dien_thoai: sdt } } });
-        if (error) { loi('Không tạo được tài khoản. Kiểm tra lại thông tin hoặc thử lại sau.'); return; }
+        if (error) { loi(loiDangKy(error)); return; }
         if (data.session) await vaoKhu(); else tb('Đã gửi email xác nhận. Mở email và bấm liên kết, rồi quay lại đăng nhập.');
       } else {
         const { error } = await db.auth.signInWithPassword({ email, password: mk });
