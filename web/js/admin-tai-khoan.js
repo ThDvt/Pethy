@@ -17,5 +17,34 @@
         minh ? el('span') : el('button',{class:'lien-ket',type:'button',style:'color:var(--loi)',onclick:() => goi('xoa_tai_khoan', { p_tai_khoan: t.id }, 'Xóa vĩnh viễn tài khoản ' + t.ho_ten + '? Không thể hoàn tác.')}, 'Xóa'));
     })));
   }
+  // Tạo tài khoản nhân viên: đăng ký bằng client riêng (không lưu phiên) để admin không bị đăng xuất,
+  // rồi nâng vai trò bằng RPC dat_vai_tro (vai trò chỉ đổi được qua quản trị viên).
+  const matKhauTam = () => { const b = new Uint32Array(12); crypto.getRandomValues(b); const kt = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'; return Array.from(b, x => kt[x % kt.length]).join(''); };
+  function themNV(){
+    const ten = el('input',{id:'nv-ten',type:'text',placeholder:'Ví dụ: Trần Thị Hoa',maxlength:'100',autocomplete:'off'});
+    const mail = el('input',{id:'nv-mail',type:'email',placeholder:'nhanvien@email.com',autocomplete:'off'});
+    const vt = el('select',{id:'nv-vt'}, ['bac_si','le_tan','thu_ngan','kho'].map(k => el('option',{value:k}, A.VAI[k])));
+    const mk = el('input',{id:'nv-mk',type:'text',value:matKhauTam(),readonly:true,class:'mono'});
+    A.hop('Thêm nhân viên', 'Hệ thống tạo mật khẩu tạm. Hãy gửi cho nhân viên và nhắc đổi sau khi đăng nhập.',
+      [A.o('nv-ten','Họ tên',ten), A.o('nv-mail','Email đăng nhập',mail), A.o('nv-vt','Vai trò',vt), A.o('nv-mk','Mật khẩu tạm (chỉ hiện lần này)',mk)],
+      'Tạo tài khoản', async () => {
+        const hoTen = ten.value.trim(), email = mail.value.trim().toLowerCase();
+        if (hoTen.length < 2) return 'Nhập họ tên nhân viên.';
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return 'Email chưa đúng định dạng.';
+        let id;
+        if (window.supabase && window.PETHY_CONFIG && window.PETHY_CONFIG.SUPABASE_URL && !location.search.includes("mau=1")) {
+          const c = window.supabase.createClient(window.PETHY_CONFIG.SUPABASE_URL, window.PETHY_CONFIG.SUPABASE_ANON_KEY, { auth:{ persistSession:false, autoRefreshToken:false, detectSessionInUrl:false } });
+          const r = await c.auth.signUp({ email, password: mk.value, options:{ data:{ ho_ten: hoTen } } });
+          if (r.error) return /rate|limit/i.test(r.error.message) ? 'Đã tạo quá nhiều tài khoản trong thời gian ngắn, thử lại sau ít phút.' : 'Không tạo được tài khoản: ' + r.error.message;
+          if (!r.data.user || (r.data.user.identities || []).length === 0) return 'Email này đã có tài khoản.';
+          id = r.data.user.id;
+        }
+        const { error } = await db.rpc('dat_vai_tro', { p_tai_khoan: id, p_vai_tro: vt.value });
+        if (error) return 'Đã tạo tài khoản nhưng chưa gán được vai trò: ' + loiRpc(error);
+        await Pethy.xacNhan('Đã tạo tài khoản', 'Email: ' + email + '\nMật khẩu tạm: ' + mk.value + '\nHãy sao chép ngay, mật khẩu không hiện lại. Nếu Supabase bật xác nhận email, nhân viên cần bấm liên kết trong thư trước khi đăng nhập.', 'Đã ghi lại', 'chinh');
+        return null;
+      }, tai);
+  }
+  $('vung').before(el('button',{class:'nut chinh',type:'button',id:'them-nv',onclick:themNV}, '+ Thêm nhân viên'));
   await tai();
 })();
