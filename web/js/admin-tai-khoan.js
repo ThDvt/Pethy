@@ -5,7 +5,7 @@
   async function tai(){
     const r = await db.from('tai_khoan').select('id,ho_ten,so_dien_thoai,vai_tro,trang_thai,created_at').order('created_at');
     if (r.error) return A.baoLoi('Không tải được danh sách tài khoản.');
-    const goi = async (ten, tham, hoi) => { if (hoi && !await Pethy.xacNhan('Bạn chắc chắn chứ?', hoi, 'Tiếp tục')) return; A.baoLoi(''); const { error } = await db.rpc(ten, tham); if (error) A.baoLoi(loiRpc(error)); await tai(); };
+    const goi = async (ten, tham, hoi) => { if (hoi && !await Pethy.xacNhan(ten === 'xoa_tai_khoan' ? 'Xóa tài khoản?' : 'Khóa tài khoản?', hoi, ten === 'xoa_tai_khoan' ? 'Có, xóa tài khoản' : 'Có, khóa')) return; A.baoLoi(''); const { error } = await db.rpc(ten, tham); if (error) A.baoLoi(loiRpc(error)); await tai(); };
     $('vung').replaceChildren(el('div',{style:'border-top:2px solid var(--muc);margin-top:20px'}, ...(r.data || []).map(t => {
       const minh = t.id === me, khoa = t.trang_thai === 'khoa';
       const sel = el('select',{class:'nho','aria-label':'Vai trò của ' + t.ho_ten,disabled:minh}, Object.entries(A.VAI).map(([k, v]) => el('option',{value:k,selected:k === t.vai_tro}, v)));

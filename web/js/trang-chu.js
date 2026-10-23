@@ -20,24 +20,10 @@
                    tiem:'Tiêm vaccine phòng bệnh đúng lịch. Mũi tiêm được ghi vào sổ tiêm điện tử và web nhắc bạn mũi tiếp theo.' };
     const THU = ['', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ nhật'];
     const lichTheoThu = l => { const m = new Map(); (l || []).forEach(c => { if (!m.has(c.thu)) m.set(c.thu, []); m.get(c.thu).push(c.tu + ' đến ' + c.den); }); return [...m].sort((a, b) => a[0] - b[0]); };
-    const hop = el('dialog',{class:'thong-tin-bs','aria-labelledby':'bs-ten'}); document.body.append(hop);
-    hop.addEventListener('click', ev => { if (ev.target === hop) hop.close(); });
-    function xemBs(x, i){
-      const lich = lichTheoThu(x.lich_lam_viec);
-      hop.replaceChildren(
-        el('div',{class:'bs-dau'},
-          x.anh_dai_dien ? el('img',{class:'ava',src:x.anh_dai_dien,alt:'Ảnh bác sĩ ' + x.ho_ten}) : el('div',{class:'ava','aria-hidden':'true',style:'background:'+MAUNEN[i%3]}, x.ho_ten.trim().split(/\s+/).pop().charAt(0).toUpperCase()),
-          el('div',{}, el('h2',{id:'bs-ten'}, 'Bs. ' + x.ho_ten), x.chuyen_mon ? el('div',{class:'cm'}, x.chuyen_mon) : null)),
-        el('h3',{}, 'Giới thiệu'),
-        el('p',{class:'bs-gt'}, x.gioi_thieu || 'Bác sĩ chưa cập nhật phần giới thiệu.'),
-        el('h3',{}, 'Lịch làm việc'),
-        lich.length ? el('ul',{class:'bs-lich'}, lich.map(([t, g]) => el('li',{}, el('b',{}, THU[t]), g.join(', '))))
-                    : el('p',{class:'bs-gt'}, 'Chưa có lịch làm việc cố định. Giờ trống hiện ở bước chọn giờ khi đặt lịch.'),
-        el('div',{class:'bs-nut'},
-          el('button',{class:'nut phu',type:'button',onclick:() => hop.close()}, 'Đóng'),
-          el('a',{class:'nut chinh',href:'/dang-nhap.html?dang-ky=1'}, 'Đặt lịch với bác sĩ')));
-      hop.showModal();
-    }
+    const chiTiet = x => { const l = lichTheoThu(x.lich_lam_viec);
+      return el('div',{class:'bs-ct'}, el('h3',{}, 'Lịch làm việc'),
+        l.length ? el('ul',{class:'bs-lich'}, l.map(([t, g]) => el('li',{}, el('b',{}, THU[t]), g.join(', '))))
+                 : el('p',{class:'cm'}, 'Chưa có lịch cố định. Giờ trống hiện ở bước chọn giờ khi đặt lịch.')); };
     const MAUNEN = ['var(--hong)','var(--bac)','var(--kem2)'];
     dv.replaceChildren(el('div',{class:'luoi-the'}, ...(d.dich_vu.length ? d.dich_vu : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
       x.ten ? el('div',{class:'the-dv'},
@@ -52,9 +38,12 @@
           : el('div',{class:'ava','aria-hidden':'true',style:'background:'+MAUNEN[i%3]}, x.ho_ten.trim().split(/\s+/).pop().charAt(0).toUpperCase()),
         el('div',{class:'ten'}, 'Bs. ' + x.ho_ten),
         x.chuyen_mon ? el('div',{class:'cm'}, x.chuyen_mon) : null,
-        el('div',{class:'cm gt-ngan'}, x.gioi_thieu || 'Bấm "Xem thông tin" để biết lịch làm việc của bác sĩ.'),
+        el('div',{class:'cm gt-ngan',id:'gt-' + i}, x.gioi_thieu || 'Bác sĩ chưa cập nhật phần giới thiệu.'),
+        chiTiet(x),
         el('div',{class:'nut-bs'},
-          el('button',{class:'nut trang',type:'button','aria-label':'Xem thông tin bác sĩ ' + x.ho_ten,onclick:() => xemBs(x, i)}, 'Xem thông tin'),
+          (() => { const b = el('button',{class:'nut trang',type:'button','aria-expanded':'false','aria-label':'Xem thông tin bác sĩ ' + x.ho_ten}, 'Xem thông tin');
+            b.addEventListener('click', () => { const c = b.closest('.the-bs'), mo = c.classList.toggle('mo'); b.setAttribute('aria-expanded', String(mo)); b.textContent = mo ? 'Thu gọn' : 'Xem thông tin'; });
+            return b; })(),
           el('a',{class:'nut chinh',href:'/dang-nhap.html?dang-ky=1'}, 'Đặt lịch'))) : x)));
     const n = d.cau_hinh.dat_truoc_toi_da_ngay;
     if (n) document.getElementById('dat-truoc').textContent = 'Nhận lịch hẹn trước tối đa ' + n + ' ngày.';

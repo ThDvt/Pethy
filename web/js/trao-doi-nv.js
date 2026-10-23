@@ -24,7 +24,7 @@
   const gui = async ev => { const nd = o.value.trim(); if (!nd) return; ev.currentTarget.disabled = true; A.baoLoi('');
     const { error } = await db.rpc('gui_tin_nhan', { p_nhan_vien: me, p_noi_dung: nd });
     ev.currentTarget.disabled = false; if (error) return A.baoLoi(loiRpc(error)); o.value = ''; await tai(); };
-  $('vung').replaceChildren(hop, el('div',{style:'display:flex;gap:12px;align-items:flex-end;margin-top:12px'}, el('div',{style:'flex:1'}, o), el('button',{class:'nut chinh',type:'button',onclick:gui}, 'Gửi')));
+  $('vung').replaceChildren(hop, el('div',{class:'soan-tin',style:'margin-top:12px'}, el('div',{style:'flex:1'}, o), el('button',{class:'nut chinh',type:'button',onclick:gui}, 'Gửi')));
   await tai();
   setInterval(() => { if (!document.hidden) tai(true); }, 15000);
 })();

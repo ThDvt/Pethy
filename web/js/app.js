@@ -29,7 +29,7 @@
     const { data, error } = await db.rpc('vai_tro_hieu_luc');
     return error ? null : data;   // null: chưa đăng nhập hoặc đang bảo trì
   }
-  async function dangXuat(){ if (!await xacNhan('Đăng xuất?', 'Bạn sẽ cần đăng nhập lại để tiếp tục.', 'Đăng xuất', 'chinh')) return; try { sessionStorage.removeItem('pethy.menu'); } catch (e) {} if (db) await db.auth.signOut(); location.href = '/'; }
+  async function dangXuat(){ if (!await xacNhan('Đăng xuất?', 'Bạn sẽ cần đăng nhập lại để tiếp tục.', 'Đăng xuất', 'chinh', 'Ở lại')) return; try { sessionStorage.removeItem('pethy.menu'); } catch (e) {} if (db) await db.auth.signOut(); location.href = '/'; }
 
   // Dữ liệu mẫu để xem giao diện khi chưa nối Supabase (chỉ dùng trên máy cá nhân).
   const MAU = {
@@ -49,14 +49,14 @@
     });
   }
   // Hộp xác nhận thay cho confirm() của trình duyệt. Trả về true/false. kieu: 'nguy-hiem' (đỏ) hoặc 'chinh'.
-  function xacNhan(tieuDe, moTa, nutTen, kieu){
+  function xacNhan(tieuDe, moTa, nutTen, kieu, huyTen){
     return new Promise(xong => {
       const d = el('dialog',{class:'xac-nhan'});
       const dong = kq => { d.close(); d.remove(); xong(kq); };
       d.append(el('h2',{style:'margin:0 0 8px;font-size:20px'}, tieuDe),
         el('p',{class:'ghi-chu',style:'margin:0 0 20px'}, moTa || ''),
         el('div',{style:'display:flex;gap:12px;justify-content:flex-end'},
-          el('button',{class:'nut phu',type:'button',onclick:() => dong(false)}, 'Quay lại'),
+          el('button',{class:'nut phu',type:'button',onclick:() => dong(false)}, huyTen || ((kieu || 'nguy-hiem') === 'nguy-hiem' ? 'Không, giữ nguyên' : 'Quay lại')),
           el('button',{class:'nut ' + (kieu || 'nguy-hiem'),type:'button',onclick:() => dong(true)}, nutTen)));
       d.addEventListener('cancel', ev => { ev.preventDefault(); dong(false); });
       document.body.append(d); d.showModal();
