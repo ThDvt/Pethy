@@ -1050,7 +1050,10 @@ $$;
 
 -- Trang công khai: danh sách bác sĩ (không lộ số điện thoại hay dữ liệu khác).
 CREATE VIEW bac_si_cong_khai AS
-SELECT k.id, k.ho_ten, h.chuyen_mon, h.gioi_thieu, h.anh_dai_dien
+SELECT k.id, k.ho_ten, h.chuyen_mon, h.gioi_thieu, h.anh_dai_dien,
+       (SELECT coalesce(jsonb_agg(jsonb_build_object('thu', w.thu_trong_tuan, 'tu', to_char(w.gio_bat_dau,'HH24:MI'), 'den', to_char(w.gio_ket_thuc,'HH24:MI'))
+                                  ORDER BY w.thu_trong_tuan, w.gio_bat_dau), '[]'::jsonb)
+          FROM lich_lam_viec w WHERE w.bac_si_id = k.id) AS lich_lam_viec
   FROM tai_khoan k
   JOIN ho_so_bac_si h ON h.tai_khoan_id = k.id
  WHERE k.vai_tro = 'bac_si' AND k.trang_thai = 'hoat_dong';

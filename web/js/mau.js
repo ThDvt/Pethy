@@ -36,7 +36,7 @@
     chu_nuoi:[{id:'c1',ho_ten:'Trần Thu Hằng',so_dien_thoai:'0901000001',dia_chi:'12 Láng Hạ, Hà Nội',tai_khoan_id:'u1'},{id:'c2',ho_ten:'Lê Văn Khải',so_dien_thoai:'0902114552',dia_chi:null,tai_khoan_id:null}],
     lich_can_nhac:[{loai_nhac:'lich_hen',lich_hen_id:'l1',mui_tiem_id:null,thoi_diem:sau(30),ten_thu_cung:'Mít',ten_chu_nuoi:'Trần Thu Hằng',so_dien_thoai:'0901000001',ten_dich_vu:'Khám tổng quát'},{loai_nhac:'mui_tiem',lich_hen_id:null,mui_tiem_id:'m1',thoi_diem:sau(100),ten_thu_cung:'Mít',ten_chu_nuoi:'Trần Thu Hằng',so_dien_thoai:'0901000001',ten_dich_vu:'Dại'}]
   };
-  const q = ten0 => { const ten = (ten0 === 'lich_hen' && (VT === 'le_tan' || VT === 'bac_si' || VT === 'thu_ngan')) ? 'lich_hen_lt' : ten0; const o = { select:()=>o, eq:()=>o, in:()=>o, gte:()=>o, lt:()=>o, neq:()=>o, not:()=>o, or:()=>o, order:()=>o, limit:()=>o, insert:()=>o, single:()=>o,
+  const q = ten0 => { const ten = (ten0 === 'lich_hen' && (VT === 'le_tan' || VT === 'bac_si' || VT === 'thu_ngan')) ? 'lich_hen_lt' : ten0; const o = { select:()=>o, eq:()=>o, in:()=>o, gte:()=>o, lt:()=>o, neq:()=>o, not:()=>o, or:()=>o, order:()=>o, limit:()=>o, insert:()=>o, update:()=>o, single:()=>o, maybeSingle:()=>Promise.resolve({data:(BANG[ten]||[])[0]||null,error:null}),
     then:(ok)=>ok({data:BANG[ten]||[],error:null}) }; return o; };
   const lam = h => { const d=new Date(); d.setDate(d.getDate()+1); d.setHours(h,0,0,0); return d.toISOString(); };
   const LICH_SU = [{lich_hen_id:'x1',thoi_gian:'2026-07-02T03:00:00Z',trang_thai:'da_hoan_thanh',dich_vu:'Khám tổng quát',bac_si:'Nguyễn Thị Lan',ho_so_id:'h1',chan_doan:'Viêm da dị ứng.',can_nang:12.2,nhiet_do:38.6,ghi_chu:null,don_thuoc:[{thuoc:'Oresol',don_vi:'gói',so_luong:2,lieu_dung:'Pha nước'}]},

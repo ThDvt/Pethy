@@ -29,12 +29,12 @@
     const { data, error } = await db.rpc('vai_tro_hieu_luc');
     return error ? null : data;   // null: chưa đăng nhập hoặc đang bảo trì
   }
-  async function dangXuat(){ if (!await xacNhan('Đăng xuất?', 'Bạn sẽ cần đăng nhập lại để tiếp tục.', 'Đăng xuất', 'chinh')) return; try { sessionStorage.removeItem('pethy.menu'); } catch (e) {} if (db) await db.auth.signOut(); location.href = '/'; }
+  async function dangXuat(){ if (!await xacNhan('Đăng xuất?', 'Bạn sẽ cần đăng nhập lại để tiếp tục.', 'Đăng xuất', 'chinh', 'Ở lại')) return; try { sessionStorage.removeItem('pethy.menu'); } catch (e) {} if (db) await db.auth.signOut(); location.href = '/'; }
 
   // Dữ liệu mẫu để xem giao diện khi chưa nối Supabase (chỉ dùng trên máy cá nhân).
   const MAU = {
-    dich_vu:[{id:'1',ten:'Khám tổng quát',loai:'kham',gia:150000},{id:'2',ten:'Tiêm phòng',loai:'tiem',gia:50000},{id:'3',ten:'Tái khám',loai:'kham',gia:80000}],
-    bac_si:[{id:'a',ho_ten:'Nguyễn Thị Lan',chuyen_mon:'Nội khoa chó mèo',gioi_thieu:null,anh_dai_dien:null},{id:'b',ho_ten:'Phạm Quốc Hưng',chuyen_mon:'Tiêm phòng và ngoại khoa nhỏ',gioi_thieu:null,anh_dai_dien:null}],
+    dich_vu:[{id:'1',ten:'Khám tổng quát',loai:'kham',gia:150000,mo_ta:'Khám toàn diện: cân nặng, nhiệt độ, tim phổi, da lông, răng miệng. Bác sĩ tư vấn dinh dưỡng và lịch tiêm cho bé.'},{id:'2',ten:'Tiêm phòng',loai:'tiem',gia:50000,mo_ta:null},{id:'3',ten:'Tái khám',loai:'kham',gia:80000}],
+    bac_si:[{id:'a',ho_ten:'Nguyễn Thị Lan',chuyen_mon:'Nội khoa chó mèo',gioi_thieu:'Hơn 8 năm khám và điều trị nội khoa cho chó mèo. Ưu tiên giải thích rõ tình trạng của bé để chủ nuôi yên tâm.',anh_dai_dien:null,lich_lam_viec:[{thu:1,tu:'08:00',den:'12:00'},{thu:3,tu:'13:30',den:'17:30'},{thu:5,tu:'08:00',den:'12:00'}]},{id:'b',ho_ten:'Phạm Quốc Hưng',chuyen_mon:'Tiêm phòng và ngoại khoa nhỏ',gioi_thieu:null,anh_dai_dien:null,lich_lam_viec:[]}],
     cau_hinh:{che_do_bao_tri:'false',dat_truoc_toi_da_ngay:'30'}
   };
 
@@ -49,14 +49,14 @@
     });
   }
   // Hộp xác nhận thay cho confirm() của trình duyệt. Trả về true/false. kieu: 'nguy-hiem' (đỏ) hoặc 'chinh'.
-  function xacNhan(tieuDe, moTa, nutTen, kieu){
+  function xacNhan(tieuDe, moTa, nutTen, kieu, huyTen){
     return new Promise(xong => {
       const d = el('dialog',{class:'xac-nhan'});
       const dong = kq => { d.close(); d.remove(); xong(kq); };
       d.append(el('h2',{style:'margin:0 0 8px;font-size:20px'}, tieuDe),
         el('p',{class:'ghi-chu',style:'margin:0 0 20px'}, moTa || ''),
         el('div',{style:'display:flex;gap:12px;justify-content:flex-end'},
-          el('button',{class:'nut phu',type:'button',onclick:() => dong(false)}, 'Quay lại'),
+          el('button',{class:'nut phu',type:'button',onclick:() => dong(false)}, huyTen || ((kieu || 'nguy-hiem') === 'nguy-hiem' ? 'Không, giữ nguyên' : 'Quay lại')),
           el('button',{class:'nut ' + (kieu || 'nguy-hiem'),type:'button',onclick:() => dong(true)}, nutTen)));
       d.addEventListener('cancel', ev => { ev.preventDefault(); dong(false); });
       document.body.append(d); d.showModal();

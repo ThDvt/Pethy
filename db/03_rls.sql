@@ -72,7 +72,7 @@ GRANT INSERT (tai_khoan_id, chuyen_mon, gioi_thieu, anh_dai_dien),
 GRANT INSERT, UPDATE, DELETE ON lich_lam_viec TO authenticated;
 GRANT INSERT (khoa, gia_tri, mo_ta, cong_khai), UPDATE (gia_tri, mo_ta, cong_khai)
   ON cau_hinh TO authenticated;
-GRANT INSERT (ten, loai, gia, dang_ap_dung), UPDATE (ten, gia, dang_ap_dung)
+GRANT INSERT (ten, loai, gia, mo_ta, dang_ap_dung), UPDATE (ten, gia, mo_ta, dang_ap_dung)
   ON dich_vu TO authenticated;
 GRANT INSERT (ten, loai, don_vi, gia_ban, nguong_canh_bao, dang_ap_dung),
       UPDATE (ten, don_vi, gia_ban, nguong_canh_bao, dang_ap_dung)

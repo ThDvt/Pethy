@@ -28,7 +28,7 @@
       el('div',{style:'max-width:80%;padding:8px 12px;border:1px solid var(--muc);border-radius:2px;white-space:pre-wrap;word-break:break-word;' + (t.nguoi_gui_id === me ? 'background:var(--nen-nhat)' : '')}, t.noi_dung),
       el('div',{class:'nho'}, gio(t.created_at)))) : [A.rong('Chưa có tin nhắn. Hãy nhắn trước.')]));
     khung.replaceChildren(el('div',{style:'font-weight:800;font-size:18px;border-bottom:2px solid var(--muc);padding-bottom:8px'}, chon.ho_ten), hop,
-      el('div',{style:'display:flex;gap:12px;align-items:flex-end'}, el('div',{style:'flex:1'}, o), el('button',{class:'nut chinh',type:'button',onclick:gui}, 'Gửi')));
+      el('div',{class:'soan-tin'}, el('div',{style:'flex:1'}, o), el('button',{class:'nut chinh',type:'button',onclick:gui}, 'Gửi')));
     hop.scrollTop = hop.scrollHeight;
     await db.rpc('danh_dau_da_doc', { p_nhan_vien: id });
   }

@@ -88,6 +88,7 @@ CREATE TABLE dich_vu (
   ten           text NOT NULL UNIQUE CHECK (length(btrim(ten)) > 0),
   loai          text NOT NULL CHECK (loai IN ('kham','tiem')),
   gia           integer NOT NULL CHECK (gia >= 0),
+  mo_ta         text CHECK (mo_ta IS NULL OR length(mo_ta) <= 500),  -- mô tả công khai cho khách
   dang_ap_dung  boolean NOT NULL DEFAULT true,
   created_at    timestamptz NOT NULL DEFAULT now()
 );
