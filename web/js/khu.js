@@ -19,21 +19,30 @@
     thu_ngan:[{ten:'Thu ngân',href:'/thu-ngan/'},TRAO_DOI],
     kho:[{ten:'Tồn kho',href:'/kho/'},TRAO_DOI]
   };
+  const tenNguoi = () => { try { return (JSON.parse(sessionStorage.getItem('pethy.menu') || 'null') || {}).nguoi || ''; } catch (e) { return ''; } };
+  // Lấy họ tên người đang đăng nhập để hiện ở chân thanh bên, rồi nhớ cho các trang sau.
+  async function hienTenNguoi(){
+    try {
+      const u = (await db.auth.getUser()).data?.user; if (!u) return;
+      const r = await db.from('tai_khoan').select('ho_ten').eq('id', u.id).maybeSingle();
+      const ten = r.data && r.data.ho_ten; if (!ten) return;
+      const tn = document.querySelector('.thanh-ben .tb-tn'), av = document.querySelector('.thanh-ben .tb-av');
+      if (tn) tn.textContent = ten; if (av) av.textContent = ten.trim().charAt(0).toUpperCase();
+      const c = JSON.parse(sessionStorage.getItem('pethy.menu') || 'null'); if (c) { c.nguoi = ten; sessionStorage.setItem('pethy.menu', JSON.stringify(c)); }
+    } catch (e) {}
+  }
   // muc: [{ten, href}], hien: href đang mở
   async function khoiDong(vaiCan, ten, muc, hien){
     muc = MENU_NV[vaiCan] || muc;
     // Dựng thanh bên ngay, không chờ kiểm tra vai trò: người dùng thấy khung trang tức thì.
-    const nav = el('nav',{class:'thanh-ben','aria-label':'Khu vực'},
-      el('div',{class:'ten'},'Pethy'),
-      el('div',{class:'vai'}, ten),
-      muc.map(m => el('a',{href:m.href,'aria-current': m.href === hien ? 'page' : null}, m.ten)),
-      el('button',{class:'lien-ket dang-xuat',style:'color:#B8BAB4;text-align:left;font-size:15px;padding:10px 0',onclick:dangXuat},'Đăng xuất'));
+    const nav = window.PethyThanhBen.dung({ goc: KHU[vaiCan], ten, muc, hien, nguoi: tenNguoi() });
     const cu = document.querySelector('#khung-khu > .thanh-ben');
     if (cu) cu.replaceWith(nav); else document.getElementById('khung-khu').prepend(nav);
-    try { sessionStorage.setItem('pethy.menu', JSON.stringify({ goc: KHU[vaiCan], ten, muc })); } catch (e) {}
+    try { sessionStorage.setItem('pethy.menu', JSON.stringify({ goc: KHU[vaiCan], ten, muc, nguoi: tenNguoi() })); } catch (e) {}
     const vt = await vaiTro();
     if (!vt) { location.replace('/dang-nhap.html'); return null; }
     if (vt !== vaiCan && vt !== 'admin') { location.replace(KHU[vt] || '/'); return null; }
+    hienTenNguoi();
     if (Pethy.thuc) giamSatNhanRoi(vt === 'chu_nuoi' ? 60 : 30);
     return vt;
   }

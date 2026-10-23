@@ -10,6 +10,7 @@
 .nho{font-size:13px;color:var(--xam)}
 .tt{display:inline-block;font-size:12px;font-weight:700;border:1px solid var(--muc);padding:1px 6px;border-radius:2px}
 .tt.do{border-color:var(--loi);color:var(--loi)}
+.tt.vang{border-color:#B45309;color:#B45309}
 .the{display:flex;flex-wrap:wrap;gap:0;border-top:2px solid var(--muc);margin-top:20px}
 .the>div{flex:1 1 200px;padding:16px 20px 16px 0}
 .the .n{font-size:13px;color:var(--xam)}

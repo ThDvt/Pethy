@@ -91,9 +91,6 @@ html{scroll-behavior:smooth}
 .lien-ket:hover{color:var(--nhan)}
 .menu a:not(.nut){background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .25s var(--ra),color .15s;padding-bottom:2px}
 .menu a:not(.nut):hover{background-size:100% 1px}
-.thanh-ben a{transition:color .15s,transform .2s var(--ra)}
-.thanh-ben a:hover{color:#fff;transform:translateX(3px)}
-.thanh-ben a[aria-current=page]:hover{transform:none}
 .hang,.dong,.bs,.lich,.nhac{transition:background-color .15s}
 .hang:hover,.bs:hover{background-color:var(--nen-nhat)}
 .tab button{transition:color .15s,border-color .2s}

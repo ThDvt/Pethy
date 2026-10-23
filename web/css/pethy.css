@@ -62,14 +62,44 @@ form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 
 /* khu làm việc (sau đăng nhập) */
 .bo-khu{display:flex;flex-wrap:wrap;min-height:100vh}
-.thanh-ben{flex:0 0 200px;background:var(--muc);color:#fff;padding:24px 20px;display:flex;flex-direction:column;gap:4px}
-.thanh-ben .ten{font-size:20px;font-weight:800;letter-spacing:-.02em}
-.thanh-ben .vai{font-size:12px;color:#B8BAB4;margin-bottom:28px}
-.thanh-ben a{color:#B8BAB4;text-decoration:none;padding:10px 0;font-size:15px}
-.thanh-ben a[aria-current=page]{color:#fff;font-weight:700;border-bottom:1px solid #fff}
-.thanh-ben .dang-xuat{margin-top:auto}
+.thanh-ben{flex:0 0 240px;width:240px;position:sticky;top:0;align-self:flex-start;height:100vh;background:var(--muc);color:#fff;padding:16px;display:flex;flex-direction:column;gap:0;transition:width .2s ease,flex-basis .2s ease;z-index:5}
+.thanh-ben.gon{flex-basis:80px;width:80px}
+.tb-dau{display:flex;align-items:center;justify-content:space-between;height:44px;margin-bottom:16px;padding:0 4px;position:relative}
+.tb-logo{display:flex;align-items:center;color:#fff}
+.tb-chu{display:block;height:44px;width:auto}
+.tb-dau-logo{display:none}
+.tb-gon{width:28px;height:28px;border-radius:8px;border:1px solid #3A3D42;background:transparent;color:#B8BAB4;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background-color .15s,color .15s}
+.tb-gon:hover{background:#262A30;color:#fff}
+.tb-gon svg{width:16px;height:16px;transition:transform .2s}
+.thanh-ben.gon .tb-gon svg{transform:rotate(180deg)}
+.thanh-ben.gon .tb-chu{display:none}
+.thanh-ben.gon .tb-dau-logo{display:block}
+.thanh-ben.gon .tb-dau{flex-direction:column;height:auto;gap:12px}
+.tb-muc{display:flex;flex-direction:column;gap:4px;flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
+.tb-nhom{font:500 11px var(--so);letter-spacing:.08em;color:#8A8D92;margin:20px 0 4px;padding:0 12px;white-space:nowrap}
+.tb-nhom:first-child{margin-top:4px}
+.thanh-ben.gon .tb-nhom{height:1px;background:#2A2D32;margin:12px 8px;padding:0;font-size:0;overflow:hidden}
+.tb-m{position:relative;display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:10px;color:#B8BAB4;text-decoration:none;font-size:15px;white-space:nowrap;transition:background-color .15s,color .15s}
+.tb-m svg{flex:0 0 20px}
+.tb-m:hover{background:#21252B;color:#fff}
+.tb-m[aria-current=page]{background:#2B3038;color:#fff;font-weight:700;border-bottom:0}
+.tb-m[aria-current=page]::before{content:"";position:absolute;left:-16px;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:#FFC83D}
+.tb-m:focus-visible,.tb-gon:focus-visible,.tb-ra:focus-visible{outline:2px solid #FFC83D;outline-offset:2px}
+.thanh-ben.gon .tb-m{justify-content:center;padding:0}
+.thanh-ben.gon .tb-ten{display:none}
+.thanh-ben.gon .tb-m:hover::after,.thanh-ben.gon .tb-m:focus-visible::after{content:attr(data-ten);position:absolute;left:calc(100% + 14px);top:50%;transform:translateY(-50%);background:#fff;color:var(--muc);font-size:13px;font-weight:700;padding:6px 10px;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.25);pointer-events:none;z-index:20}
+.tb-chan{border-top:1px solid #2A2D32;margin-top:12px;padding-top:12px}
+.tb-nguoi{display:flex;align-items:center;gap:10px;min-height:40px}
+.tb-av{flex:0 0 36px;width:36px;height:36px;border-radius:50%;background:#FFC83D;color:var(--muc);display:inline-flex;align-items:center;justify-content:center;font-weight:800}
+.tb-tt{flex:1;min-width:0}
+.tb-tn{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-vt{font-size:12px;color:#8A8D92}
+.tb-ra{flex:0 0 36px;width:36px;height:36px;border-radius:10px;border:0;background:transparent;color:#F08A7B;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background-color .15s}
+.tb-ra:hover{background:#2A1F1F}
+.thanh-ben.gon .tb-tt{display:none}
+.thanh-ben.gon .tb-nguoi{flex-direction:column;gap:8px}
 .noi-dung-khu{flex:999 1 560px;min-width:0;padding:28px 36px}
-@media(max-width:760px){.thanh-ben{flex:1 1 100%;flex-direction:row;flex-wrap:wrap;gap:4px 20px}.thanh-ben .vai{margin:0;width:100%}.noi-dung-khu{padding:20px}}
+@media(max-width:760px){.thanh-ben,.thanh-ben.gon{flex:1 1 100%;width:100%;height:auto;position:static;flex-direction:row;align-items:center;padding:8px 12px;gap:8px}.tb-dau,.thanh-ben.gon .tb-dau{height:auto;margin:0;flex-direction:row}.tb-chu{height:36px}.tb-gon,.tb-nhom,.tb-vt,.tb-tt{display:none}.tb-muc,.thanh-ben.gon .tb-muc{flex-direction:row;overflow-x:auto;flex:1;gap:4px}.tb-m,.thanh-ben.gon .tb-m{padding:0 12px;justify-content:flex-start;flex:0 0 auto}.thanh-ben.gon .tb-ten{display:inline}.tb-m[aria-current=page]::before{display:none}.tb-chan{border:0;margin:0;padding:0}.noi-dung-khu{padding:20px}}
 .trang-thai-tai{padding:40px 0;color:var(--xam)}
 
 /* thanh tiến trình các bước */
@@ -82,3 +112,6 @@ form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 dialog.xac-nhan{border:1px solid var(--muc);border-radius:2px;padding:24px;max-width:440px;width:calc(100% - 40px)}
 dialog.xac-nhan::backdrop{background:rgba(20,22,26,.5)}
 dialog.xac-nhan p{white-space:pre-line}
+.thanh-ben.gon .tb-muc{overflow:visible}
+#them-nv{margin:4px 0 16px}
+@media(max-width:760px){.tb-muc{min-width:0}.tb-nguoi{gap:0}}
