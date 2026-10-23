@@ -145,6 +145,17 @@ CREATE UNIQUE INDEX uq_lich_hen_bacsi_gio
 CREATE INDEX idx_lich_hen_thu_cung     ON lich_hen (thu_cung_id);
 CREATE INDEX idx_lich_hen_trang_thai   ON lich_hen (trang_thai, thoi_gian);
 
+-- Đánh giá của chủ nuôi sau lần khám đã hoàn thành: mỗi lịch hẹn một đánh giá.
+-- Ghi qua hàm gui_danh_gia (trình duyệt không ghi trực tiếp). Admin có thể ẩn đánh giá không phù hợp.
+CREATE TABLE danh_gia (
+  id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  lich_hen_id  uuid NOT NULL UNIQUE REFERENCES lich_hen(id) ON DELETE CASCADE,
+  so_sao       smallint NOT NULL CHECK (so_sao BETWEEN 1 AND 5),
+  nhan_xet     text CHECK (nhan_xet IS NULL OR length(nhan_xet) <= 500),
+  hien_thi     boolean NOT NULL DEFAULT true,
+  created_at   timestamptz NOT NULL DEFAULT now()
+);
+
 CREATE TABLE ho_so_kham (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   lich_hen_id uuid NOT NULL UNIQUE REFERENCES lich_hen(id) ON DELETE RESTRICT,

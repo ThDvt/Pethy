@@ -41,6 +41,28 @@
       el('div',{class:'so'}, m.ngay_tiem_tiep.split('-').reverse().join('/')))));
   }
 
+  async function taiDaKham(){
+    const [r, dg] = await Promise.all([
+      db.from('lich_hen').select('id,thoi_gian,trang_thai,bac_si_id,thu_cung(ten),dich_vu(ten)').eq('trang_thai','da_hoan_thanh').order('thoi_gian',{ascending:false}).limit(5),
+      db.from('danh_gia').select('lich_hen_id,so_sao,nhan_xet')
+    ]);
+    const vung = $('ds-da-kham');
+    const ds = (r.data || []).filter(l => l.trang_thai === 'da_hoan_thanh');
+    if (r.error) { vung.replaceChildren(el('p',{class:'ghi-chu'},'Không tải được.')); return; }
+    if (!ds.length) { vung.replaceChildren(el('p',{class:'ghi-chu'},'Chưa có lần khám nào hoàn thành.')); return; }
+    const theoLich = Object.fromEntries((dg.data || []).map(x => [x.lich_hen_id, x]));
+    vung.replaceChildren(...ds.map(l => {
+      const cu = theoLich[l.id], ten = tenBs[l.bac_si_id];
+      const lich = { id: l.id, thu_cung_ten: l.thu_cung?.ten, dich_vu_ten: l.dich_vu?.ten, bac_si_ten: ten };
+      return el('div',{class:'dong'},
+        el('div',{}, el('b',{}, l.thu_cung?.ten), ', ' + (l.dich_vu?.ten || '').toLowerCase(),
+          el('div',{class:'ghi-chu'}, ngay(l.thoi_gian) + (ten ? ', Bs. ' + ten : ''))),
+        el('div',{style:'display:flex;align-items:center;gap:12px'},
+          cu ? Pethy.sao(cu.so_sao) : null,
+          el('button',{class:cu ? 'lien-ket' : 'nut chinh',type:'button',style:cu ? '' : 'padding:8px 18px;min-height:0',onclick:() => Pethy.hopDanhGia(lich, cu, taiDaKham)}, cu ? 'Sửa' : 'Đánh giá')));
+    }));
+  }
+
   let dangHuy = null;
   const hop = $('hop-huy');
   function moHuy(l){
@@ -57,5 +79,5 @@
     hop.close(); await taiLich();
   });
 
-  await Promise.all([taiLich(), taiTiem()]);
+  await Promise.all([taiLich(), taiTiem(), taiDaKham()]);
 })();
