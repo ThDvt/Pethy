@@ -11,6 +11,7 @@ PostgreSQL trên Supabase. Toàn bộ nghiệp vụ và phân quyền nằm ở 
 | `03_rls.sql` | Bật RLS, quyền theo bảng/cột, chính sách theo vai trò |
 | `04_storage.sql` | Bucket `avatar-bac-si` và chính sách ảnh đại diện bác sĩ |
 | `05_mfa_admin.sql` | Bản vá cho CSDL đã cài trước: bắt buộc mã xác thực hai lớp với admin đã đăng ký TOTP (bản cài mới đã có trong `02_logic.sql`) |
+| `06_mo_ta_dich_vu_va_lich_bac_si.sql` | Bản vá cho CSDL đã cài trước: thêm `dich_vu.mo_ta` và cột `lich_lam_viec` (công khai) trong view `bac_si_cong_khai` (bản cài mới đã có trong 01, 02, 03) |
 | `test/` | Stub Supabase, `reset.sh`, `10_behavior.sql` (151 kiểm thử), `11_reports_chat.sql` (75 kiểm thử), `12_security.sql` (62 kiểm thử, gồm quét RLS và quyền) |
 
 ## Cài lên Supabase
@@ -126,3 +127,4 @@ Lỗi nghiệp vụ có dạng `MA_LOI: mô tả`; mã nằm trong `error.hint` 
 ## Cập nhật cho cơ sở dữ liệu đã cài trước đó
 
 - `05_mfa_admin.sql`: bắt buộc mã xác thực hai lớp cho admin đã đăng ký.
+- `06_mo_ta_dich_vu_va_lich_bac_si.sql`: mô tả dịch vụ và lịch làm việc công khai của bác sĩ (trang chủ).

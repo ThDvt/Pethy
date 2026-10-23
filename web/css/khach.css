@@ -124,3 +124,22 @@ dialog.xac-nhan{border:2px solid var(--muc);border-radius:24px}
 .khach .mang-xh{display:flex;gap:12px;margin-top:20px}
 .khach .mang-xh a{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:2px solid #3A6A6E;color:#fff}
 .khach .mang-xh a:hover{background:var(--vang);border-color:var(--vang);color:var(--toi)}
+
+/* mô tả dịch vụ, thẻ bác sĩ có nút xem thông tin */
+.the-dv .mo-ta-dv{color:var(--xam);font-size:15px;line-height:1.55;flex:1}
+.the-dv .gia{font-family:var(--so);font-size:20px;font-weight:700}
+.the-dv a.nut{margin-top:4px;align-self:stretch;text-align:center}
+.the-bs .gt-ngan{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.the-bs .nut-bs{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;width:100%}
+.the-bs .nut-bs .nut{flex:1 1 auto;text-align:center;padding-left:14px;padding-right:14px}
+dialog.thong-tin-bs{border:2px solid var(--muc);border-radius:28px;padding:28px;max-width:520px;width:calc(100% - 32px);box-shadow:8px 8px 0 var(--vang);background:#fff;color:var(--muc)}
+dialog.thong-tin-bs::backdrop{background:rgba(15,63,68,.45)}
+.thong-tin-bs .bs-dau{display:flex;gap:18px;align-items:center;margin-bottom:8px}
+.thong-tin-bs .bs-dau h2{margin:0;font-size:24px;letter-spacing:-.02em}
+.thong-tin-bs .cm{color:var(--xam);margin-top:4px}
+.thong-tin-bs h3{margin:20px 0 6px;font:500 12px var(--so);letter-spacing:.08em;color:var(--xam);text-transform:uppercase}
+.thong-tin-bs .bs-gt{margin:0;line-height:1.6;white-space:pre-line}
+.thong-tin-bs .bs-lich{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.thong-tin-bs .bs-lich li{display:flex;gap:12px}
+.thong-tin-bs .bs-lich b{flex:0 0 84px}
+.thong-tin-bs .bs-nut{display:flex;gap:12px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap}

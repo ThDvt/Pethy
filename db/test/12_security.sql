@@ -142,6 +142,20 @@ RESET ROLE;
 SELECT set_config('request.jwt.claims','',false);
 DELETE FROM auth.mfa_factors WHERE user_id=:a1;
 
+-- ===== (6) Mo ta dich vu va lich lam viec cong khai cua bac si =====
+SET ROLE anon; SELECT t.as_('');
+SELECT t.bang('anon doc duoc lich lam viec cong khai cua bac si (jsonb, khong lo ma tai khoan khac)',
+  $$SELECT jsonb_typeof(lich_lam_viec) FROM bac_si_cong_khai LIMIT 1$$,'array');
+SELECT t.loi('anon khong doc truc tiep lich_lam_viec', 'SELECT * FROM lich_lam_viec','42501');
+RESET ROLE;
+SET ROLE authenticated; SELECT t.as_(:a1);
+SELECT t.bang('admin dat duoc mo ta dich vu', $$WITH u AS (UPDATE dich_vu SET mo_ta='Kham tong quat suc khoe cho thu cung' WHERE id='00000000-0000-0000-0000-000000000d01' RETURNING 1) SELECT count(*)::text FROM u$$,'1');
+SELECT t.loi('mo ta dich vu dai qua 500 ky tu bi chan', $$UPDATE dich_vu SET mo_ta=repeat('a',501) WHERE id='00000000-0000-0000-0000-000000000d01'$$,'23514');
+RESET ROLE;
+SET ROLE authenticated; SELECT t.as_(:bs1);
+SELECT t.bang('bac si khong sua duoc mo ta dich vu', $$WITH u AS (UPDATE dich_vu SET mo_ta='x' WHERE id='00000000-0000-0000-0000-000000000d01' RETURNING 1) SELECT count(*)::text FROM u$$,'0');
+RESET ROLE;
+
 \echo ---KET QUA---
 SELECT CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END AS kq, ten, chi_tiet FROM t.kq WHERE NOT ok ORDER BY 1;
 SELECT count(*) FILTER (WHERE ok) AS pass, count(*) FILTER (WHERE NOT ok) AS fail FROM t.kq;
