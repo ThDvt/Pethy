@@ -21,8 +21,8 @@
   }
   // ---- định dạng số ----
   const gon = v => { v = Number(v); const a = Math.abs(v);
-    if (a >= 1e9) return (v / 1e9).toFixed(1).replace('.0', '') + ' tỷ';
-    if (a >= 1e6) return (v / 1e6).toFixed(1).replace('.0', '') + ' tr';
+    if (a >= 1e9) return (v / 1e9).toFixed(1).replace('.0', '').replace('.', ',') + ' tỷ';
+    if (a >= 1e6) return (v / 1e6).toFixed(1).replace('.0', '').replace('.', ',') + ' tr';
     if (a >= 1e3) return Math.round(v / 1e3) + 'k'; return String(Math.round(v)); };
   const phanTram = x => (Math.round(x * 10) / 10).toString().replace('.', ',') + '%';
   function dep(max){ // trần trục tung "đẹp" và 4 vạch chia
@@ -59,18 +59,24 @@
     });
     return g;
   }
-  // ---- thanh xếp chồng ngang (cơ cấu) kèm chú giải ----
-  function chong(phan, donVi){
+  // ---- bánh rán (cơ cấu của một tổng) kèm chú giải; chỉ dùng cho 2 đến 3 phần ----
+  function banhRan(phan, donVi){
     const tong = phan.reduce((s, p) => s + p.v, 0);
     if (!tong) return el('p',{class:'nho',style:'padding:12px 0'}, 'Chưa có số liệu trong kỳ này.');
-    const W = 600, H = 28, gap = 2; let x = 0;
-    const g = sv('svg', { viewBox:'0 0 ' + W + ' ' + H, class:'chong', role:'img', 'aria-label':phan.map(p => p.ten + ' ' + phanTram(p.v / tong * 100)).join(', ') });
-    const co = phan.filter(p => p.v > 0);
-    co.forEach((p, i) => { const w = p.v / tong * W, rect = sv('rect', { x:x + (i ? gap / 2 : 0), y:0, width:Math.max(1, w - (co.length > 1 ? gap : 0) + (i && i < co.length - 1 ? 0 : 0)), height:H, rx:4, fill:p.mau, tabindex:'0', class:'doan', 'aria-label':p.ten + ': ' + tien(p.v) });
+    const R = 52, C = 2 * Math.PI * R, SZ = 150, co = phan.filter(p => p.v > 0), khe = co.length > 1 ? 3 : 0;
+    const g = sv('svg', { viewBox:'0 0 ' + SZ + ' ' + SZ, class:'bran', role:'img', 'aria-label':phan.map(p => p.ten + ' ' + phanTram(p.v / tong * 100)).join(', ') });
+    g.append(sv('circle', { cx:SZ / 2, cy:SZ / 2, r:R, fill:'none', stroke:'var(--vach)', 'stroke-width':22, opacity:'.5' }));
+    let dau = 0;
+    co.forEach(p => {
+      const dai = p.v / tong * C, ve = Math.max(1, dai - khe);
+      const arc = sv('circle', { cx:SZ / 2, cy:SZ / 2, r:R, fill:'none', stroke:p.mau, 'stroke-width':22, 'stroke-dasharray':ve + ' ' + (C - ve), 'stroke-dashoffset':-(dau + khe / 2), transform:'rotate(-90 ' + SZ / 2 + ' ' + SZ / 2 + ')', class:'lat', tabindex:'0', 'aria-label':p.ten + ': ' + tien(p.v) + ', ' + phanTram(p.v / tong * 100) });
       const bat = ev => hienTip(ev, [el('div',{class:'dg-nhan'}, p.ten), el('div',{class:'dg-gt'}, tien(p.v)), el('div',{class:'dg-ph'}, phanTram(p.v / tong * 100) + ' ' + donVi)]);
-      rect.addEventListener('pointermove', bat); rect.addEventListener('pointerleave', anTip); rect.addEventListener('focus', () => { const b = rect.getBoundingClientRect(); bat({ clientX:b.left + b.width / 2, clientY:b.top }); }); rect.addEventListener('blur', anTip);
-      g.append(rect); x += w; });
-    return el('div',{}, g, el('div',{class:'chu-giai'}, ...phan.map(p => el('div',{},
+      arc.addEventListener('pointermove', bat); arc.addEventListener('pointerleave', anTip);
+      arc.addEventListener('focus', () => { const b = arc.getBoundingClientRect(); bat({ clientX:b.left + b.width / 2, clientY:b.top }); }); arc.addEventListener('blur', anTip);
+      g.append(arc); dau += dai;
+    });
+    g.append(sv('text', { x:SZ / 2, y:SZ / 2 + 2, 'text-anchor':'middle', class:'bran-so' }, gon(tong)), sv('text', { x:SZ / 2, y:SZ / 2 + 20, 'text-anchor':'middle', class:'bran-nhan' }, 'tổng'));
+    return el('div',{class:'db-bran'}, g, el('div',{class:'chu-giai'}, ...phan.map(p => el('div',{},
       el('i',{class:'nut-mau',style:'background:' + p.mau}), el('span',{class:'cg-ten'}, p.ten), el('b',{}, tien(p.v)), el('span',{class:'nho'}, ' ' + phanTram(p.v / tong * 100))))));
   }
   // ---- cột ngang xếp hạng ----
@@ -156,9 +162,9 @@
         canXuLy),
       el('div',{class:'db-ba'},
         el('section',{class:'muc'}, el('h2',{}, 'Doanh số theo nhóm'), el('div',{class:'nho',style:'margin:8px 0'}, 'Hóa đơn đã lập, chưa hủy.'),
-          chong([{ ten:'Dịch vụ', v:nhom['Dịch vụ'] || 0, mau:MAU.chinh }, { ten:'Thuốc', v:nhom['Thuốc'] || 0, mau:MAU.phu }, { ten:'Vaccine', v:nhom['Vaccine'] || 0, mau:MAU.thu3 }], 'doanh số')),
+          banhRan([{ ten:'Dịch vụ', v:nhom['Dịch vụ'] || 0, mau:MAU.chinh }, { ten:'Thuốc', v:nhom['Thuốc'] || 0, mau:MAU.phu }, { ten:'Vaccine', v:nhom['Vaccine'] || 0, mau:MAU.thu3 }], 'doanh số')),
         el('section',{class:'muc'}, el('h2',{}, 'Hình thức thanh toán'), el('div',{class:'nho',style:'margin:8px 0'}, 'Số tiền đã thu trong kỳ.'),
-          chong([{ ten:'Tiền mặt', v:c.tm, mau:MAU.chinh }, { ten:'Chuyển khoản', v:c.ck, mau:MAU.phu }], 'đã thu')),
+          banhRan([{ ten:'Tiền mặt', v:c.tm, mau:MAU.chinh }, { ten:'Chuyển khoản', v:c.ck, mau:MAU.phu }], 'đã thu')),
         el('section',{class:'muc'}, el('h2',{}, 'Bán chạy nhất'), top.length ? xepHang(top.slice(0, 5)) : A.rong('Chưa có hóa đơn trong kỳ này.'))));
   }
   await ve();
