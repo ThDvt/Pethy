@@ -23,7 +23,7 @@ body.khach{
 .hero-khach{display:grid;grid-template-columns:1.05fr .95fr;gap:24px 40px;align-items:center;padding-top:16px;padding-bottom:72px}
 .hero-khach .go{font:500 13px var(--so);letter-spacing:.06em;color:var(--xam);margin-bottom:20px}
 .hero-khach h1{margin:0;font-size:clamp(40px,6vw,74px);line-height:1.05;font-weight:800;letter-spacing:-.035em}
-.hero-khach mark{color:inherit;background:linear-gradient(transparent 60%,var(--vang) 60%);padding:0 .06em}
+.hero-khach mark{color:inherit;background:none;padding:0}
 .hero-khach p.mo{margin:24px 0 32px;font-size:19px;line-height:1.6;color:var(--xam);max-width:520px}
 .hero-khach .hanh-dong{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
 .chip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--muc);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:700}
