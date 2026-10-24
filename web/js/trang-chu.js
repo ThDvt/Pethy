@@ -30,7 +30,9 @@
         l.length ? el('ul',{class:'bs-lich'}, l.map(([t, g]) => el('li',{}, el('b',{}, THU[t]), g.join(', '))))
                  : el('p',{class:'cm'}, 'Chưa có lịch cố định. Giờ trống hiện ở bước chọn giờ khi đặt lịch.')); };
     const MAUNEN = ['var(--hong)','var(--bac)','var(--kem2)'];
-    dv.replaceChildren(el('div',{class:'luoi-the'}, ...(d.dich_vu.length ? d.dich_vu : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
+    // Trang chủ chỉ giới thiệu 3 dịch vụ chính (có tranh minh họa); các dịch vụ khác vẫn đặt được sau khi đăng nhập.
+    const chinh = (d.dich_vu || []).filter(x => x.ten && tranh(x));
+    dv.replaceChildren(el('div',{class:'luoi-the luoi-dv'}, ...(chinh.length ? chinh : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
       x.ten ? el('div',{class:'the-dv'},
         tranh(x) ? el('img',{class:'anh-dv',src:'/img/dv/'+tranh(x)+'.jpg',alt:'Minh họa dịch vụ '+x.ten,width:560,height:560,loading:'lazy'}) : null,
         el('div',{class:'ten'}, x.ten),
