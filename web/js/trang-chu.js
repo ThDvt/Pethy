@@ -55,6 +55,8 @@
       requestAnimationFrame(cap); return goc;
     }
     const MAUNEN = ['var(--hong)','var(--bac)','var(--kem2)'];
+    // Nút trên thẻ nhớ lựa chọn của khách để trang đặt lịch chọn sẵn (lưu tạm trong trình duyệt, 7 ngày).
+    const nho = o => () => { try { localStorage.setItem('pethy_y_dinh', JSON.stringify({ ...o, t: Date.now() })); } catch (_) {} };
     // Mọi dịch vụ đang áp dụng. Vừa 3 thẻ thì chia đều chiều ngang; nhiều hơn thì trượt ngang (kéo, vuốt hoặc bấm mũi tên).
     const chinh = (d.dich_vu || []).filter(x => x.ten);
     const the = (chinh.length ? chinh : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
@@ -63,7 +65,7 @@
         el('div',{class:'ten'}, x.ten),
         el('div',{class:'mo-ta-dv'}, x.mo_ta || MOTA[String(x.loai||'').toLowerCase()] || ''),
         el('div',{class:'gia'}, tien(x.gia)),
-        el('a',{class:'nut chinh',href:'/dang-nhap.html?dang-ky=1','aria-label':'Đặt lịch ngay: ' + x.ten}, 'Đặt lịch ngay')) : x);
+        el('a',{class:'nut trang',href:'/dang-nhap.html?dang-ky=1',onclick:nho({ dv:x.id }),'aria-label':'Chọn dịch vụ ' + x.ten + ' và đặt lịch'}, 'Chọn dịch vụ này ', el('span',{'aria-hidden':'true'}, '→'))) : x);
     dv.replaceChildren(khungTruot(the));
     bs.replaceChildren(el('div',{class:'luoi-the'}, ...(d.bac_si.length ? d.bac_si : [el('p',{class:'ghi-chu'},'Chưa có bác sĩ.')]).map((x,i) =>
       x.ho_ten ? el('div',{class:'the-bs'},
@@ -75,10 +77,10 @@
         el('div',{class:'cm gt-ngan',id:'gt-' + i}, x.gioi_thieu || 'Bác sĩ chưa cập nhật phần giới thiệu.'),
         chiTiet(x),
         el('div',{class:'nut-bs'},
-          (() => { const b = el('button',{class:'nut trang',type:'button','aria-expanded':'false','aria-label':'Xem thông tin bác sĩ ' + x.ho_ten}, 'Xem thông tin');
+          (() => { const b = el('button',{class:'lien-ket',type:'button','aria-expanded':'false','aria-label':'Xem thông tin bác sĩ ' + x.ho_ten}, 'Xem thông tin');
             b.addEventListener('click', () => { const c = b.closest('.the-bs'), mo = c.classList.toggle('mo'); b.setAttribute('aria-expanded', String(mo)); b.textContent = mo ? 'Thu gọn' : 'Xem thông tin'; });
             return b; })(),
-          el('a',{class:'nut chinh',href:'/dang-nhap.html?dang-ky=1'}, 'Đặt lịch'))) : x)));
+          el('a',{class:'nut trang',href:'/dang-nhap.html?dang-ky=1',onclick:nho({ bs:x.id })}, 'Đặt với Bs. ' + x.ho_ten.trim().split(/\s+/).pop(), ' ', el('span',{'aria-hidden':'true'}, '→')))) : x)));
     if (d.danh_gia && d.danh_gia.length) {
       const g = d.danh_gia[0];
       document.getElementById('dg-tong').replaceChildren(Pethy.sao(g.diem_tb), ' ' + Number(g.diem_tb).toFixed(1) + ' trên 5, từ ' + g.tong + ' đánh giá của chủ nuôi sau khi khám.');
@@ -87,6 +89,12 @@
         el('figcaption',{}, x.ten_hien_thi + ', ' + new Date(x.ngay).toLocaleDateString('vi-VN',{month:'2-digit',year:'numeric',timeZone:'Asia/Ho_Chi_Minh'})))));
       document.getElementById('danh-gia').hidden = false;
     }
+    // Ca làm việc của bác sĩ trong hôm nay (lấy từ lịch làm việc công khai; giờ còn trống chỉ xem được sau khi đăng nhập).
+    const hn = new Date(), thuVN = { Mon:1, Tue:2, Wed:3, Thu:4, Fri:5, Sat:6, Sun:7 }[hn.toLocaleDateString('en-US', { weekday:'short', timeZone:'Asia/Ho_Chi_Minh' })];
+    const ngayVN = hn.toLocaleDateString('vi-VN', { weekday:'long', day:'2-digit', month:'2-digit', timeZone:'Asia/Ho_Chi_Minh' });
+    const homNay = (d.bac_si || []).map(b => ({ ten:b.ho_ten, ca:(b.lich_lam_viec || []).filter(c => c.thu === thuVN) })).filter(b => b.ca.length);
+    document.getElementById('hn-ngay').textContent = homNay.length ? 'Ca làm việc ' + ngayVN + '. Đăng nhập để xem giờ còn trống và chọn giờ.' : 'Hôm nay (' + ngayVN + ') chưa có bác sĩ trực. Bạn vẫn đặt được lịch cho những ngày tới.';
+    document.getElementById('hn-ds').replaceChildren(...homNay.map(b => el('li',{}, el('span',{}, 'Bs. ' + b.ten), el('span',{class:'so'}, b.ca.map(c => c.tu + ' đến ' + c.den).join(', ')))));
     const n = d.cau_hinh.dat_truoc_toi_da_ngay;
     if (n) document.getElementById('dat-truoc').textContent = 'Nhận lịch hẹn trước tối đa ' + n + ' ngày.';
     if (d.cau_hinh.che_do_bao_tri === 'true') {

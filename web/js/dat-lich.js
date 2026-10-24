@@ -36,6 +36,12 @@
   ]);
   if ([pets,dvs,bss,vcs].some(r => r.error)) { vung.replaceChildren(el('p',{class:'loi'},'Không tải được dữ liệu. Vui lòng tải lại trang.')); return; }
   ds = { pets: pets.data, dvs: dvs.data, bss: bss.data, vcs: vcs.data };
+  // Lựa chọn từ trang chủ (dịch vụ hoặc bác sĩ khách đã bấm): chọn sẵn nếu còn hợp lệ, dùng một lần.
+  let chonSan = false;
+  if (!doiId && !DAT_HO) {
+    try { const o = JSON.parse(localStorage.getItem('pethy_y_dinh') || 'null'); localStorage.removeItem('pethy_y_dinh');
+      if (o && Date.now() - o.t < 7 * 864e5) { if (ds.dvs.some(d => d.id === o.dv)) { S.dv = o.dv; chonSan = true; } if (ds.bss.some(b => b.id === o.bs)) { S.bs = o.bs; chonSan = true; } } } catch (_) {}
+  }
   soNgay = Number((cfg.data||[]).find(c => c.khoa === 'dat_truoc_toi_da_ngay')?.gia_tri || 30);
 
   function chonDS(ten, ds_, hien, dat){
@@ -51,6 +57,7 @@
     if (!ds.pets.length) { vung.replaceChildren(el('p',{},'Bạn cần thêm thú cưng trước khi đặt lịch.'), el('a',{class:'nut chinh',href:DAT_HO ? VE : '/chu-nuoi/thu-cung.html'},DAT_HO ? 'Về danh sách khách' : 'Thêm thú cưng')); return; }
     const vcBox = el('div',{id:'vc-box',hidden:true,style:'margin-top:20px'}, el('div',{style:'font-weight:700;margin-bottom:6px'},'Loại vaccine'), ...chonDS('vc', ds.vcs, v => [v.ten, null, tien(v.gia_ban)], S.vc));
     const f = el('form',{novalidate:true},
+      chonSan ? el('p',{class:'ghi-chu',style:'margin:0 0 20px'},'Đã chọn sẵn theo lựa chọn của bạn ở trang chủ. Bạn vẫn đổi được bên dưới.') : null,
       el('div',{style:'font-weight:700;margin-bottom:6px'},'Thú cưng'), ...chonDS('pet', ds.pets, p => [p.ten, p.loai], S.pet),
       el('div',{style:'font-weight:700;margin:28px 0 6px'},'Dịch vụ'), ...chonDS('dv', ds.dvs, d => [d.ten, null, tien(d.gia)], S.dv), vcBox,
       el('div',{style:'font-weight:700;margin:28px 0 6px'},'Bác sĩ'), ...chonDS('bs', ds.bss, b => ['Bs. ' + b.ho_ten, b.chuyen_mon], S.bs),
