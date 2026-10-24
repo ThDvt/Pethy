@@ -17,7 +17,10 @@
 
   try {
     const d = await lay();
-    const ICON = { kham:'icon-kham', tiem:'icon-tiem' };
+    // Tranh minh họa do chủ dự án vẽ, chọn theo tên dịch vụ (không dấu). Dịch vụ chưa có tranh thì thẻ không hiện ảnh.
+    const bo = t => ' ' + String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd') + ' ';
+    const TRANH = [[/ (tai kham|kiem tra lai)/, 'tai-kham'], [/ (tiem|vaccine|vac xin)/, 'tiem'], [/ kham/, 'kham']];
+    const tranh = x => { const g = TRANH.find(r => r[0].test(bo(x.ten))); return g ? g[1] : null; };
     const MOTA = { kham:'Bác sĩ khám lâm sàng, tư vấn hướng điều trị và dặn dò cách chăm sóc bé tại nhà.',
                    tiem:'Tiêm vaccine phòng bệnh đúng lịch. Mũi tiêm được ghi vào sổ tiêm điện tử và web nhắc bạn mũi tiếp theo.' };
     const THU = ['', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ nhật'];
@@ -29,7 +32,7 @@
     const MAUNEN = ['var(--hong)','var(--bac)','var(--kem2)'];
     dv.replaceChildren(el('div',{class:'luoi-the'}, ...(d.dich_vu.length ? d.dich_vu : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
       x.ten ? el('div',{class:'the-dv'},
-        el('img',{src:'/img/'+(ICON[String(x.loai||'').toLowerCase()]||'icon-chung')+'.svg',alt:'',width:56,height:56}),
+        tranh(x) ? el('img',{class:'anh-dv',src:'/img/dv/'+tranh(x)+'.jpg',alt:'Minh họa dịch vụ '+x.ten,width:560,height:560,loading:'lazy'}) : null,
         el('div',{class:'ten'}, x.ten),
         el('div',{class:'mo-ta-dv'}, x.mo_ta || MOTA[String(x.loai||'').toLowerCase()] || ''),
         el('div',{class:'gia'}, tien(x.gia)),
