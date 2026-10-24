@@ -17,7 +17,13 @@
 
   try {
     const d = await lay();
-    const ICON = { kham:'icon-kham', tiem:'icon-tiem' };
+    // Chọn tranh minh họa theo tên dịch vụ (không dấu), dự phòng theo loại; dịch vụ lạ dùng tranh chung.
+    const bo = t => ' ' + String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd') + ' ';
+    const TRANH = [[/ (tai kham|kiem tra lai|hen kham lai)/, 'tai-kham'], [/ (tiem|vaccine|vac xin|phong dai|mui )/, 'tiem'],
+      [/ (tam|spa|ve sinh|goi dau)/, 'tam'], [/ (cat |tia |cao |cat-tia|grooming|lam dep|chai long)/, 'cat-tia'],
+      [/ (xet nghiem|sieu am|x quang|x-quang|noi soi|chan doan hinh anh|mau )/, 'xet-nghiem'], [/ (phau thuat|triet san|tieu phau|dieu tri|cap cuu|bang bo|khau)/, 'phau-thuat'],
+      [/ (rang|nha khoa|lay cao)/, 'nha-khoa'], [/ (luu chuong|noi tru|trong giu|gui thu|khach san)/, 'luu-chuong'], [/ kham/, 'kham']];
+    const tranh = x => { const t = bo(x.ten), g = TRANH.find(r => r[0].test(t)); return g ? g[1] : (String(x.loai || '').toLowerCase() === 'tiem' ? 'tiem' : String(x.loai || '').toLowerCase() === 'kham' ? 'kham' : 'chung'); };
     const MOTA = { kham:'Bác sĩ khám lâm sàng, tư vấn hướng điều trị và dặn dò cách chăm sóc bé tại nhà.',
                    tiem:'Tiêm vaccine phòng bệnh đúng lịch. Mũi tiêm được ghi vào sổ tiêm điện tử và web nhắc bạn mũi tiếp theo.' };
     const THU = ['', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ nhật'];
@@ -29,7 +35,7 @@
     const MAUNEN = ['var(--hong)','var(--bac)','var(--kem2)'];
     dv.replaceChildren(el('div',{class:'luoi-the'}, ...(d.dich_vu.length ? d.dich_vu : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
       x.ten ? el('div',{class:'the-dv'},
-        el('img',{src:'/img/'+(ICON[String(x.loai||'').toLowerCase()]||'icon-chung')+'.svg',alt:'',width:56,height:56}),
+        el('img',{class:'anh-dv',src:'/img/dv/'+tranh(x)+'.svg',alt:'',width:320,height:180,loading:'lazy'}),
         el('div',{class:'ten'}, x.ten),
         el('div',{class:'mo-ta-dv'}, x.mo_ta || MOTA[String(x.loai||'').toLowerCase()] || ''),
         el('div',{class:'gia'}, tien(x.gia)),
