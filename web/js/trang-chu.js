@@ -17,7 +17,10 @@
 
   try {
     const d = await lay();
-    const ICON = { kham:'icon-kham', tiem:'icon-tiem' };
+    // Tranh minh họa do chủ dự án vẽ, chọn theo tên dịch vụ (không dấu). Dịch vụ chưa có tranh thì thẻ không hiện ảnh.
+    const bo = t => ' ' + String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd') + ' ';
+    const TRANH = [[/ (tai kham|kiem tra lai)/, 'tai-kham'], [/ (tiem|vaccine|vac xin)/, 'tiem'], [/ kham/, 'kham']];
+    const tranh = x => { const g = TRANH.find(r => r[0].test(bo(x.ten))); return g ? g[1] : null; };
     const MOTA = { kham:'Bác sĩ khám lâm sàng, tư vấn hướng điều trị và dặn dò cách chăm sóc bé tại nhà.',
                    tiem:'Tiêm vaccine phòng bệnh đúng lịch. Mũi tiêm được ghi vào sổ tiêm điện tử và web nhắc bạn mũi tiếp theo.' };
     const THU = ['', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ nhật'];
@@ -26,14 +29,44 @@
       return el('div',{class:'bs-ct'}, el('h3',{}, 'Lịch làm việc'),
         l.length ? el('ul',{class:'bs-lich'}, l.map(([t, g]) => el('li',{}, el('b',{}, THU[t]), g.join(', '))))
                  : el('p',{class:'cm'}, 'Chưa có lịch cố định. Giờ trống hiện ở bước chọn giờ khi đặt lịch.')); };
+    // Khung trượt ngang: cuộn mượt bằng CSS scroll-snap, mũi tên cuộn đúng một thẻ, chuột kéo được, màn hình cảm ứng vuốt tự nhiên.
+    function khungTruot(cacThe){
+      const lui = el('button',{type:'button',class:'truot-nut','aria-label':'Xem dịch vụ trước'}, '‹');
+      const toi = el('button',{type:'button',class:'truot-nut','aria-label':'Xem dịch vụ tiếp theo'}, '›');
+      const dai = el('div',{class:'truot-dai',tabindex:'0',role:'region','aria-label':'Danh sách dịch vụ, cuộn ngang để xem thêm'}, ...cacThe);
+      const goc = el('div',{class:'truot'}, dai, lui, toi);
+      const the1 = () => dai.querySelector('.the-dv');
+      const buoc = () => { const t = the1(); return t ? t.getBoundingClientRect().width + parseFloat(getComputedStyle(dai).columnGap || 20) : dai.clientWidth; };
+      const giam = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const cap = () => { const du = dai.scrollWidth - dai.clientWidth > 4; lui.hidden = toi.hidden = !du;
+        lui.disabled = dai.scrollLeft <= 2; toi.disabled = dai.scrollLeft >= dai.scrollWidth - dai.clientWidth - 2;};
+      let cho = 0; dai.addEventListener('scroll', () => { cancelAnimationFrame(cho); cho = requestAnimationFrame(cap); }, { passive:true });
+      addEventListener('resize', cap);
+      const di = h => dai.scrollBy({ left:h * buoc(), behavior: giam() ? 'auto' : 'smooth' });
+      lui.addEventListener('click', () => di(-1)); toi.addEventListener('click', () => di(1));
+      dai.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); di(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); di(-1); } });
+      // chuột kéo; cảm ứng đã vuốt được sẵn
+      let x0 = 0, s0 = 0, keo = false, daKeo = false;
+      dai.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0) return; keo = true; daKeo = false; x0 = e.clientX; s0 = dai.scrollLeft; });
+      addEventListener('pointermove', e => { if (!keo) return; const dx = e.clientX - x0; if (!daKeo && Math.abs(dx) > 5) { daKeo = true; dai.classList.add('dang-keo'); } if (daKeo) dai.scrollLeft = s0 - dx; });
+      addEventListener('pointerup', () => { if (!keo) return; keo = false; if (!daKeo) return; const b = buoc(), dich = Math.round(dai.scrollLeft / b) * b;
+        dai.classList.remove('dang-keo'); dai.scrollTo({ left:dich, behavior: giam() ? 'auto' : 'smooth' }); setTimeout(() => { daKeo = false; }, 0); });
+      dai.addEventListener('click', e => { if (daKeo) { e.preventDefault(); e.stopPropagation(); } }, true);
+      requestAnimationFrame(cap); return goc;
+    }
     const MAUNEN = ['var(--hong)','var(--bac)','var(--kem2)'];
-    dv.replaceChildren(el('div',{class:'luoi-the'}, ...(d.dich_vu.length ? d.dich_vu : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
+    // Nút trên thẻ nhớ lựa chọn của khách để trang đặt lịch chọn sẵn (lưu tạm trong trình duyệt, 7 ngày).
+    const nho = o => () => { try { localStorage.setItem('pethy_y_dinh', JSON.stringify({ ...o, t: Date.now() })); } catch (_) {} };
+    // Mọi dịch vụ đang áp dụng. Vừa 3 thẻ thì chia đều chiều ngang; nhiều hơn thì trượt ngang (kéo, vuốt hoặc bấm mũi tên).
+    const chinh = (d.dich_vu || []).filter(x => x.ten);
+    const the = (chinh.length ? chinh : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
       x.ten ? el('div',{class:'the-dv'},
-        el('img',{src:'/img/'+(ICON[String(x.loai||'').toLowerCase()]||'icon-chung')+'.svg',alt:'',width:56,height:56}),
+        tranh(x) ? el('img',{class:'anh-dv',src:'/img/dv/'+tranh(x)+'.jpg',alt:'Minh họa dịch vụ '+x.ten,width:560,height:560,loading:'lazy'}) : null,
         el('div',{class:'ten'}, x.ten),
         el('div',{class:'mo-ta-dv'}, x.mo_ta || MOTA[String(x.loai||'').toLowerCase()] || ''),
         el('div',{class:'gia'}, tien(x.gia)),
-        el('a',{class:'nut chinh',href:'/dang-nhap.html?dang-ky=1','aria-label':'Đặt lịch ngay: ' + x.ten}, 'Đặt lịch ngay')) : x)));
+        el('a',{class:'nut trang',href:'/dang-nhap.html?dang-ky=1',onclick:nho({ dv:x.id }),'aria-label':'Chọn dịch vụ ' + x.ten + ' và đặt lịch'}, 'Chọn dịch vụ này ', el('span',{'aria-hidden':'true'}, '→'))) : x);
+    dv.replaceChildren(khungTruot(the));
     bs.replaceChildren(el('div',{class:'luoi-the'}, ...(d.bac_si.length ? d.bac_si : [el('p',{class:'ghi-chu'},'Chưa có bác sĩ.')]).map((x,i) =>
       x.ho_ten ? el('div',{class:'the-bs'},
         x.anh_dai_dien ? el('img',{class:'ava',src:x.anh_dai_dien,alt:'Ảnh bác sĩ '+x.ho_ten,loading:'lazy'})
@@ -44,10 +77,10 @@
         el('div',{class:'cm gt-ngan',id:'gt-' + i}, x.gioi_thieu || 'Bác sĩ chưa cập nhật phần giới thiệu.'),
         chiTiet(x),
         el('div',{class:'nut-bs'},
-          (() => { const b = el('button',{class:'nut trang',type:'button','aria-expanded':'false','aria-label':'Xem thông tin bác sĩ ' + x.ho_ten}, 'Xem thông tin');
+          (() => { const b = el('button',{class:'lien-ket',type:'button','aria-expanded':'false','aria-label':'Xem thông tin bác sĩ ' + x.ho_ten}, 'Xem thông tin');
             b.addEventListener('click', () => { const c = b.closest('.the-bs'), mo = c.classList.toggle('mo'); b.setAttribute('aria-expanded', String(mo)); b.textContent = mo ? 'Thu gọn' : 'Xem thông tin'; });
             return b; })(),
-          el('a',{class:'nut chinh',href:'/dang-nhap.html?dang-ky=1'}, 'Đặt lịch'))) : x)));
+          el('a',{class:'nut trang',href:'/dang-nhap.html?dang-ky=1',onclick:nho({ bs:x.id })}, 'Đặt với Bs. ' + x.ho_ten.trim().split(/\s+/).pop(), ' ', el('span',{'aria-hidden':'true'}, '→')))) : x)));
     if (d.danh_gia && d.danh_gia.length) {
       const g = d.danh_gia[0];
       document.getElementById('dg-tong').replaceChildren(Pethy.sao(g.diem_tb), ' ' + Number(g.diem_tb).toFixed(1) + ' trên 5, từ ' + g.tong + ' đánh giá của chủ nuôi sau khi khám.');
@@ -56,6 +89,12 @@
         el('figcaption',{}, x.ten_hien_thi + ', ' + new Date(x.ngay).toLocaleDateString('vi-VN',{month:'2-digit',year:'numeric',timeZone:'Asia/Ho_Chi_Minh'})))));
       document.getElementById('danh-gia').hidden = false;
     }
+    // Ca làm việc của bác sĩ trong hôm nay (lấy từ lịch làm việc công khai; giờ còn trống chỉ xem được sau khi đăng nhập).
+    const hn = new Date(), thuVN = { Mon:1, Tue:2, Wed:3, Thu:4, Fri:5, Sat:6, Sun:7 }[hn.toLocaleDateString('en-US', { weekday:'short', timeZone:'Asia/Ho_Chi_Minh' })];
+    const ngayVN = hn.toLocaleDateString('vi-VN', { weekday:'long', day:'2-digit', month:'2-digit', timeZone:'Asia/Ho_Chi_Minh' });
+    const homNay = (d.bac_si || []).map(b => ({ ten:b.ho_ten, ca:(b.lich_lam_viec || []).filter(c => c.thu === thuVN) })).filter(b => b.ca.length);
+    document.getElementById('hn-ngay').textContent = homNay.length ? 'Ca làm việc ' + ngayVN + '. Đăng nhập để xem giờ còn trống và chọn giờ.' : 'Hôm nay (' + ngayVN + ') chưa có bác sĩ trực. Bạn vẫn đặt được lịch cho những ngày tới.';
+    document.getElementById('hn-ds').replaceChildren(...homNay.map(b => el('li',{}, el('span',{}, 'Bs. ' + b.ten), el('span',{class:'so'}, b.ca.map(c => c.tu + ' đến ' + c.den).join(', ')))));
     const n = d.cau_hinh.dat_truoc_toi_da_ngay;
     if (n) document.getElementById('dat-truoc').textContent = 'Nhận lịch hẹn trước tối đa ' + n + ' ngày.';
     if (d.cau_hinh.che_do_bao_tri === 'true') {

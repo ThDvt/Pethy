@@ -47,7 +47,9 @@
     }
     const vt = await vaiTro();
     if (!vt) { loi('Hệ thống đang bảo trì hoặc tài khoản chưa được kích hoạt.'); await db.auth.signOut(); return; }
-    location.href = KHU[vt] || '/';
+    // Khách bấm "Chọn dịch vụ" hoặc "Đặt với bác sĩ" ở trang chủ thì đăng nhập xong đi thẳng tới trang đặt lịch.
+    let yDinh = false; try { const o = JSON.parse(localStorage.getItem('pethy_y_dinh') || 'null'); yDinh = !!(o && Date.now() - o.t < 7 * 864e5); } catch (_) {}
+    location.href = vt === 'chu_nuoi' && yDinh ? '/chu-nuoi/dat-lich.html' : (KHU[vt] || '/');
     return true;
   }
 
