@@ -91,13 +91,16 @@ body.khach{
 .bao-tri[hidden]{display:none}
 
 /* khu chủ nuôi: cùng bảng màu ấm, vẫn giữ bố cục thanh bên */
-.khach-khu .thanh-ben{background:var(--toi);border-radius:0 28px 28px 0}
-.khach-khu .tb-m{color:#BFE3DF;border-radius:999px}
-.khach-khu .tb-m:hover{background:rgba(255,255,255,.1);color:#fff}
-.khach-khu .tb-m[aria-current=page]{background:var(--vang);color:var(--muc)}
+.khach-khu .thanh-ben{background:#E6F6F3;color:var(--toi);border-right:2px solid var(--muc);border-radius:0 28px 28px 0}
+.khach-khu .tb-m{color:var(--toi);border-radius:999px}
+.khach-khu .tb-m:hover{background:rgba(15,63,68,.09);color:var(--toi)}
+.khach-khu .tb-m[aria-current=page]{background:var(--vang);color:var(--muc);box-shadow:none}
 .khach-khu .tb-m[aria-current=page]::before{display:none}
 .khach-khu .tb-av{background:var(--vang)}
-.khach-khu .tb-vt,.khach-khu .tb-nhom{color:#9FD3CE}
+.khach-khu .tb-vt,.khach-khu .tb-nhom{color:var(--ngoc-dam)}
+.khach-khu .tb-chan{border-top-color:#BFE3DF}
+.khach-khu .tb-gon{border-color:#BFE3DF;color:var(--toi)}
+.khach-khu .tb-gon:hover{background:rgba(15,63,68,.09)}
 .khach-khu .noi-dung-khu h1{font-weight:800;letter-spacing:-.03em;font-size:34px!important}
 .khach-khu .lich,.khach-khu .dong,.khach-khu .the{background:#fff;border:2px solid var(--muc)!important;border-radius:22px;padding:18px 22px;margin-bottom:14px}
 .khach-khu .lich.dau-tien{background:var(--kem2)}
@@ -105,7 +108,7 @@ body.khach{
 .khach-khu dialog{border:2px solid var(--muc);border-radius:24px}
 .khach-khu .ghi-chu{color:var(--xam)}
 .khach-khu .tab-ngang button,.khach-khu select{border-radius:14px}
-@media(max-width:760px){.khach-khu .thanh-ben{border-radius:0 0 24px 24px}}
+@media(max-width:760px){.khach-khu .thanh-ben{border-radius:0 0 24px 24px;border-right:0;border-bottom:2px solid var(--muc)}}
 /* đăng nhập: form ở giữa */
 .dn-luoi{display:block;max-width:480px;margin:0 auto;padding:8px 20px 64px}
 .khach .logo img{width:auto;height:44px}
