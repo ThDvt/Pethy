@@ -131,3 +131,21 @@ dialog.hop-dg::backdrop{background:rgba(20,22,26,.5)}
 .dg-sao:hover{transform:scale(1.15)}
 .dg-sao:focus-visible{outline:2px solid var(--muc);outline-offset:2px;border-radius:8px}
 .dg-nhan{min-height:22px;font-weight:700;margin-top:4px}
+
+/* Thanh bên sáng: dịu hơn so với nền trang, không đối lập quá */
+.thanh-ben{background:var(--nen-nhat);color:var(--muc);border-right:1px solid var(--vach)}
+.tb-logo{color:var(--muc)}
+.tb-gon{border-color:var(--vach);color:var(--xam)}
+.tb-gon:hover{background:var(--anh);color:var(--muc)}
+.tb-nhom{color:var(--xam)}
+.thanh-ben.gon .tb-nhom{background:var(--vach)}
+.tb-m{color:#3A3D42}
+.tb-m:hover{background:var(--anh);color:var(--muc)}
+.tb-m[aria-current=page]{background:#fff;color:var(--muc);font-weight:700;box-shadow:0 0 0 1px var(--vach)}
+.tb-m[aria-current=page]::before{background:var(--nhan)}
+.tb-m:focus-visible,.tb-gon:focus-visible,.tb-ra:focus-visible{outline-color:var(--nhan)}
+.thanh-ben.gon .tb-m:hover::after,.thanh-ben.gon .tb-m:focus-visible::after{background:var(--muc);color:#fff}
+.tb-chan{border-top-color:var(--vach)}
+.tb-vt{color:var(--xam)}
+.tb-ra{color:var(--loi)}
+.tb-ra:hover{background:#FBE9E7}
