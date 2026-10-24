@@ -2,7 +2,7 @@
   const { db, el } = Pethy, A = Pethy.admin, $ = A.$;
   if (!await A.boot('/admin/nhat-ky.html')) return;
   const HD = {them:'Thêm',sua:'Sửa',xoa:'Xóa',xem:'Xem hồ sơ'};
-  const BANG = {tai_khoan:'Tài khoản',chu_nuoi:'Chủ nuôi',ho_so_bac_si:'Hồ sơ bác sĩ',lich_lam_viec:'Lịch làm việc',cau_hinh:'Tham số',thu_cung:'Thú cưng',dich_vu:'Dịch vụ',thuoc:'Thuốc',lo_thuoc:'Lô thuốc',lich_hen:'Lịch hẹn',ho_so_kham:'Hồ sơ khám',don_thuoc:'Đơn thuốc',mui_tiem:'Mũi tiêm',hoa_don:'Hóa đơn',thanh_toan:'Thanh toán'};
+  const BANG = {tai_khoan:'Tài khoản',chu_nuoi:'Chủ nuôi',ho_so_bac_si:'Hồ sơ bác sĩ',danh_gia:'Đánh giá',lich_lam_viec:'Lịch làm việc',cau_hinh:'Tham số',thu_cung:'Thú cưng',dich_vu:'Dịch vụ',thuoc:'Thuốc',lo_thuoc:'Lô thuốc',lich_hen:'Lịch hẹn',ho_so_kham:'Hồ sơ khám',don_thuoc:'Đơn thuốc',mui_tiem:'Mũi tiêm',hoa_don:'Hóa đơn',thanh_toan:'Thanh toán'};
   const loc = el('select',{id:'loc',class:'nho','aria-label':'Lọc theo hành động'}, el('option',{value:''}, 'Mọi hành động'), Object.entries(HD).map(([k, v]) => el('option',{value:k}, v)));
   const ds = el('div',{style:'border-top:2px solid var(--muc);margin-top:12px'});
   async function tai(){

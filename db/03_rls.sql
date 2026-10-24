@@ -36,6 +36,7 @@ ALTER TABLE ct_hoa_don     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE thanh_toan     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE nhat_ky        ENABLE ROW LEVEL SECURITY;
 ALTER TABLE nhac_lich      ENABLE ROW LEVEL SECURITY;
+ALTER TABLE danh_gia       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tin_nhan       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE doc_tin_nhan   ENABLE ROW LEVEL SECURITY;
 ALTER TABLE gioi_han_goi   ENABLE ROW LEVEL SECURITY;   -- không có chính sách nào: trình duyệt không chạm tới
@@ -47,7 +48,7 @@ REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon, authenticated;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authenticated;
 
 -- Khách chưa đăng nhập: chỉ đọc cấu hình công khai, dịch vụ và danh sách bác sĩ.
-GRANT SELECT ON cau_hinh, dich_vu, bac_si_cong_khai TO anon;
+GRANT SELECT ON cau_hinh, dich_vu, bac_si_cong_khai, danh_gia_cong_khai TO anon;
 
 -- Người đã đăng nhập: được đọc (RLS quyết định hàng nào thấy được).
 GRANT SELECT ON
@@ -55,7 +56,7 @@ GRANT SELECT ON
   thuoc, lo_thuoc, bien_dong_kho, lich_hen, ho_so_kham, don_thuoc, ct_don_thuoc,
   mui_tiem, hoa_don, ct_hoa_don, thanh_toan, nhat_ky, nhac_lich,
   tin_nhan, doc_tin_nhan,
-  bac_si_cong_khai, ton_kho_lo, ton_kho_thuoc, canh_bao_kho, lich_can_nhac,
+  bac_si_cong_khai, danh_gia, danh_gia_cong_khai, ton_kho_lo, ton_kho_thuoc, canh_bao_kho, lich_can_nhac,
   cong_no_hoa_don, hop_thu_noi_bo
   TO authenticated;
 
@@ -220,3 +221,8 @@ CREATE POLICY tin_nhan_doc ON tin_nhan FOR SELECT TO authenticated
 -- doc_tin_nhan: mỗi người chỉ đọc mốc đã đọc của chính mình. Ghi qua danh_dau_da_doc.
 CREATE POLICY doc_tin_nhan_doc ON doc_tin_nhan FOR SELECT TO authenticated
   USING (tai_khoan_id = auth.uid() AND vai_tro_hieu_luc() IS NOT NULL);
+
+-- danh_gia: chủ nuôi xem đánh giá của chính mình, admin xem tất cả. Ghi chỉ qua gui_danh_gia / an_hien_danh_gia.
+CREATE POLICY danh_gia_doc ON danh_gia FOR SELECT TO authenticated
+  USING ((vai_tro_hieu_luc() = 'chu_nuoi' AND la_chu_lich_hen(lich_hen_id))
+         OR vai_tro_hieu_luc() = 'admin');

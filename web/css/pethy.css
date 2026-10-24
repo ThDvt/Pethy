@@ -119,3 +119,15 @@ dialog.xac-nhan p{white-space:pre-line}
 .soan-tin{display:flex;gap:12px;align-items:stretch}
 .soan-tin textarea{display:block;margin:0;min-height:64px;resize:vertical}
 .soan-tin .nut{align-self:stretch;padding-left:28px;padding-right:28px}
+/* sao đánh giá */
+.sao{display:inline-flex;gap:1px;font-style:normal;line-height:1;letter-spacing:0}
+.sao i{font-style:normal;color:#D9D3C7}
+.sao i.day{color:#F5A400}
+dialog.hop-dg{max-width:460px;width:calc(100% - 32px);border:2px solid var(--muc);border-radius:24px;padding:28px}
+dialog.hop-dg::backdrop{background:rgba(20,22,26,.5)}
+.dg-nhom{display:flex;gap:4px}
+.dg-sao{border:0;background:none;font-size:40px;line-height:1;padding:2px 4px;cursor:pointer;color:#D9D3C7;transition:transform .12s,color .12s}
+.dg-sao.day{color:#F5A400}
+.dg-sao:hover{transform:scale(1.15)}
+.dg-sao:focus-visible{outline:2px solid var(--muc);outline-offset:2px;border-radius:8px}
+.dg-nhan{min-height:22px;font-weight:700;margin-top:4px}

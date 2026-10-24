@@ -84,10 +84,10 @@ UPDATE cau_hinh SET gia_tri='false' WHERE khoa='che_do_bao_tri';
 SELECT t.bang('moi bang public deu bat RLS (liet ke bang thieu)',
   $$SELECT coalesce(string_agg(c.relname, ',' ORDER BY c.relname),'') FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p') AND NOT c.relrowsecurity$$,'');
 SELECT t.bang('so bang public (dem de phat hien bang moi)',
-  $$SELECT count(*)::text FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p')$$,'23');
-SELECT t.bang('khach (anon) chi co quyen voi 3 doi tuong cong khai',
+  $$SELECT count(*)::text FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p')$$,'24');
+SELECT t.bang('khach (anon) chi co quyen voi 4 doi tuong cong khai',
   $$SELECT coalesce(string_agg(c.relname, ',' ORDER BY c.relname),'') FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p','v','m') AND (has_any_column_privilege('anon', c.oid, 'SELECT,INSERT,UPDATE,REFERENCES') OR has_table_privilege('anon', c.oid, 'DELETE,TRUNCATE,TRIGGER'))$$,
-  'bac_si_cong_khai,cau_hinh,dich_vu');
+  'bac_si_cong_khai,cau_hinh,danh_gia_cong_khai,dich_vu');
 SELECT t.bang('nguoi dang nhap chi ghi truc tiep duoc 8 bang danh muc/ho so',
   $$SELECT coalesce(string_agg(c.relname, ',' ORDER BY c.relname),'') FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p','v','m') AND (has_any_column_privilege('authenticated', c.oid, 'INSERT,UPDATE') OR has_table_privilege('authenticated', c.oid, 'DELETE,TRUNCATE,TRIGGER'))$$,
   'cau_hinh,chu_nuoi,dich_vu,ho_so_bac_si,lich_lam_viec,tai_khoan,thu_cung,thuoc');
@@ -155,6 +155,43 @@ RESET ROLE;
 SET ROLE authenticated; SELECT t.as_(:bs1);
 SELECT t.bang('bac si khong sua duoc mo ta dich vu', $$WITH u AS (UPDATE dich_vu SET mo_ta='x' WHERE id='00000000-0000-0000-0000-000000000d01' RETURNING 1) SELECT count(*)::text FROM u$$,'0');
 RESET ROLE;
+
+-- ===== (7) Danh gia cua chu nuoi =====
+\set cn2 '''00000000-0000-0000-0000-0000000000f2'''
+\set l1 '(SELECT id FROM lich_hen WHERE thu_cung_id=''00000000-0000-0000-0000-0000000001f1'' AND trang_thai=''da_hoan_thanh'' LIMIT 1)'
+\set l2 '(SELECT id FROM lich_hen WHERE thu_cung_id=''00000000-0000-0000-0000-0000000001f2'' AND trang_thai=''da_hoan_thanh'' LIMIT 1)'
+\set lchua '(SELECT id FROM lich_hen WHERE thu_cung_id=''00000000-0000-0000-0000-0000000001f9'' LIMIT 1)'
+SET ROLE authenticated; SELECT t.as_(:cn1);
+SELECT t.ok('chu nuoi danh gia lan kham da hoan thanh', format('SELECT gui_danh_gia(%L, 5, %L)', :l1, 'Bac si rat tan tinh'));
+SELECT t.ok('sua danh gia cua chinh minh (khong tao dong thu hai)', format('SELECT gui_danh_gia(%L, 4, %L)', :l1, 'Sua lai'));
+SELECT t.bang('sau khi sua van 1 danh gia, 4 sao', $$SELECT count(*)||'/'||max(so_sao) FROM danh_gia$$, '1/4');
+SELECT t.loi('so sao 6 bi tu choi', format('SELECT gui_danh_gia(%L, 6, NULL)', :l1), 'SO_SAO_KHONG_HOP_LE');
+SELECT t.loi('so sao 0 bi tu choi', format('SELECT gui_danh_gia(%L, 0, NULL)', :l1), 'SO_SAO_KHONG_HOP_LE');
+SELECT t.loi('nhan xet qua 500 ky tu bi tu choi', format('SELECT gui_danh_gia(%L, 5, repeat(%L,501))', :l1, 'a'), 'NHAN_XET_QUA_DAI');
+SELECT t.loi('khong danh gia lich cua nguoi khac', format('SELECT gui_danh_gia(%L, 5, NULL)', :l2), 'KHONG_CO_QUYEN');
+SELECT t.loi('khong ghi truc tiep vao bang danh_gia', format('INSERT INTO danh_gia (lich_hen_id, so_sao) VALUES (%L, 5)', :l1), '42501');
+SELECT t.bang('chu nuoi chi thay danh gia cua minh', $$SELECT count(*)::text FROM danh_gia$$, '1');
+SELECT t.as_(:cn2);
+SELECT t.bang('chu nuoi khac khong thay danh gia cua nguoi khac', $$SELECT count(*)::text FROM danh_gia$$, '0');
+SELECT t.as_(:bs1);
+SELECT t.loi('bac si khong gui duoc danh gia', format('SELECT gui_danh_gia(%L, 5, NULL)', :l1), 'KHONG_CO_QUYEN');
+SELECT t.loi('bac si khong an duoc danh gia', $$SELECT an_hien_danh_gia((SELECT id FROM danh_gia LIMIT 1), false)$$, 'KHONG_CO_QUYEN');
+RESET ROLE;
+SET ROLE anon; SELECT t.as_('');
+SELECT t.bang('khach thay ten rut gon, khong lo ho ten day du', $$SELECT ten_hien_thi FROM danh_gia_cong_khai LIMIT 1$$, (SELECT split_part(ho_ten,' ',array_length(string_to_array(ho_ten,' '),1)) || ' ' || upper(left(ho_ten,1)) || '.' FROM chu_nuoi WHERE tai_khoan_id='00000000-0000-0000-0000-0000000000f1'));
+SELECT t.bang('khach thay tong va diem trung binh', $$SELECT tong||'/'||diem_tb FROM danh_gia_cong_khai LIMIT 1$$, '1/4.0');
+SELECT t.loi('khach khong doc bang danh_gia', 'SELECT * FROM danh_gia', '42501');
+SELECT t.loi('khach khong goi gui_danh_gia', format('SELECT gui_danh_gia(%L, 5, NULL)', :l1), '42501');
+RESET ROLE;
+SET ROLE authenticated; SELECT t.as_(:a1);
+SELECT t.ok('admin an danh gia', $$SELECT an_hien_danh_gia((SELECT id FROM danh_gia LIMIT 1), false)$$);
+SELECT t.bang('admin van thay danh gia da an', $$SELECT count(*)::text FROM danh_gia$$, '1');
+RESET ROLE;
+SET ROLE anon; SELECT t.as_('');
+SELECT t.bang('danh gia da an khong hien o trang cong khai', $$SELECT count(*)::text FROM danh_gia_cong_khai$$, '0');
+SELECT t.bang('diem bac si bo qua danh gia da an', $$SELECT coalesce(sum(so_danh_gia),0)::text FROM bac_si_cong_khai$$, '0');
+RESET ROLE;
+SELECT t.bang('nhat ky ghi lai viec an danh gia', $$SELECT count(*)::text FROM nhat_ky WHERE bang_tac_dong='danh_gia' AND hanh_dong='sua'$$, '2');
 
 \echo ---KET QUA---
 SELECT CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END AS kq, ten, chi_tiet FROM t.kq WHERE NOT ok ORDER BY 1;

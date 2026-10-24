@@ -4,6 +4,7 @@ Pethy.admin = (function(){
   const MUC = [
     {ten:'Tổng quan',href:'/admin/',nhom:'CHÍNH'},{ten:'Doanh thu',href:'/admin/doanh-thu.html',nhom:'CHÍNH'},
     {ten:'Tài khoản',href:'/admin/tai-khoan.html',nhom:'QUẢN LÝ'},{ten:'Dịch vụ',href:'/admin/dich-vu.html',nhom:'QUẢN LÝ'},{ten:'Lịch làm',href:'/admin/lich-lam-viec.html',nhom:'QUẢN LÝ'},{ten:'Tham số',href:'/admin/tham-so.html',nhom:'QUẢN LÝ'},
+    {ten:'Đánh giá',href:'/admin/danh-gia.html',nhom:'QUẢN LÝ'},
     {ten:'Nhật ký',href:'/admin/nhat-ky.html',nhom:'HỆ THỐNG'},{ten:'Tin nhắn',href:'/admin/trao-doi.html',nhom:'HỆ THỐNG'},{ten:'Bảo mật',href:'/admin/bao-mat.html',nhom:'HỆ THỐNG'}];
   const $ = id => document.getElementById(id);
   const ngay = iso => new Date(iso).toLocaleDateString('en-GB',{timeZone:'Asia/Ho_Chi_Minh'});
