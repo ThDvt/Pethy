@@ -34,10 +34,11 @@ dialog::backdrop{background:rgba(20,22,26,.5)}
     <div style="display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:baseline">
       <h1 style="margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em">Tồn kho</h1>
       <div style="display:flex;gap:20px;align-items:center">
-        <button class="lien-ket" type="button" id="them-thuoc" style="font-weight:700">Thêm thuốc mới</button>
-        <button class="nut chinh" type="button" id="nhap">Nhập kho</button>
+        <button class="lien-ket" type="button" id="them-thuoc" style="font-weight:700">Thêm thuốc vào danh mục</button>
+        <button class="nut chinh" type="button" id="nhap">Nhập hàng vào kho</button>
       </div>
     </div>
+    <p class="mo-ta" style="margin:8px 0 0;color:var(--xam)">Thuốc mới chỉ cần thêm vào danh mục một lần. Mỗi khi có hàng về, bấm "Nhập hàng vào kho" để ghi số lô, hạn dùng và số lượng.</p>
     <p id="loi-chung" class="loi" role="alert" hidden></p>
     <section class="muc" aria-labelledby="h-ton"><h2 id="h-ton">Thuốc và vaccine</h2><div id="ds-ton"><p class="trang-thai-tai" role="status">Đang tải…</p></div></section>
     <section class="muc" aria-labelledby="h-ls"><h2 id="h-ls">Biến động gần đây</h2><div id="ds-ls"></div></section>
