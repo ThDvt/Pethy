@@ -123,30 +123,43 @@
     const CB = {sap_het:'Sắp hết hàng',sap_het_han:'Lô sắp hết hạn',het_han:'Lô hết hạn còn tồn'};
     const bang = el('table',{class:'db-bang'}, el('thead',{}, el('tr',{}, ...['Thời gian','Đã thu','Tiền mặt','Chuyển khoản','Số lần thu'].map(t => el('th',{scope:'col'}, t)))),
       el('tbody',{}, ...rows.map(r => el('tr',{}, el('th',{scope:'row'}, r.nhan), el('td',{}, tien(r.tong)), el('td',{}, tien(r.tien_mat)), el('td',{}, tien(r.chuyen_khoan)), el('td',{}, String(r.so))))));
+    // ---- bố cục: bốn con số quan trọng ở trên cùng, biểu đồ bên trái, việc cần xử lý bên phải, cơ cấu bên dưới ----
+    const dsNo = cn.data || [], dsKho = cb.data || [];
+    const soNgayQua = d => Math.max(0, Math.floor((Date.now() - new Date(d).getTime()) / 864e5));
+    const sap = dsKho.filter(x => x.loai_canh_bao === 'sap_het').length, hh = dsKho.filter(x => x.loai_canh_bao !== 'sap_het').length;
+    const kpi = (nhan, giaTri, phu, cls, nhanTt) => el('div',{class:'db-kpi-o ' + (cls || '')},
+      el('div',{class:'n'}, nhan, nhanTt || null), el('div',{class:'v'}, giaTri), el('div',{class:'p'}, phu));
+    const hangNo = x => el('div',{class:'hang'},
+      el('div',{class:'ten'}, x.ten_chu_nuoi, el('div',{class:'nho',style:'font-weight:400'}, x.so_dien_thoai + ', lập ' + A.ngay(x.created_at))),
+      el('div',{class:'nho'}, 'Đã thu ' + tien(x.da_thu) + ' / ' + tien(x.tong_tien)),
+      el('div',{class:'gt'}, tien(x.con_no)));
+    const hangKho = x => el('div',{class:'hang'},
+      el('div',{class:'ten'}, x.ten), el('span',{class:'tt do'}, CB[x.loai_canh_bao]),
+      el('div',{class:'nho'}, (x.so_lo ? 'Lô ' + x.so_lo + ', hạn ' + A.ngay(x.han_dung) + ', ' : '') + 'còn ' + x.ton));
+    const GIOI = 4;
+    const xemDu = (nhan, ds, hang) => ds.length > GIOI ? el('details',{class:'db-chi-tiet'}, el('summary',{}, nhan + ' (' + ds.length + ')'), ...ds.slice(GIOI).map(hang)) : null;
+    const canXuLy = el('section',{class:'muc'}, el('h2',{}, 'Cần xử lý'),
+      el('h3',{class:'db-h3'}, 'Hóa đơn chưa thu đủ'),
+      ...(dsNo.length ? dsNo.slice(0, GIOI).map(hangNo) : [A.rong('Không có công nợ.')]), xemDu('Xem thêm hóa đơn chưa thu', dsNo, hangNo),
+      el('h3',{class:'db-h3'}, 'Cảnh báo kho'),
+      ...(dsKho.length ? dsKho.slice(0, GIOI).map(hangKho) : [A.rong('Kho không có cảnh báo.')]), xemDu('Xem thêm cảnh báo kho', dsKho, hangKho));
     khung.replaceChildren(
-      el('div',{class:'db-hero'},
-        el('div',{}, el('div',{class:'n'}, 'Đã thu từ ' + dm(k.tu) + ' đến ' + dm(k.den) + ' (' + k.len + ' ngày)'), el('div',{class:'db-so'}, tien(c.tong)), dd),
-        el('div',{class:'the'},
-          A.the('Số lần thu', String(c.so)), A.the('Trung bình mỗi lần', tien(dtb)),
-          A.the('Lượt khám hoàn thành', String(hoanThanh)), A.the('Lịch hủy hoặc không đến', tongLich ? phanTram((huy + khongDen) / tongLich * 100) : '0%'),
-          A.the('Công nợ hiện tại', tien(tongNo)))),
-      el('section',{class:'muc'}, el('h2',{}, 'Đã thu theo ' + (k.len > 92 ? 'tháng' : 'ngày')), el('div',{class:'db-khung-bd'}, bieuDoCot(rows)),
-        el('details',{class:'db-chi-tiet'}, el('summary',{}, 'Xem dạng bảng'), el('div',{class:'db-cuon'}, bang))),
-      el('div',{class:'db-hai'},
-        el('section',{class:'muc'}, el('h2',{}, 'Doanh số theo nhóm'), el('div',{class:'nho',style:'margin:8px 0'}, 'Tính trên hóa đơn đã lập và chưa hủy trong kỳ.'),
+      el('div',{class:'db-kpi'},
+        kpi('Đã thu trong kỳ', tien(c.tong), el('div',{}, dd, el('div',{class:'nho',style:'margin-top:4px'}, dm(k.tu) + ' đến ' + dm(k.den) + ', ' + k.len + ' ngày')), 'lon'),
+        kpi('Công nợ hiện tại', tien(tongNo), dsNo.length ? dsNo.length + ' hóa đơn chưa thu đủ, cũ nhất ' + soNgayQua(dsNo[0].created_at) + ' ngày' : 'Không có hóa đơn nào còn nợ', dsNo.length ? 'canh' : '', dsNo.length ? el('span',{class:'tt do',style:'margin-left:8px'}, 'Cần thu') : null),
+        kpi('Lượt khám hoàn thành', String(hoanThanh), tongLich ? 'Hủy hoặc không đến: ' + phanTram((huy + khongDen) / tongLich * 100) + ' (' + (huy + khongDen) + ' lịch)' : 'Chưa có lịch trong kỳ này'),
+        kpi('Cảnh báo kho', dsKho.length + ' mục', dsKho.length ? sap + ' sắp hết hàng, ' + hh + ' lô sắp hoặc đã hết hạn' : 'Kho đang ổn', dsKho.length ? 'canh' : '', dsKho.length ? el('span',{class:'tt do',style:'margin-left:8px'}, 'Cần xử lý') : null)),
+      el('div',{class:'db-chinh'},
+        el('section',{class:'muc'}, el('h2',{}, 'Đã thu theo ' + (k.len > 92 ? 'tháng' : 'ngày')), el('div',{class:'db-khung-bd'}, bieuDoCot(rows)),
+          el('div',{class:'nho',style:'margin-top:8px'}, c.so + ' lần thu, trung bình ' + tien(dtb) + ' mỗi lần.'),
+          el('details',{class:'db-chi-tiet'}, el('summary',{}, 'Xem dạng bảng'), el('div',{class:'db-cuon'}, bang))),
+        canXuLy),
+      el('div',{class:'db-ba'},
+        el('section',{class:'muc'}, el('h2',{}, 'Doanh số theo nhóm'), el('div',{class:'nho',style:'margin:8px 0'}, 'Hóa đơn đã lập, chưa hủy.'),
           chong([{ ten:'Dịch vụ', v:nhom['Dịch vụ'] || 0, mau:MAU.chinh }, { ten:'Thuốc', v:nhom['Thuốc'] || 0, mau:MAU.phu }, { ten:'Vaccine', v:nhom['Vaccine'] || 0, mau:MAU.thu3 }], 'doanh số')),
-        el('section',{class:'muc'}, el('h2',{}, 'Hình thức thanh toán'), el('div',{class:'nho',style:'margin:8px 0'}, 'Tính trên số tiền đã thu trong kỳ.'),
-          chong([{ ten:'Tiền mặt', v:c.tm, mau:MAU.chinh }, { ten:'Chuyển khoản', v:c.ck, mau:MAU.phu }], 'đã thu'))),
-      el('section',{class:'muc'}, el('h2',{}, 'Mục mang lại nhiều doanh số nhất'), top.length ? xepHang(top) : A.rong('Chưa có hóa đơn trong kỳ này.')),
-      el('section',{class:'muc'}, el('h2',{}, 'Hóa đơn chưa thu đủ'),
-        ...((cn.data || []).length ? cn.data.map(x => el('div',{class:'hang'},
-          el('div',{class:'ten'}, x.ten_chu_nuoi, el('div',{class:'nho',style:'font-weight:400'}, x.so_dien_thoai + ', lập ' + A.ngay(x.created_at))),
-          el('div',{class:'nho'}, 'Đã thu ' + tien(x.da_thu) + ' / ' + tien(x.tong_tien)),
-          el('div',{class:'gt'}, tien(x.con_no)))) : [A.rong('Không có công nợ.')])),
-      el('section',{class:'muc'}, el('h2',{}, 'Cảnh báo kho'),
-        ...((cb.data || []).length ? cb.data.map(x => el('div',{class:'hang'},
-          el('div',{class:'ten'}, x.ten), el('span',{class:'tt do'}, CB[x.loai_canh_bao]),
-          el('div',{class:'nho'}, (x.so_lo ? 'Lô ' + x.so_lo + ', hạn ' + A.ngay(x.han_dung) + ', ' : '') + 'còn ' + x.ton))) : [A.rong('Kho không có cảnh báo.')])));
+        el('section',{class:'muc'}, el('h2',{}, 'Hình thức thanh toán'), el('div',{class:'nho',style:'margin:8px 0'}, 'Số tiền đã thu trong kỳ.'),
+          chong([{ ten:'Tiền mặt', v:c.tm, mau:MAU.chinh }, { ten:'Chuyển khoản', v:c.ck, mau:MAU.phu }], 'đã thu')),
+        el('section',{class:'muc'}, el('h2',{}, 'Bán chạy nhất'), top.length ? xepHang(top.slice(0, 5)) : A.rong('Chưa có hóa đơn trong kỳ này.'))));
   }
   await ve();
 })();
