@@ -89,7 +89,6 @@ CREATE TABLE dich_vu (
   loai          text NOT NULL CHECK (loai IN ('kham','tiem')),
   gia           integer NOT NULL CHECK (gia >= 0),
   mo_ta         text CHECK (mo_ta IS NULL OR length(mo_ta) <= 500),  -- mô tả công khai cho khách
-  anh           text CHECK (anh IS NULL OR (length(anh) <= 200 AND anh ~ '^[A-Za-z0-9/_.-]+$')),  -- đường dẫn ảnh trong bucket anh-dich-vu
   dang_ap_dung  boolean NOT NULL DEFAULT true,
   created_at    timestamptz NOT NULL DEFAULT now()
 );

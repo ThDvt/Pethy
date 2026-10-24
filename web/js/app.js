@@ -63,7 +63,5 @@
       document.body.append(d); d.showModal();
     });
   }
-  // Địa chỉ công khai của một ảnh trong Supabase Storage (bucket công khai).
-  const anhCongKhai = (bucket, path) => path ? String(cfg.SUPABASE_URL || '').replace(/\/$/, '') + '/storage/v1/object/public/' + bucket + '/' + path : '';
-  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan, anhCongKhai };
+  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan };
 })();
