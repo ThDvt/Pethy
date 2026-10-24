@@ -4,12 +4,15 @@
 
   async function lay(){
     if (!thuc) return { dich_vu: MAU.dich_vu, bac_si: MAU.bac_si, cau_hinh: MAU.cau_hinh, danh_gia: MAU.danh_gia, mau: true };
-    const [a, b, c, e] = await Promise.all([
-      db.from('dich_vu').select('id,ten,loai,gia,mo_ta').eq('dang_ap_dung', true).order('loai').order('ten'),
+    const dsDv = cot => db.from('dich_vu').select(cot).eq('dang_ap_dung', true).order('loai').order('ten');
+    const [a0, b, c, e] = await Promise.all([
+      dsDv('id,ten,loai,gia,mo_ta,anh'),
       db.from('bac_si_cong_khai').select('id,ho_ten,chuyen_mon,gioi_thieu,anh_dai_dien,lich_lam_viec,diem_tb,so_danh_gia').order('ho_ten'),
       db.from('cau_hinh').select('khoa,gia_tri').eq('cong_khai', true),
       db.from('danh_gia_cong_khai').select('id,so_sao,nhan_xet,ten_hien_thi,ngay,tong,diem_tb').not('nhan_xet','is',null).order('ngay',{ascending:false}).limit(6)
     ]);
+    // Chưa chạy 08_anh_dich_vu.sql thì cột anh chưa có: hỏi lại không kèm ảnh để trang chủ vẫn lên.
+    const a = a0.error ? await dsDv('id,ten,loai,gia,mo_ta') : a0;
     if (a.error || b.error || c.error) throw new Error('Không tải được dữ liệu');
     // Lỗi khi tải đánh giá (ví dụ chưa cập nhật cơ sở dữ liệu) không làm hỏng cả trang chủ.
     return { dich_vu: a.data, bac_si: b.data, cau_hinh: Object.fromEntries(c.data.map(r => [r.khoa, r.gia_tri])), danh_gia: e.error ? [] : e.data };
@@ -20,7 +23,7 @@
     // Tranh minh họa do chủ dự án vẽ, chọn theo tên dịch vụ (không dấu). Dịch vụ chưa có tranh thì thẻ không hiện ảnh.
     const bo = t => ' ' + String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd') + ' ';
     const TRANH = [[/ (tai kham|kiem tra lai)/, 'tai-kham'], [/ (tiem|vaccine|vac xin)/, 'tiem'], [/ kham/, 'kham']];
-    const tranh = x => { const g = TRANH.find(r => r[0].test(bo(x.ten))); return g ? g[1] : null; };
+    const tranhMacDinh = x => { const g = TRANH.find(r => r[0].test(bo(x.ten))); return g ? g[1] : null; };
     const MOTA = { kham:'Bác sĩ khám lâm sàng, tư vấn hướng điều trị và dặn dò cách chăm sóc bé tại nhà.',
                    tiem:'Tiêm vaccine phòng bệnh đúng lịch. Mũi tiêm được ghi vào sổ tiêm điện tử và web nhắc bạn mũi tiếp theo.' };
     const THU = ['', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ nhật'];
@@ -55,11 +58,13 @@
       requestAnimationFrame(cap); return goc;
     }
     const MAUNEN = ['var(--hong)','var(--bac)','var(--kem2)'];
+    // Ảnh do quản trị viên tải lên; chưa có thì dùng tranh có sẵn theo tên dịch vụ; không khớp thì thẻ không hiện ảnh.
+    const anhDv = x => { if (x.anh) return Pethy.anhCongKhai('anh-dich-vu', x.anh); const m = tranhMacDinh(x); return m ? '/img/dv/' + m + '.jpg' : null; };
     // Mọi dịch vụ đang áp dụng. Vừa 3 thẻ thì chia đều chiều ngang; nhiều hơn thì trượt ngang (kéo, vuốt hoặc bấm mũi tên).
     const chinh = (d.dich_vu || []).filter(x => x.ten);
     const the = (chinh.length ? chinh : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
       x.ten ? el('div',{class:'the-dv'},
-        tranh(x) ? el('img',{class:'anh-dv',src:'/img/dv/'+tranh(x)+'.jpg',alt:'Minh họa dịch vụ '+x.ten,width:560,height:560,loading:'lazy'}) : null,
+        anhDv(x) ? el('img',{class:'anh-dv',src:anhDv(x),alt:'Minh họa dịch vụ '+x.ten,width:560,height:420,loading:'lazy'}) : null,
         el('div',{class:'ten'}, x.ten),
         el('div',{class:'mo-ta-dv'}, x.mo_ta || MOTA[String(x.loai||'').toLowerCase()] || ''),
         el('div',{class:'gia'}, tien(x.gia)),

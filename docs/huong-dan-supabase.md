@@ -67,3 +67,9 @@ Tạo hai tài khoản chủ nuôi thử A và B trên web, xác nhận email. �
 2. Trên GitHub: **Settings, Secrets and variables, Actions, New repository secret**, thêm `SUPABASE_DB_URL` (chuỗi kết nối) và `BACKUP_PASSPHRASE` (một cụm mật khẩu dài ngẫu nhiên, hãy lưu một bản ở nơi an toàn khác).
 3. Tab **Actions**, chọn workflow **Sao lưu và giữ hoạt động**, bấm **Run workflow**. Chạy xong, mở lần chạy để tải artifact `pethy-sao-luu` (đã mã hóa, giữ 30 ngày). Thử khôi phục một lần vào một project trống để chắc rằng bản sao lưu dùng được.
 Workflow cũng chạy mỗi ngày nên dự án không bị tạm dừng vì không hoạt động.
+
+## 9. Ảnh minh họa dịch vụ
+
+Quản trị viên tự tải ảnh cho từng dịch vụ, không cần sửa code. Cơ sở dữ liệu cài từ trước cần chạy thêm `db/08_anh_dich_vu.sql` (sau 06 và 07) trong SQL Editor; kết quả `Success. No rows returned` là đúng. Bản cài mới đã có sẵn trong 01, 03, 04.
+
+Cách dùng: vào **Quản trị > Dịch vụ**, bấm **Ảnh** (hoặc **Đổi ảnh**) ở dòng dịch vụ, chọn ảnh rồi **Lưu ảnh**. Web tự thu nhỏ và nén ảnh trước khi tải lên. Dịch vụ chưa có ảnh dùng ảnh mặc định theo tên (Khám tổng quát, Tiêm phòng, Tái khám); tên khác thì thẻ không hiện ảnh. Chưa chạy 08 thì trang chủ vẫn lên bình thường, chỉ chưa có nút ảnh trong trang quản trị.

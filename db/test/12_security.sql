@@ -193,6 +193,29 @@ SELECT t.bang('diem bac si bo qua danh gia da an', $$SELECT coalesce(sum(so_danh
 RESET ROLE;
 SELECT t.bang('nhat ky ghi lai viec an danh gia', $$SELECT count(*)::text FROM nhat_ky WHERE bang_tac_dong='danh_gia' AND hanh_dong='sua'$$, '2');
 
+-- ===== (8) ẢNH DỊCH VỤ =====
+\set dv1 '(SELECT id FROM dich_vu LIMIT 1)'
+SET ROLE authenticated; SELECT t.as_(:a1);
+SELECT t.ok('admin gan anh cho dich vu', format('UPDATE dich_vu SET anh = %L WHERE id = %s', 'abc/anh-1.webp', :'dv1'));
+SELECT t.bang('anh duoc luu', $$SELECT count(*)::text FROM dich_vu WHERE anh = 'abc/anh-1.webp'$$, '1');
+SELECT t.loi('anh co ky tu la bi tu choi', format('UPDATE dich_vu SET anh = %L WHERE id = %s', '../x y.webp', :'dv1'), '23514');
+SELECT t.loi('anh qua 200 ky tu bi tu choi', format('UPDATE dich_vu SET anh = repeat(%L,201) WHERE id = %s', 'a', :'dv1'), '23514');
+SELECT t.ok('admin tai anh len kho', $$INSERT INTO storage.objects (bucket_id, name) VALUES ('anh-dich-vu','abc/anh-1.webp')$$);
+SELECT t.ok('admin xoa anh khoi kho', $$DELETE FROM storage.objects WHERE bucket_id='anh-dich-vu'$$);
+SELECT t.ok('admin tai lai anh', $$INSERT INTO storage.objects (bucket_id, name) VALUES ('anh-dich-vu','abc/anh-2.webp')$$);
+SELECT t.as_(:bs1);
+SELECT t.loi('bac si khong tai anh dich vu len', $$INSERT INTO storage.objects (bucket_id, name) VALUES ('anh-dich-vu','x/a.webp')$$, '42501');
+SELECT t.bang('bac si khong xoa duoc anh', $$WITH d AS (DELETE FROM storage.objects WHERE bucket_id='anh-dich-vu' RETURNING 1) SELECT count(*)::text FROM d$$, '0');
+SELECT t.bang('bac si khong gan duoc anh cho dich vu', format('WITH u AS (UPDATE dich_vu SET anh = %L WHERE id = %s RETURNING 1) SELECT count(*)::text FROM u', 'x/a.webp', :'dv1'), '0');
+SELECT t.as_(:cn1);
+SELECT t.loi('chu nuoi khong tai anh dich vu len', $$INSERT INTO storage.objects (bucket_id, name) VALUES ('anh-dich-vu','x/a.webp')$$, '42501');
+RESET ROLE;
+SET ROLE anon; SELECT t.as_('');
+SELECT t.bang('khach xem duoc anh dich vu', $$SELECT count(*)::text FROM storage.objects WHERE bucket_id='anh-dich-vu'$$, '1');
+SELECT t.bang('khach thay cot anh o trang cong khai', $$SELECT count(*)::text FROM dich_vu WHERE anh IS NOT NULL$$, '1');
+SELECT t.loi('khach khong tai anh len', $$INSERT INTO storage.objects (bucket_id, name) VALUES ('anh-dich-vu','x/a.webp')$$, '42501');
+RESET ROLE;
+
 \echo ---KET QUA---
 SELECT CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END AS kq, ten, chi_tiet FROM t.kq WHERE NOT ok ORDER BY 1;
 SELECT count(*) FILTER (WHERE ok) AS pass, count(*) FILTER (WHERE NOT ok) AS fail FROM t.kq;
