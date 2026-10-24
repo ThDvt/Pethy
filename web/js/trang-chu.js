@@ -33,17 +33,13 @@
     function khungTruot(cacThe){
       const lui = el('button',{type:'button',class:'truot-nut','aria-label':'Xem dịch vụ trước'}, '‹');
       const toi = el('button',{type:'button',class:'truot-nut','aria-label':'Xem dịch vụ tiếp theo'}, '›');
-      const dem = el('span',{class:'truot-dem','aria-live':'polite'});
       const dai = el('div',{class:'truot-dai',tabindex:'0',role:'region','aria-label':'Danh sách dịch vụ, cuộn ngang để xem thêm'}, ...cacThe);
-      const dieu = el('div',{class:'truot-dieu'}, dem, lui, toi);
-      const goc = el('div',{class:'truot'}, dai, dieu);
+      const goc = el('div',{class:'truot'}, dai, lui, toi);
       const the1 = () => dai.querySelector('.the-dv');
       const buoc = () => { const t = the1(); return t ? t.getBoundingClientRect().width + parseFloat(getComputedStyle(dai).columnGap || 20) : dai.clientWidth; };
       const giam = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const cap = () => { const du = dai.scrollWidth - dai.clientWidth > 4; dieu.hidden = !du;
-        lui.disabled = dai.scrollLeft <= 2; toi.disabled = dai.scrollLeft >= dai.scrollWidth - dai.clientWidth - 2;
-        const b = buoc(), tong = cacThe.length, hien = Math.max(1, Math.round(dai.clientWidth / b)), dau = Math.min(tong, Math.round(dai.scrollLeft / b) + 1);
-        dem.textContent = dau + (hien > 1 ? ' đến ' + Math.min(tong, dau + hien - 1) : '') + ' / ' + tong; };
+      const cap = () => { const du = dai.scrollWidth - dai.clientWidth > 4; lui.hidden = toi.hidden = !du;
+        lui.disabled = dai.scrollLeft <= 2; toi.disabled = dai.scrollLeft >= dai.scrollWidth - dai.clientWidth - 2;};
       let cho = 0; dai.addEventListener('scroll', () => { cancelAnimationFrame(cho); cho = requestAnimationFrame(cap); }, { passive:true });
       addEventListener('resize', cap);
       const di = h => dai.scrollBy({ left:h * buoc(), behavior: giam() ? 'auto' : 'smooth' });
