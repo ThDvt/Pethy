@@ -29,16 +29,46 @@
       return el('div',{class:'bs-ct'}, el('h3',{}, 'Lịch làm việc'),
         l.length ? el('ul',{class:'bs-lich'}, l.map(([t, g]) => el('li',{}, el('b',{}, THU[t]), g.join(', '))))
                  : el('p',{class:'cm'}, 'Chưa có lịch cố định. Giờ trống hiện ở bước chọn giờ khi đặt lịch.')); };
+    // Khung trượt ngang: cuộn mượt bằng CSS scroll-snap, mũi tên cuộn đúng một thẻ, chuột kéo được, màn hình cảm ứng vuốt tự nhiên.
+    function khungTruot(cacThe){
+      const lui = el('button',{type:'button',class:'truot-nut','aria-label':'Xem dịch vụ trước'}, '‹');
+      const toi = el('button',{type:'button',class:'truot-nut','aria-label':'Xem dịch vụ tiếp theo'}, '›');
+      const dem = el('span',{class:'truot-dem','aria-live':'polite'});
+      const dai = el('div',{class:'truot-dai',tabindex:'0',role:'region','aria-label':'Danh sách dịch vụ, cuộn ngang để xem thêm'}, ...cacThe);
+      const dieu = el('div',{class:'truot-dieu'}, dem, lui, toi);
+      const goc = el('div',{class:'truot'}, dai, dieu);
+      const the1 = () => dai.querySelector('.the-dv');
+      const buoc = () => { const t = the1(); return t ? t.getBoundingClientRect().width + parseFloat(getComputedStyle(dai).columnGap || 20) : dai.clientWidth; };
+      const giam = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const cap = () => { const du = dai.scrollWidth - dai.clientWidth > 4; dieu.hidden = !du;
+        lui.disabled = dai.scrollLeft <= 2; toi.disabled = dai.scrollLeft >= dai.scrollWidth - dai.clientWidth - 2;
+        const b = buoc(), tong = cacThe.length, hien = Math.max(1, Math.round(dai.clientWidth / b)), dau = Math.min(tong, Math.round(dai.scrollLeft / b) + 1);
+        dem.textContent = dau + (hien > 1 ? ' đến ' + Math.min(tong, dau + hien - 1) : '') + ' / ' + tong; };
+      let cho = 0; dai.addEventListener('scroll', () => { cancelAnimationFrame(cho); cho = requestAnimationFrame(cap); }, { passive:true });
+      addEventListener('resize', cap);
+      const di = h => dai.scrollBy({ left:h * buoc(), behavior: giam() ? 'auto' : 'smooth' });
+      lui.addEventListener('click', () => di(-1)); toi.addEventListener('click', () => di(1));
+      dai.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); di(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); di(-1); } });
+      // chuột kéo; cảm ứng đã vuốt được sẵn
+      let x0 = 0, s0 = 0, keo = false, daKeo = false;
+      dai.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0) return; keo = true; daKeo = false; x0 = e.clientX; s0 = dai.scrollLeft; });
+      addEventListener('pointermove', e => { if (!keo) return; const dx = e.clientX - x0; if (!daKeo && Math.abs(dx) > 5) { daKeo = true; dai.classList.add('dang-keo'); } if (daKeo) dai.scrollLeft = s0 - dx; });
+      addEventListener('pointerup', () => { if (!keo) return; keo = false; if (!daKeo) return; const b = buoc(), dich = Math.round(dai.scrollLeft / b) * b;
+        dai.classList.remove('dang-keo'); dai.scrollTo({ left:dich, behavior: giam() ? 'auto' : 'smooth' }); setTimeout(() => { daKeo = false; }, 0); });
+      dai.addEventListener('click', e => { if (daKeo) { e.preventDefault(); e.stopPropagation(); } }, true);
+      requestAnimationFrame(cap); return goc;
+    }
     const MAUNEN = ['var(--hong)','var(--bac)','var(--kem2)'];
-    // Trang chủ chỉ giới thiệu 3 dịch vụ chính (có tranh minh họa); các dịch vụ khác vẫn đặt được sau khi đăng nhập.
-    const chinh = (d.dich_vu || []).filter(x => x.ten && tranh(x));
-    dv.replaceChildren(el('div',{class:'luoi-the luoi-dv'}, ...(chinh.length ? chinh : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
+    // Mọi dịch vụ đang áp dụng. Vừa 3 thẻ thì chia đều chiều ngang; nhiều hơn thì trượt ngang (kéo, vuốt hoặc bấm mũi tên).
+    const chinh = (d.dich_vu || []).filter(x => x.ten);
+    const the = (chinh.length ? chinh : [el('p',{class:'ghi-chu'},'Chưa có dịch vụ.')]).map((x,i) =>
       x.ten ? el('div',{class:'the-dv'},
         tranh(x) ? el('img',{class:'anh-dv',src:'/img/dv/'+tranh(x)+'.jpg',alt:'Minh họa dịch vụ '+x.ten,width:560,height:560,loading:'lazy'}) : null,
         el('div',{class:'ten'}, x.ten),
         el('div',{class:'mo-ta-dv'}, x.mo_ta || MOTA[String(x.loai||'').toLowerCase()] || ''),
         el('div',{class:'gia'}, tien(x.gia)),
-        el('a',{class:'nut chinh',href:'/dang-nhap.html?dang-ky=1','aria-label':'Đặt lịch ngay: ' + x.ten}, 'Đặt lịch ngay')) : x)));
+        el('a',{class:'nut chinh',href:'/dang-nhap.html?dang-ky=1','aria-label':'Đặt lịch ngay: ' + x.ten}, 'Đặt lịch ngay')) : x);
+    dv.replaceChildren(khungTruot(the));
     bs.replaceChildren(el('div',{class:'luoi-the'}, ...(d.bac_si.length ? d.bac_si : [el('p',{class:'ghi-chu'},'Chưa có bác sĩ.')]).map((x,i) =>
       x.ho_ten ? el('div',{class:'the-bs'},
         x.anh_dai_dien ? el('img',{class:'ava',src:x.anh_dai_dien,alt:'Ảnh bác sĩ '+x.ho_ten,loading:'lazy'})
