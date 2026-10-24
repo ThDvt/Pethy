@@ -22,3 +22,39 @@ dialog::backdrop{background:rgba(20,22,26,.5)}
 select.nho,input.nho{font-size:14px;padding:6px 8px}
 .hang select,.hang input{width:auto;flex:0 0 auto}
 .hang select{min-width:130px}
+/* ---- Dashboard kinh tế (tổng quan) ---- */
+:root{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--tang:#006300}
+.db-loc{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 4px}
+.db-nut{font:inherit;font-size:14px;font-weight:600;padding:8px 14px;min-height:40px;border:1px solid var(--vach);border-radius:4px;background:#fff;color:var(--muc);cursor:pointer}
+.db-nut:hover{border-color:var(--muc)}
+.db-nut[aria-pressed=true]{background:var(--muc);color:#fff;border-color:var(--muc)}
+#db-khung{transition:opacity .15s}
+.db-hero{margin-top:20px}
+.db-so{font-family:var(--so,inherit);font-size:clamp(36px,7vw,56px);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:4px 0}
+.db-delta{font-size:14px;color:var(--xam)}
+.db-delta.tang b{color:var(--tang)}.db-delta.giam b{color:var(--loi)}
+.db-khung-bd{margin-top:12px;overflow-x:auto}
+@media(max-width:600px){.bd{min-width:560px}}
+.the .v{font-size:24px}
+.bd{width:100%;height:auto;display:block}
+.bd .luoi-ngang{stroke:var(--vach);stroke-width:1}
+.bd .truc{font-size:11px;fill:var(--xam)}
+.bd .cot{fill:var(--s1)}.bd .cot.nang{fill:#1c5aa8}
+.bd .hit{outline:none}.bd .hit:focus-visible{stroke:var(--muc);stroke-width:2}
+.chong{width:100%;height:28px;display:block}.chong .doan:focus-visible{stroke:var(--muc);stroke-width:2}
+.chu-giai{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:10px;font-size:14px}
+.chu-giai>div{display:flex;align-items:center;gap:6px}
+.nut-mau{width:10px;height:10px;border-radius:2px;display:inline-block}
+.cg-ten{color:var(--xam)}
+.db-hai{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 36px}
+.xh{margin-top:8px}.xh-hang{display:grid;grid-template-columns:minmax(120px,1.2fr) 2fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--vach);font-size:14px}
+.xh-thanh{height:12px}.xh-do{height:12px;background:var(--s1);border-radius:0 4px 4px 0}
+.xh-gt{font-weight:700;text-align:right}
+@media(max-width:560px){.xh-hang{grid-template-columns:1fr auto}.xh-thanh{grid-column:1/-1;order:3}}
+.db-chi-tiet{margin-top:12px}.db-chi-tiet summary{cursor:pointer;font-size:14px;font-weight:600;padding:8px 0}
+.db-cuon{overflow-x:auto;max-height:320px;overflow-y:auto}
+.db-bang{border-collapse:collapse;width:100%;font-size:13px}
+.db-bang th,.db-bang td{padding:6px 10px;border-bottom:1px solid var(--vach);text-align:right;white-space:nowrap}
+.db-bang th:first-child,.db-bang thead th{text-align:left}
+.dg-tip{position:fixed;z-index:50;pointer-events:none;background:#fcfcfb;border:1px solid var(--muc);border-radius:4px;padding:8px 10px;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.dg-nhan{font-weight:700}.dg-gt{font-size:16px;font-weight:800;margin:2px 0}.dg-ph{color:var(--xam)}
