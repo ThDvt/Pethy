@@ -53,7 +53,7 @@
     nav.setAttribute('aria-label', 'Khu vực');
     var dau = dd('div', 'tb-dau');
     var logo = dd('a', 'tb-logo'); logo.href = c.goc || '/'; logo.setAttribute('aria-label', 'Pethy, về trang đầu của khu');
-    var full = dd('img', 'tb-chu'); full.src = '/img/logo-chu-sang.svg'; full.alt = 'Pethy'; full.width = 104; full.height = 54;
+    var full = dd('img', 'tb-chu'); full.src = '/img/logo-chu.svg'; full.alt = 'Pethy'; full.width = 104; full.height = 54;
     var dauLogo = dd('img', 'tb-dau-logo'); dauLogo.src = '/img/logo.svg'; dauLogo.alt = ''; dauLogo.width = 36; dauLogo.height = 36;
     logo.appendChild(full); logo.appendChild(dauLogo); dau.appendChild(logo);
     var gon = dd('button', 'tb-gon'); gon.type = 'button'; gon.appendChild(svg('trai'));
