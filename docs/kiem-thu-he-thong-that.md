@@ -102,6 +102,8 @@ Thời gian dự kiến: khoảng 60 đến 90 phút. Nên dùng hai trình duy�
 | 8.3 | Mở Tin nhắn giữa chủ nuôi và phòng khám | Gửi và nhận được; nút Gửi thẳng hàng ô soạn |
 | 8.4 | Xác nhận khi đăng xuất | Có hộp xác nhận |
 | 8.5 | Ô số điện thoại | Tự định dạng khi rời ô, không nhân đôi số 0 |
+| 8.6 | Admin gửi một tin cho bác sĩ. Đăng nhập bác sĩ ở cửa sổ khác | Mục Tin nhắn của bác sĩ hiện số 1 (tối đa 1 phút); mở Tin nhắn thì số biến mất |
+| 8.7 | Lễ tân: có lịch chờ xác nhận. Thu ngân và chủ nuôi: có hóa đơn còn nợ. Thủ kho: có thuốc sắp hết | Mục tương ứng ở thanh bên hiện đúng số; xử lý xong thì số giảm |
 
 ## Khi gặp lỗi
 

@@ -19,7 +19,7 @@
       el('div',{style:'max-width:80%;padding:8px 12px;border:1px solid var(--muc);border-radius:2px;white-space:pre-wrap;word-break:break-word;' + (t.nguoi_gui_id === me ? 'background:var(--nen-nhat)' : '')}, t.noi_dung),
       el('div',{class:'nho'}, (t.nguoi_gui_id === me ? 'Bạn' : 'Quản trị') + ', ' + gio(t.created_at)))) : [A.rong('Chưa có tin nhắn. Hãy nhắn cho quản trị khi cần.')]));
     hop.scrollTop = hop.scrollHeight;
-    await db.rpc('danh_dau_da_doc', { p_nhan_vien: me });
+    await db.rpc('danh_dau_da_doc', { p_nhan_vien: me }); Pethy.khu.lamMoiSo();
   }
   const gui = async ev => { const nd = o.value.trim(); if (!nd) return; const nutBam = ev.currentTarget; nutBam.disabled = true; A.baoLoi('');
     const { error } = await db.rpc('gui_tin_nhan', { p_nhan_vien: me, p_noi_dung: nd });

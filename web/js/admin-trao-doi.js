@@ -30,7 +30,7 @@
     khung.replaceChildren(el('div',{style:'font-weight:800;font-size:18px;border-bottom:2px solid var(--muc);padding-bottom:8px'}, chon.ho_ten), hop,
       el('div',{class:'soan-tin'}, el('div',{style:'flex:1'}, o), el('button',{class:'nut chinh',type:'button',onclick:gui}, 'Gửi')));
     hop.scrollTop = hop.scrollHeight;
-    await db.rpc('danh_dau_da_doc', { p_nhan_vien: id });
+    await db.rpc('danh_dau_da_doc', { p_nhan_vien: id }); Pethy.khu.lamMoiSo();
   }
   $('vung').replaceChildren(el('div',{style:'display:flex;flex-wrap:wrap;gap:24px;margin-top:20px'}, dsLuong, khung));
   await taiLuong(); await taiTin();
