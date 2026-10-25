@@ -65,5 +65,32 @@
       document.body.append(d); d.showModal();
     });
   }
-  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan };
+  // Ô mật khẩu có nút hiện/ẩn (icon con mắt). Input giữ nguyên id nên nhãn <label for> vẫn hoạt động.
+  function matKhau(o){
+    if (!o || o.dataset.mk) return;
+    o.dataset.mk = '1';
+    const NS = 'http://www.w3.org/2000/svg';
+    const ve = hien => {
+      const s = document.createElementNS(NS, 'svg');
+      s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('width', '20'); s.setAttribute('height', '20');
+      s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '1.8');
+      s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('aria-hidden', 'true');
+      const p = d => { const e = document.createElementNS(NS, 'path'); e.setAttribute('d', d); s.appendChild(e); };
+      p('M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z');
+      if (hien) { const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', '12'); c.setAttribute('cy', '12'); c.setAttribute('r', '3'); s.appendChild(c); }
+      else p('M4 4l16 16');
+      return s;
+    };
+    const bao = document.createElement('div'); bao.className = 'o-mk';
+    const nut = document.createElement('button'); nut.type = 'button'; nut.className = 'o-mk-nut';
+    const capNhat = () => {
+      const an = o.type === 'password';
+      nut.replaceChildren(ve(an));
+      nut.setAttribute('aria-label', an ? 'Hiện mật khẩu' : 'Ẩn mật khẩu');
+      nut.setAttribute('aria-pressed', String(!an));
+    };
+    nut.addEventListener('click', () => { o.type = o.type === 'password' ? 'text' : 'password'; capNhat(); o.focus(); });
+    o.replaceWith(bao); bao.append(o, nut); capNhat();
+  }
+  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan, matKhau };
 })();
