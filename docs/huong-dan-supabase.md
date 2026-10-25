@@ -19,6 +19,7 @@ select count(*) from pg_tables where schemaname = 'public' and not rowsecurity;
 ## 2. Cấu hình Authentication
 - **Authentication, Sign In / Providers, Email**: **tắt** Confirm email (xem mục "Tắt xác nhận email và bật Turnstile" bên dưới).
 - Cùng trang: tắt **Allow anonymous sign-ins**.
+- **Authentication, URL Configuration, Redirect URLs**: thêm `https://pethy.bo3tuoi1999.workers.dev/dang-nhap.html` (và `http://localhost:8000/dang-nhap.html` nếu thử cục bộ). Thiếu dòng này thì liên kết trong thư "quên mật khẩu" không đưa về đúng trang đặt mật khẩu mới. Thư đặt lại cũng bị giới hạn khoảng 2 thư mỗi giờ của gói Free.
 - **Authentication, URL Configuration**: đặt **Site URL** là địa chỉ web thật khi đã triển khai (tạm thời để mặc định).
 
 ### Tắt xác nhận email và bật Turnstile
