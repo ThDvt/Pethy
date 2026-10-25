@@ -71,7 +71,7 @@ form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 .tb-gon{width:28px;height:28px;border-radius:8px;border:1px solid #3A3D42;background:transparent;color:#B8BAB4;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background-color .15s,color .15s}
 .tb-gon:hover{background:#262A30;color:#fff}
 .tb-gon svg{width:16px;height:16px;transition:transform .2s}
-.thanh-ben.gon .tb-gon svg{transform:rotate(180deg)}
+
 .thanh-ben.gon .tb-chu{display:none}
 .thanh-ben.gon .tb-dau-logo{display:block}
 .thanh-ben.gon .tb-dau{flex-direction:column;height:auto;gap:12px}
