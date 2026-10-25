@@ -99,7 +99,7 @@ body.khach{
 .khach-khu .tb-av{background:var(--vang)}
 .khach-khu .tb-vt,.khach-khu .tb-nhom{color:var(--ngoc-dam)}
 .khach-khu .tb-chan{border-top-color:#BFE3DF}
-.khach-khu .tb-gon{border-color:#BFE3DF;color:var(--toi)}
+.khach-khu .tb-gon{border:0;color:var(--toi)}
 .khach-khu .tb-gon:hover{background:rgba(15,63,68,.09)}
 .khach-khu .noi-dung-khu h1{font-weight:800;letter-spacing:-.03em;font-size:34px!important}
 .khach-khu .lich,.khach-khu .dong,.khach-khu .the{background:#fff;border:2px solid var(--muc)!important;border-radius:22px;padding:18px 22px;margin-bottom:14px}
