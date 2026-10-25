@@ -19,6 +19,7 @@ select count(*) from pg_tables where schemaname = 'public' and not rowsecurity;
 ## 2. Cấu hình Authentication
 - **Authentication, Sign In / Providers, Email**: **tắt** Confirm email (xem mục "Tắt xác nhận email và bật Turnstile" bên dưới).
 - Cùng trang: tắt **Allow anonymous sign-ins**.
+- **Authentication, URL Configuration, Redirect URLs**: thêm `https://pethy.bo3tuoi1999.workers.dev/dang-nhap.html` (và `http://localhost:8000/dang-nhap.html` nếu thử cục bộ). Thiếu dòng này thì liên kết trong thư "quên mật khẩu" không đưa về đúng trang đặt mật khẩu mới. **Quan trọng:** dịch vụ thư có sẵn của Supabase chỉ gửi tới các địa chỉ đã được cho phép (thành viên nhóm dự án) và chỉ 2 thư mỗi giờ, được thiết kế để thử nghiệm. Khách thật sẽ không nhận được thư đặt lại mật khẩu. Muốn chức năng quên mật khẩu hoạt động với người dùng thật, phải cấu hình SMTP riêng: Authentication, Emails, SMTP Settings, bật Custom SMTP rồi điền thông tin của nhà cung cấp thư (ví dụ Brevo hoặc Resend, đều có gói miễn phí; kiểm tra hạn mức hiện hành). Địa chỉ gửi nên là tên miền bạn xác minh được.
 - **Authentication, URL Configuration**: đặt **Site URL** là địa chỉ web thật khi đã triển khai (tạm thời để mặc định).
 
 ### Tắt xác nhận email và bật Turnstile

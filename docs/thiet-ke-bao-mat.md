@@ -71,8 +71,8 @@ Tác nhân: người lạ trên internet (quét, spam, dò mật khẩu), chủ 
 
 ## 5. Danh sách cần làm trước khi chạy thật (theo thứ tự ưu tiên)
 
-1. Tắt đăng nhập ẩn danh. Xác nhận email: đã quyết định tắt (xem mục 1); chỉ bật lại nếu cấu hình SMTP riêng.
-2. Bật CAPTCHA (Cloudflare Turnstile) cho đăng nhập và đăng ký: mã đã có, chỉ còn tạo site Turnstile, điền `TURNSTILE_SITE_KEY` trong `web/js/config.js` và dán secret key vào Supabase. Chưa có chức năng quên mật khẩu.
+1. Cấu hình SMTP riêng (bắt buộc cho quên mật khẩu với người dùng thật). Tắt đăng nhập ẩn danh. Xác nhận email: đã quyết định tắt (xem mục 1); chỉ bật lại nếu cấu hình SMTP riêng.
+2. Bật CAPTCHA (Cloudflare Turnstile) cho đăng nhập và đăng ký: mã đã có, chỉ còn tạo site Turnstile, điền `TURNSTILE_SITE_KEY` trong `web/js/config.js` và dán secret key vào Supabase. Quên mật khẩu đã có (`dang-nhap.html`): luôn trả một thông báo chung dù email có tồn tại hay không, kèm Turnstile, liên kết trong thư dùng một lần.
 3. Thêm luật giới hạn tần suất trên Cloudflare và bật chế độ chống bot cơ bản.
 4. Thêm tiêu đề bảo mật và Content-Security-Policy qua tệp `_headers` của Cloudflare Pages.
 5. Bật xác thực hai lớp cho admin; đặt tên miền và địa chỉ chuyển hướng cho phép trong Supabase.
