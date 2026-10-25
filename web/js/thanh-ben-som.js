@@ -22,7 +22,7 @@
     hoaDon:[['path',{d:'M6 3h12v18l-3-2-3 2-3-2-3 2V3zM9 8h6M9 12h6'}]],
     ra:[['path',{d:'M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9'}]],
     sao:[['path',{d:'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z'}]],
-    trai:[['path',{d:'M15 18l-6-6 6-6'}]],
+    trai:[['rect',{x:'3',y:'3',width:'18',height:'18',rx:'5'}],['path',{d:'M9 3v18'}]],
     cham:[['circle',{cx:12,cy:12,r:3}]]
   };
   // Chọn biểu tượng theo đường dẫn, để không phải sửa từng thực đơn.
@@ -53,7 +53,7 @@
     nav.setAttribute('aria-label', 'Khu vực');
     var dau = dd('div', 'tb-dau');
     var logo = dd('a', 'tb-logo'); logo.href = c.goc || '/'; logo.setAttribute('aria-label', 'Pethy, về trang đầu của khu');
-    var full = dd('img', 'tb-chu'); full.src = '/img/logo-chu-sang.svg'; full.alt = 'Pethy'; full.width = 104; full.height = 54;
+    var full = dd('img', 'tb-chu'); full.src = '/img/logo-chu.svg'; full.alt = 'Pethy'; full.width = 104; full.height = 54;
     var dauLogo = dd('img', 'tb-dau-logo'); dauLogo.src = '/img/logo.svg'; dauLogo.alt = ''; dauLogo.width = 36; dauLogo.height = 36;
     logo.appendChild(full); logo.appendChild(dauLogo); dau.appendChild(logo);
     var gon = dd('button', 'tb-gon'); gon.type = 'button'; gon.appendChild(svg('trai'));
