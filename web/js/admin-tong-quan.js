@@ -21,8 +21,8 @@
   }
   // ---- định dạng số ----
   const gon = v => { v = Number(v); const a = Math.abs(v);
-    if (a >= 1e9) return (v / 1e9).toFixed(1).replace('.0', '') + ' tỷ';
-    if (a >= 1e6) return (v / 1e6).toFixed(1).replace('.0', '') + ' tr';
+    if (a >= 1e9) return (v / 1e9).toFixed(1).replace('.0', '').replace('.', ',') + ' tỷ';
+    if (a >= 1e6) return (v / 1e6).toFixed(1).replace('.0', '').replace('.', ',') + ' tr';
     if (a >= 1e3) return Math.round(v / 1e3) + 'k'; return String(Math.round(v)); };
   const phanTram = x => (Math.round(x * 10) / 10).toString().replace('.', ',') + '%';
   function dep(max){ // trần trục tung "đẹp" và 4 vạch chia
@@ -59,18 +59,24 @@
     });
     return g;
   }
-  // ---- thanh xếp chồng ngang (cơ cấu) kèm chú giải ----
-  function chong(phan, donVi){
+  // ---- bánh rán (cơ cấu của một tổng) kèm chú giải; chỉ dùng cho 2 đến 3 phần ----
+  function banhRan(phan, donVi){
     const tong = phan.reduce((s, p) => s + p.v, 0);
     if (!tong) return el('p',{class:'nho',style:'padding:12px 0'}, 'Chưa có số liệu trong kỳ này.');
-    const W = 600, H = 28, gap = 2; let x = 0;
-    const g = sv('svg', { viewBox:'0 0 ' + W + ' ' + H, class:'chong', role:'img', 'aria-label':phan.map(p => p.ten + ' ' + phanTram(p.v / tong * 100)).join(', ') });
-    const co = phan.filter(p => p.v > 0);
-    co.forEach((p, i) => { const w = p.v / tong * W, rect = sv('rect', { x:x + (i ? gap / 2 : 0), y:0, width:Math.max(1, w - (co.length > 1 ? gap : 0) + (i && i < co.length - 1 ? 0 : 0)), height:H, rx:4, fill:p.mau, tabindex:'0', class:'doan', 'aria-label':p.ten + ': ' + tien(p.v) });
+    const R = 52, C = 2 * Math.PI * R, SZ = 150, co = phan.filter(p => p.v > 0), khe = co.length > 1 ? 3 : 0;
+    const g = sv('svg', { viewBox:'0 0 ' + SZ + ' ' + SZ, class:'bran', role:'img', 'aria-label':phan.map(p => p.ten + ' ' + phanTram(p.v / tong * 100)).join(', ') });
+    g.append(sv('circle', { cx:SZ / 2, cy:SZ / 2, r:R, fill:'none', stroke:'var(--vach)', 'stroke-width':22, opacity:'.5' }));
+    let dau = 0;
+    co.forEach(p => {
+      const dai = p.v / tong * C, ve = Math.max(1, dai - khe);
+      const arc = sv('circle', { cx:SZ / 2, cy:SZ / 2, r:R, fill:'none', stroke:p.mau, 'stroke-width':22, 'stroke-dasharray':ve + ' ' + (C - ve), 'stroke-dashoffset':-(dau + khe / 2), transform:'rotate(-90 ' + SZ / 2 + ' ' + SZ / 2 + ')', class:'lat', tabindex:'0', 'aria-label':p.ten + ': ' + tien(p.v) + ', ' + phanTram(p.v / tong * 100) });
       const bat = ev => hienTip(ev, [el('div',{class:'dg-nhan'}, p.ten), el('div',{class:'dg-gt'}, tien(p.v)), el('div',{class:'dg-ph'}, phanTram(p.v / tong * 100) + ' ' + donVi)]);
-      rect.addEventListener('pointermove', bat); rect.addEventListener('pointerleave', anTip); rect.addEventListener('focus', () => { const b = rect.getBoundingClientRect(); bat({ clientX:b.left + b.width / 2, clientY:b.top }); }); rect.addEventListener('blur', anTip);
-      g.append(rect); x += w; });
-    return el('div',{}, g, el('div',{class:'chu-giai'}, ...phan.map(p => el('div',{},
+      arc.addEventListener('pointermove', bat); arc.addEventListener('pointerleave', anTip);
+      arc.addEventListener('focus', () => { const b = arc.getBoundingClientRect(); bat({ clientX:b.left + b.width / 2, clientY:b.top }); }); arc.addEventListener('blur', anTip);
+      g.append(arc); dau += dai;
+    });
+    g.append(sv('text', { x:SZ / 2, y:SZ / 2 + 2, 'text-anchor':'middle', class:'bran-so' }, gon(tong)), sv('text', { x:SZ / 2, y:SZ / 2 + 20, 'text-anchor':'middle', class:'bran-nhan' }, 'tổng'));
+    return el('div',{class:'db-bran'}, g, el('div',{class:'chu-giai'}, ...phan.map(p => el('div',{},
       el('i',{class:'nut-mau',style:'background:' + p.mau}), el('span',{class:'cg-ten'}, p.ten), el('b',{}, tien(p.v)), el('span',{class:'nho'}, ' ' + phanTram(p.v / tong * 100))))));
   }
   // ---- cột ngang xếp hạng ----
@@ -85,14 +91,18 @@
   const khung = el('div',{id:'db-khung'});
   const loc = el('div',{class:'db-loc',role:'group','aria-label':'Khoảng thời gian'});
   const gl = k => { ky = k; ve(); };
-  function veLoc(){ loc.replaceChildren(...TRUOC.map(t => el('button',{type:'button',class:'db-nut','aria-pressed':String(t.k === ky),onclick:() => gl(t.k)}, t.ten))); }
+  // Giờ cập nhật số liệu và nút làm mới nằm cuối hàng lọc.
+  const gioCapNhat = el('span',{role:'status'}, 'Đang tải…');
+  const lamMoi = el('button',{type:'button',class:'lien-ket',onclick:() => ve()}, 'Làm mới');
+  const phai = el('div',{class:'db-cap'}, gioCapNhat, lamMoi);
+  function veLoc(){ loc.replaceChildren(...TRUOC.map(t => el('button',{type:'button',class:'db-nut','aria-pressed':String(t.k === ky),onclick:() => gl(t.k)}, t.ten)), phai); }
   $('vung').replaceChildren(loc, khung);
   const gop = rows => ({ tong: rows.reduce((s, r) => s + Number(r.tong_thu), 0), so: rows.reduce((s, r) => s + Number(r.so_giao_dich), 0), tm: rows.reduce((s, r) => s + Number(r.tien_mat), 0), ck: rows.reduce((s, r) => s + Number(r.chuyen_khoan), 0) });
   const dem = async (tt, tu, den) => { const r = await db.from('lich_hen').select('id,trang_thai', { count:'exact', head:true }).eq('trang_thai', tt).gte('thoi_gian', new Date(tu + 'T00:00:00+07:00').toISOString()).lt('thoi_gian', new Date(cong(den, 1) + 'T00:00:00+07:00').toISOString());
     return r.count != null ? r.count : (r.data || []).filter(x => x.trang_thai === tt).length; };
   let lanVe = 0;
   async function ve(){
-    const lan = ++lanVe; A.baoLoi(''); veLoc(); khung.style.opacity = '.5';
+    const lan = ++lanVe; A.baoLoi(''); veLoc(); khung.style.opacity = '.5'; gioCapNhat.textContent = 'Đang tải…';
     const k = khoang(ky);
     const [cur, pre, dv, cn, cb, hoanThanh, huy, khongDen] = await Promise.all([
       db.rpc('doanh_thu_theo_ngay', { p_tu:k.tu, p_den:k.den }), db.rpc('doanh_thu_theo_ngay', { p_tu:k.pTu, p_den:k.pDen }),
@@ -102,6 +112,7 @@
       dem('da_hoan_thanh', k.tu, k.den), dem('da_huy', k.tu, k.den), dem('khong_den', k.tu, k.den)]);
     if (lan !== lanVe) return;   // người dùng đã bấm khoảng khác trong lúc chờ
     khung.style.opacity = '';
+    gioCapNhat.textContent = 'Cập nhật lúc ' + new Date().toLocaleTimeString('vi-VN', { hour:'2-digit', minute:'2-digit', timeZone:'Asia/Ho_Chi_Minh' });
     if (cur.error || pre.error || dv.error || cn.error) return A.baoLoi('Không tải được số liệu. Vui lòng tải lại trang.');
     const c = gop(cur.data || []), p = gop(pre.data || []);
     // gom theo ngày (đủ mọi ngày, ngày không thu = 0) hoặc theo tháng nếu kỳ dài
@@ -123,30 +134,46 @@
     const CB = {sap_het:'Sắp hết hàng',sap_het_han:'Lô sắp hết hạn',het_han:'Lô hết hạn còn tồn'};
     const bang = el('table',{class:'db-bang'}, el('thead',{}, el('tr',{}, ...['Thời gian','Đã thu','Tiền mặt','Chuyển khoản','Số lần thu'].map(t => el('th',{scope:'col'}, t)))),
       el('tbody',{}, ...rows.map(r => el('tr',{}, el('th',{scope:'row'}, r.nhan), el('td',{}, tien(r.tong)), el('td',{}, tien(r.tien_mat)), el('td',{}, tien(r.chuyen_khoan)), el('td',{}, String(r.so))))));
+    // ---- bố cục: bốn con số quan trọng ở trên cùng, biểu đồ bên trái, việc cần xử lý bên phải, cơ cấu bên dưới ----
+    const dsNo = cn.data || [], dsKho = cb.data || [];
+    // Tiêu đề ô kèm đường dẫn sang trang đầy đủ (cùng khoảng ngày đang xem).
+    const chiTietHref = '/admin/doanh-thu.html?tu=' + k.tu + '&den=' + k.den;
+    const dau = (tieuDe) => el('div',{class:'muc-dau'}, el('h2',{}, tieuDe), el('a',{class:'xem-ct',href:chiTietHref,'aria-label':tieuDe + ': xem chi tiết'}, 'Xem chi tiết ', el('span',{'aria-hidden':'true'}, '→')));
+    const soNgayQua = d => Math.max(0, Math.floor((Date.now() - new Date(d).getTime()) / 864e5));
+    const sap = dsKho.filter(x => x.loai_canh_bao === 'sap_het').length, hh = dsKho.filter(x => x.loai_canh_bao !== 'sap_het').length;
+    const kpi = (nhan, giaTri, phu, cls, nhanTt) => el('div',{class:'db-kpi-o ' + (cls || '')},
+      el('div',{class:'n'}, nhan, nhanTt || null), el('div',{class:'v'}, giaTri), el('div',{class:'p'}, phu));
+    const hangNo = x => el('div',{class:'hang'},
+      el('div',{class:'ten'}, x.ten_chu_nuoi, el('div',{class:'nho',style:'font-weight:400'}, x.so_dien_thoai + ', lập ' + A.ngay(x.created_at))),
+      el('div',{class:'nho'}, 'Đã thu ' + tien(x.da_thu) + ' / ' + tien(x.tong_tien)),
+      el('div',{class:'gt'}, tien(x.con_no)));
+    const hangKho = x => el('div',{class:'hang'},
+      el('div',{class:'ten'}, x.ten), el('span',{class:'tt do'}, CB[x.loai_canh_bao]),
+      el('div',{class:'nho'}, (x.so_lo ? 'Lô ' + x.so_lo + ', hạn ' + A.ngay(x.han_dung) + ', ' : '') + 'còn ' + x.ton));
+    const GIOI = 4;
+    const xemDu = (nhan, ds, hang) => ds.length > GIOI ? el('details',{class:'db-chi-tiet'}, el('summary',{}, nhan + ' (' + ds.length + ')'), ...ds.slice(GIOI).map(hang)) : null;
+    const canXuLy = el('section',{class:'muc'}, el('h2',{}, 'Cần xử lý'),
+      el('h3',{class:'db-h3'}, 'Hóa đơn chưa thu đủ'),
+      ...(dsNo.length ? dsNo.slice(0, GIOI).map(hangNo) : [A.rong('Không có công nợ.')]), xemDu('Xem thêm hóa đơn chưa thu', dsNo, hangNo),
+      el('h3',{class:'db-h3'}, 'Cảnh báo kho'),
+      ...(dsKho.length ? dsKho.slice(0, GIOI).map(hangKho) : [A.rong('Kho không có cảnh báo.')]), xemDu('Xem thêm cảnh báo kho', dsKho, hangKho));
     khung.replaceChildren(
-      el('div',{class:'db-hero'},
-        el('div',{}, el('div',{class:'n'}, 'Đã thu từ ' + dm(k.tu) + ' đến ' + dm(k.den) + ' (' + k.len + ' ngày)'), el('div',{class:'db-so'}, tien(c.tong)), dd),
-        el('div',{class:'the'},
-          A.the('Số lần thu', String(c.so)), A.the('Trung bình mỗi lần', tien(dtb)),
-          A.the('Lượt khám hoàn thành', String(hoanThanh)), A.the('Lịch hủy hoặc không đến', tongLich ? phanTram((huy + khongDen) / tongLich * 100) : '0%'),
-          A.the('Công nợ hiện tại', tien(tongNo)))),
-      el('section',{class:'muc'}, el('h2',{}, 'Đã thu theo ' + (k.len > 92 ? 'tháng' : 'ngày')), el('div',{class:'db-khung-bd'}, bieuDoCot(rows)),
-        el('details',{class:'db-chi-tiet'}, el('summary',{}, 'Xem dạng bảng'), el('div',{class:'db-cuon'}, bang))),
-      el('div',{class:'db-hai'},
-        el('section',{class:'muc'}, el('h2',{}, 'Doanh số theo nhóm'), el('div',{class:'nho',style:'margin:8px 0'}, 'Tính trên hóa đơn đã lập và chưa hủy trong kỳ.'),
-          chong([{ ten:'Dịch vụ', v:nhom['Dịch vụ'] || 0, mau:MAU.chinh }, { ten:'Thuốc', v:nhom['Thuốc'] || 0, mau:MAU.phu }, { ten:'Vaccine', v:nhom['Vaccine'] || 0, mau:MAU.thu3 }], 'doanh số')),
-        el('section',{class:'muc'}, el('h2',{}, 'Hình thức thanh toán'), el('div',{class:'nho',style:'margin:8px 0'}, 'Tính trên số tiền đã thu trong kỳ.'),
-          chong([{ ten:'Tiền mặt', v:c.tm, mau:MAU.chinh }, { ten:'Chuyển khoản', v:c.ck, mau:MAU.phu }], 'đã thu'))),
-      el('section',{class:'muc'}, el('h2',{}, 'Mục mang lại nhiều doanh số nhất'), top.length ? xepHang(top) : A.rong('Chưa có hóa đơn trong kỳ này.')),
-      el('section',{class:'muc'}, el('h2',{}, 'Hóa đơn chưa thu đủ'),
-        ...((cn.data || []).length ? cn.data.map(x => el('div',{class:'hang'},
-          el('div',{class:'ten'}, x.ten_chu_nuoi, el('div',{class:'nho',style:'font-weight:400'}, x.so_dien_thoai + ', lập ' + A.ngay(x.created_at))),
-          el('div',{class:'nho'}, 'Đã thu ' + tien(x.da_thu) + ' / ' + tien(x.tong_tien)),
-          el('div',{class:'gt'}, tien(x.con_no)))) : [A.rong('Không có công nợ.')])),
-      el('section',{class:'muc'}, el('h2',{}, 'Cảnh báo kho'),
-        ...((cb.data || []).length ? cb.data.map(x => el('div',{class:'hang'},
-          el('div',{class:'ten'}, x.ten), el('span',{class:'tt do'}, CB[x.loai_canh_bao]),
-          el('div',{class:'nho'}, (x.so_lo ? 'Lô ' + x.so_lo + ', hạn ' + A.ngay(x.han_dung) + ', ' : '') + 'còn ' + x.ton))) : [A.rong('Kho không có cảnh báo.')])));
+      el('div',{class:'db-kpi'},
+        kpi('Đã thu trong kỳ', tien(c.tong), el('div',{}, dd, el('div',{class:'nho',style:'margin-top:4px'}, dm(k.tu) + ' đến ' + dm(k.den) + ', ' + k.len + ' ngày')), 'lon'),
+        kpi('Công nợ hiện tại', tien(tongNo), dsNo.length ? dsNo.length + ' hóa đơn chưa thu đủ, cũ nhất ' + soNgayQua(dsNo[0].created_at) + ' ngày' : 'Không có hóa đơn nào còn nợ', dsNo.length ? 'canh' : '', dsNo.length ? el('span',{class:'tt do',style:'margin-left:8px'}, 'Cần thu') : null),
+        kpi('Lượt khám hoàn thành', String(hoanThanh), tongLich ? 'Hủy hoặc không đến: ' + phanTram((huy + khongDen) / tongLich * 100) + ' (' + (huy + khongDen) + ' lịch)' : 'Chưa có lịch trong kỳ này'),
+        kpi('Cảnh báo kho', dsKho.length + ' mục', dsKho.length ? sap + ' sắp hết hàng, ' + hh + ' lô sắp hoặc đã hết hạn' : 'Kho đang ổn', dsKho.length ? 'canh' : '', dsKho.length ? el('span',{class:'tt do',style:'margin-left:8px'}, 'Cần xử lý') : null)),
+      el('div',{class:'db-chinh'},
+        el('section',{class:'muc'}, dau('Đã thu theo ' + (k.len > 92 ? 'tháng' : 'ngày')), el('div',{class:'db-khung-bd'}, bieuDoCot(rows)),
+          el('div',{class:'nho',style:'margin-top:8px'}, c.so + ' lần thu, trung bình ' + tien(dtb) + ' mỗi lần.'),
+          el('details',{class:'db-chi-tiet'}, el('summary',{}, 'Xem dạng bảng'), el('div',{class:'db-cuon'}, bang))),
+        canXuLy),
+      el('div',{class:'db-ba'},
+        el('section',{class:'muc'}, dau('Doanh số theo nhóm'), el('div',{class:'nho',style:'margin:8px 0'}, 'Hóa đơn đã lập, chưa hủy.'),
+          banhRan([{ ten:'Dịch vụ', v:nhom['Dịch vụ'] || 0, mau:MAU.chinh }, { ten:'Thuốc', v:nhom['Thuốc'] || 0, mau:MAU.phu }, { ten:'Vaccine', v:nhom['Vaccine'] || 0, mau:MAU.thu3 }], 'doanh số')),
+        el('section',{class:'muc'}, dau('Hình thức thanh toán'), el('div',{class:'nho',style:'margin:8px 0'}, 'Số tiền đã thu trong kỳ.'),
+          banhRan([{ ten:'Tiền mặt', v:c.tm, mau:MAU.chinh }, { ten:'Chuyển khoản', v:c.ck, mau:MAU.phu }], 'đã thu')),
+        el('section',{class:'muc'}, dau('Bán chạy nhất'), top.length ? xepHang(top.slice(0, 5)) : A.rong('Chưa có hóa đơn trong kỳ này.'))));
   }
   await ve();
 })();
