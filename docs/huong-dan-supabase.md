@@ -17,7 +17,7 @@ select count(*) from pg_tables where schemaname = 'public' and not rowsecurity;
 ```
 
 ## 2. Cấu hình Authentication
-- **Authentication, Sign In / Providers, Email**: bật **Confirm email**.
+- **Authentication, Sign In / Providers, Email**: **tắt** Confirm email (xem mục "Tắt xác nhận email và bật Turnstile" bên dưới).
 - Cùng trang: tắt **Allow anonymous sign-ins**.
 - **Authentication, URL Configuration**: đặt **Site URL** là địa chỉ web thật khi đã triển khai (tạm thời để mặc định).
 
