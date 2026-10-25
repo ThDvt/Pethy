@@ -2,7 +2,9 @@
   const { db, el, tien } = Pethy, A = Pethy.admin, { loiRpc } = Pethy.khu, $ = A.$;
   if (!await A.boot('/admin/doanh-thu.html')) return;
   const hn = A.homNay();
-  const tu = el('input',{id:'tu',type:'date',value:hn.slice(0,4) + '-01-01',max:hn}), den = el('input',{id:'den',type:'date',value:hn,max:hn});
+  // Có thể mở từ dashboard với khoảng ngày đã chọn: /admin/doanh-thu.html?tu=2026-09-26&den=2026-10-25
+  const qs = new URLSearchParams(location.search), hopLe = v => /^\d{4}-\d{2}-\d{2}$/.test(v || '') && v <= hn;
+  const tu = el('input',{id:'tu',type:'date',value:hopLe(qs.get('tu')) ? qs.get('tu') : hn.slice(0,4) + '-01-01',max:hn}), den = el('input',{id:'den',type:'date',value:hopLe(qs.get('den')) ? qs.get('den') : hn,max:hn});
   const ra = el('div',{id:'ket-qua'});
   const NHOM = {'Dịch vụ':'Dịch vụ','Thuốc':'Thuốc','Vaccine':'Vaccine'};
   async function xem(){
