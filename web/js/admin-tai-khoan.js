@@ -36,16 +36,19 @@
     const mail = el('input',{id:'nv-mail',type:'email',placeholder:'nhanvien@email.com',autocomplete:'off'});
     const vt = el('select',{id:'nv-vt'}, ['bac_si','le_tan','thu_ngan','kho'].map(k => el('option',{value:k}, A.VAI[k])));
     const mk = el('input',{id:'nv-mk',type:'text',value:matKhauTam(),readonly:true,class:'mono'});
+    const khungCap = el('div'); const cap = Pethy.captcha.gan(khungCap);
     A.hop('Thêm nhân viên', 'Hệ thống tạo mật khẩu tạm. Hãy gửi cho nhân viên và nhắc đổi sau khi đăng nhập.',
-      [A.o('nv-ten','Họ tên',ten), A.o('nv-mail','Email đăng nhập',mail), A.o('nv-vt','Vai trò',vt), A.o('nv-mk','Mật khẩu tạm (chỉ hiện lần này)',mk)],
+      [A.o('nv-ten','Họ tên',ten), A.o('nv-mail','Email đăng nhập',mail), A.o('nv-vt','Vai trò',vt), A.o('nv-mk','Mật khẩu tạm (chỉ hiện lần này)',mk), ...(cap.bat ? [khungCap] : [])],
       'Tạo tài khoản', async () => {
         const hoTen = ten.value.trim(), email = mail.value.trim().toLowerCase();
         if (hoTen.length < 2) return 'Nhập họ tên nhân viên.';
         if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return 'Email chưa đúng định dạng.';
+        const captchaToken = cap.lay();
+        if (cap.bat && !captchaToken) return 'Đợi ô kiểm tra "không phải robot" hoàn tất rồi bấm lại.';
         let id;
         if (window.supabase && window.PETHY_CONFIG && window.PETHY_CONFIG.SUPABASE_URL && !location.search.includes("mau=1")) {
           const c = window.supabase.createClient(window.PETHY_CONFIG.SUPABASE_URL, window.PETHY_CONFIG.SUPABASE_ANON_KEY, { auth:{ persistSession:false, autoRefreshToken:false, detectSessionInUrl:false, storageKey:'pethy-tao-nv' } });
-          const r = await Promise.race([c.auth.signUp({ email, password: mk.value, options:{ data:{ ho_ten: hoTen } } }),
+          const r = await Promise.race([c.auth.signUp({ email, password: mk.value, options:{ captchaToken, data:{ ho_ten: hoTen } } }),
             new Promise(x => setTimeout(() => x({ error:{ message:'qua-lau' } }), 20000))]);
           if (r.error && r.error.message === 'qua-lau') return 'Supabase phản hồi quá lâu (thường do gửi thư xác nhận chậm). Tài khoản có thể đã được tạo, hãy đóng hộp này và kiểm tra danh sách trước khi tạo lại.';
           if (r.error) return /rate|limit/i.test(r.error.message) ? 'Đã tạo quá nhiều tài khoản trong thời gian ngắn, thử lại sau ít phút.' : 'Không tạo được tài khoản: ' + r.error.message;
