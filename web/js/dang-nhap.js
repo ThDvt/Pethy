@@ -90,6 +90,7 @@
         const { error } = await db.auth.resetPasswordForEmail(mail, { redirectTo: location.origin + '/dang-nhap.html', captchaToken: tk });
         if (error && /rate|limit|too many|over_email/i.test(error.message + (error.code || ''))) { loi('Hệ thống đang giới hạn số thư gửi đi. Thử lại sau khoảng 1 giờ.'); return; }
         if (error && /captcha/i.test(error.message)) { loi('Ô kiểm tra chưa hợp lệ hoặc đã hết hạn. Tải lại trang và thử lại.'); return; }
+        if (error) { loi('Chưa gửi được thư đặt lại mật khẩu. Vui lòng liên hệ phòng khám để được hỗ trợ.' + (error.code ? ' (' + error.code + ')' : '')); return; }
         // Cố ý dùng một thông báo chung dù email có tồn tại hay không, để không lộ email nào đã đăng ký.
         tb('Nếu email này đã có tài khoản, một liên kết đặt lại mật khẩu vừa được gửi. Hãy kiểm tra cả thư rác.');
       } finally { $('gui').disabled = false; cap.moi(); }
