@@ -25,12 +25,12 @@
       el('button',{class:'nut chinh',type:'button',onclick:batDau}, 'Bật xác thực hai lớp')));
   }
   async function batDau(ev){
-    ev.currentTarget.disabled = true; A.baoLoi('');
+    const nutBam = ev.currentTarget; nutBam.disabled = true; A.baoLoi('');
     // Xóa các yếu tố dở dang (chưa xác minh) từ lần thử trước.
     const f = await db.auth.mfa.listFactors();
     for (const x of (f.data && f.data.all) || []) if (x.status === 'unverified') await db.auth.mfa.unenroll({ factorId: x.id });
     const r = await db.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Pethy quản trị' });
-    if (r.error) { ev.currentTarget.disabled = false; return A.baoLoi('Không tạo được mã QR. Vui lòng thử lại.'); }
+    if (r.error) { nutBam.disabled = false; return A.baoLoi('Không tạo được mã QR. Vui lòng thử lại.'); }
     const ma = el('input',{id:'ma',placeholder:'6 số',inputmode:'numeric',maxlength:'6',autocomplete:'one-time-code',style:'max-width:160px;font-family:var(--so);font-size:22px;letter-spacing:.2em'});
     const qr = el('img',{alt:'Mã QR để thêm vào ứng dụng xác thực',width:'200',height:'200',src:r.data.totp.qr_code,style:'display:block;border:1px solid var(--vach);background:#fff'});
     $('vung').replaceChildren(el('div',{style:'margin-top:20px;border-top:2px solid var(--muc);padding-top:16px;max-width:460px'},
@@ -41,9 +41,9 @@
       el('div',{class:'truong'}, el('label',{for:'ma'}, 'Mã 6 số'), ma),
       el('button',{class:'nut chinh',type:'button',onclick:async b => {
         const v = ma.value.trim(); if (!/^[0-9]{6}$/.test(v)) return A.baoLoi('Mã gồm đúng 6 chữ số.');
-        b.currentTarget.disabled = true;
+        const nutBam = b.currentTarget; nutBam.disabled = true;
         const { error } = await db.auth.mfa.challengeAndVerify({ factorId: r.data.id, code: v });
-        if (error) { b.currentTarget.disabled = false; return A.baoLoi('Mã không đúng hoặc đã hết hạn. Thử mã mới trong ứng dụng.'); }
+        if (error) { nutBam.disabled = false; return A.baoLoi('Mã không đúng hoặc đã hết hạn. Thử mã mới trong ứng dụng.'); }
         await tai(); }}, 'Xác nhận')));
   }
   await tai();

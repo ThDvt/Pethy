@@ -28,8 +28,8 @@ Pethy.admin = (function(){
       el('div',{style:'display:flex;gap:16px;justify-content:flex-end;align-items:center;margin-top:20px'},
         el('button',{class:'lien-ket',type:'button',onclick:() => d.close()}, 'Đóng'),
         el('button',{class:'nut chinh',type:'button',onclick:async ev => {
-          ml(''); ev.currentTarget.disabled = true;
-          const e = await hanhDong(); if (e) { ev.currentTarget.disabled = false; return ml(e); }
+          ml(''); const nutBam = ev.currentTarget; nutBam.disabled = true;
+          const e = await hanhDong(); if (e) { nutBam.disabled = false; return ml(e); }
           d.close(); await lamMoi(); }}, nutTen)));
     d.showModal();
   }

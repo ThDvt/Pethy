@@ -30,7 +30,7 @@
     trong($('ds-lap'), lap.length ? lap.map(l => el('div',{class:'hang'},
       el('div',{class:'ct'}, el('div',{}, el('span',{class:'ten'}, l.thu_cung?.ten), ', ' + (l.thu_cung?.chu_nuoi?.ho_ten || '')), el('div',{class:'nho'}, l.dich_vu?.ten + ', ' + ngay(l.thoi_gian) + ' ' + gio(l.thoi_gian))),
       el('button',{class:'nut chinh',type:'button',onclick:async ev => {
-        ev.currentTarget.disabled = true; baoLoi('');
+        const nutBam = ev.currentTarget; nutBam.disabled = true; baoLoi('');
         const r = await db.rpc('lap_hoa_don', { p_lich: l.id });
         if (r.error) { baoLoi(loiRpc(r.error)); await tai(); return; }
         await tai();
@@ -93,9 +93,9 @@
             ml(''); const v = Number(String(sotien.value).replace(/[.\s]/g, ''));
             if (!Number.isInteger(v) || v <= 0) return ml('Số tiền thu phải là số nguyên lớn hơn 0.');
             if (v > con) return ml('Số tiền thu vượt quá số còn lại.');
-            ev.currentTarget.disabled = true;
+            const nutBam = ev.currentTarget; nutBam.disabled = true;
             const { error } = await db.rpc('ghi_thanh_toan', { p_hoa_don: h.id, p_so_tien: v, p_phuong_thuc: pt.value });
-            if (error) { ev.currentTarget.disabled = false; return ml(loiRpc(error)); }
+            if (error) { nutBam.disabled = false; return ml(loiRpc(error)); }
             dong(); await tai(); }}, 'Ghi nhận thu tiền') : null))].filter(Boolean));
     hop.showModal();
   }

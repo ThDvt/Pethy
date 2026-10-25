@@ -56,9 +56,9 @@
       el('div',{style:'display:flex;gap:16px;justify-content:flex-end;align-items:center;margin-top:20px'},
         el('button',{class:'lien-ket',type:'button',onclick:() => $('hop').close()}, 'Đóng'),
         el('button',{class:'nut chinh',type:'button',onclick:async ev => {
-          ml(''); ev.currentTarget.disabled = true;
+          ml(''); const nutBam = ev.currentTarget; nutBam.disabled = true;
           const e = await hanhDong();
-          if (e) { ev.currentTarget.disabled = false; return ml(e); }
+          if (e) { nutBam.disabled = false; return ml(e); }
           $('hop').close(); await tai(); if (sauKhi) sauKhi(); }}, nutTen))]);
   }
   const o = (id, nhan, ...c) => el('div',{class:'truong'}, el('label',{for:id}, nhan), ...c);
