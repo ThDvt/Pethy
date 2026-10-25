@@ -9,7 +9,7 @@ Thời gian dự kiến: khoảng 60 đến 90 phút. Nên dùng hai trình duy�
 | Bước | Việc cần làm | Kết quả đúng |
 |---|---|---|
 | 0.1 | Merge các pull request đang chờ trên GitHub, đợi Cloudflare deploy xong | Trang chủ mở được, không báo lỗi |
-| 0.2 | Chạy `db/06_...sql` rồi `db/07_danh_gia.sql` trong Supabase SQL Editor (nếu chưa chạy) | Mỗi file báo Success |
+| 0.2 | Chạy `db/06_...sql` rồi `db/07_danh_gia.sql` và `db/08_email_tai_khoan.sql` trong Supabase SQL Editor (nếu chưa chạy) | Mỗi file báo Success |
 | 0.3 | Mở `https://<project>.supabase.co/auth/v1/settings?apikey=<anon key>` | `email` là true, `mailer_autoconfirm` là false |
 | 0.4 | Authentication, URL Configuration: Site URL là địa chỉ web thật (`pethy.bo3tuoi1999.workers.dev`) | Link trong email xác nhận mở đúng web thật, không về localhost |
 | 0.5 | Đăng nhập admin, vào trang Bảo mật, bấm kiểm tra cấu hình Supabase | Mọi dòng đều đạt |

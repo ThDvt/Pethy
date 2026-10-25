@@ -34,6 +34,9 @@ a{color:var(--muc)} a:hover{color:var(--nhan)}
 label{display:block;font-size:13px;color:var(--xam);margin-bottom:8px}
 input,select,textarea{width:100%;font:16px var(--chu);padding:11px 12px;border:1px solid var(--muc);border-radius:2px;background:#fff;color:var(--muc);min-height:44px}
 .truong{margin-bottom:24px}
+.o-mk{position:relative}.o-mk input{padding-right:46px}
+.o-mk-nut{position:absolute;right:0;top:0;bottom:0;width:44px;display:flex;align-items:center;justify-content:center;background:none;border:0;padding:0;cursor:pointer;color:var(--muc);opacity:.65}
+.o-mk-nut:hover,.o-mk-nut:focus-visible{opacity:1}
 form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 .loi{color:var(--loi);font-size:14px;margin:0 0 16px}
 .ghi-chu{color:var(--xam);font-size:14px}

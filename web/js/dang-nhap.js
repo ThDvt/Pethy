@@ -2,6 +2,7 @@
   const { db, thuc, KHU, vaiTro } = Pethy;
   const $ = id => document.getElementById(id);
   Pethy.maSdt($('sdt'));
+  Pethy.matKhau($('mat-khau')); Pethy.matKhau($('mat-khau-2'));
   // Dịch lỗi của Supabase sang câu dễ hiểu; phần mã lỗi gốc giữ lại trong ngoặc để dễ tra cứu.
   function loiDangKy(e){
     const m = String(e.message || ''), ma = e.code || e.status || '';

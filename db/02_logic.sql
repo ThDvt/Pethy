@@ -1002,6 +1002,18 @@ BEGIN
 END
 $$;
 
+-- Danh sách tài khoản kèm email (email nằm ở auth.users nên trình duyệt không đọc trực tiếp được). Chỉ admin.
+CREATE FUNCTION danh_sach_tai_khoan() RETURNS TABLE (id uuid, ho_ten text, so_dien_thoai text, vai_tro text, trang_thai text, created_at timestamptz, email text)
+LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public, pg_temp AS $$
+BEGIN
+  PERFORM _yeu_cau_vai_tro('admin');
+  RETURN QUERY
+    SELECT k.id, k.ho_ten, k.so_dien_thoai, k.vai_tro, k.trang_thai, k.created_at, u.email::text
+      FROM tai_khoan k LEFT JOIN auth.users u ON u.id = k.id
+     ORDER BY k.created_at;
+END
+$$;
+
 -- AD01: khóa hoặc mở khóa tài khoản (thay cho xóa với tài khoản đã có hoạt động).
 CREATE FUNCTION khoa_tai_khoan(p_tai_khoan uuid, p_khoa boolean) RETURNS void
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp AS $$
@@ -1491,6 +1503,7 @@ GRANT EXECUTE ON FUNCTION
   gop_chu_nuoi(uuid, uuid),
   dat_vai_tro(uuid, text),
   khoa_tai_khoan(uuid, boolean),
+  danh_sach_tai_khoan(),
   xoa_tai_khoan(uuid),
   ghi_nhan_nhac(uuid, uuid, text, text),
   doanh_thu_theo_thang(date, date),

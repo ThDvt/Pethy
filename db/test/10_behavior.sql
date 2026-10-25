@@ -321,8 +321,14 @@ SELECT t.loi('khoa bs con lich', format('SELECT khoa_tai_khoan(%L,true)',:bs1),'
 SELECT t.loi('xoa tai khoan da co du lieu', format('SELECT xoa_tai_khoan(%L)',:cn1),'TAI_KHOAN_DA_PHAT_SINH');
 SELECT t.ok('admin khoa chu nuoi cn2', format('SELECT khoa_tai_khoan(%L,true)',:cn2));
 SELECT t.ok('admin doc nhat ky', 'SELECT count(*) FROM nhat_ky');
+SELECT t.bang('admin xem duoc email cua moi tai khoan', 'SELECT (count(*) FILTER (WHERE email IS NOT NULL) = count(*))::text FROM danh_sach_tai_khoan()','true');
+SELECT t.bang('danh sach tai khoan co du dong', 'SELECT (count(*) = (SELECT count(*) FROM tai_khoan))::text FROM danh_sach_tai_khoan()','true');
 SELECT t.ok('admin gan vai tro bac_si cho tai khoan moi', 'SELECT dat_vai_tro(''00000000-0000-0000-0000-0000000000f4'',''bac_si'')');
 SELECT t.ok('admin xoa tai khoan trong (f3)', 'SELECT xoa_tai_khoan(''00000000-0000-0000-0000-0000000000f3'')');
+SELECT t.as_('00000000-0000-0000-0000-0000000000c1');
+SELECT t.loi('le tan khong xem duoc email tai khoan', 'SELECT * FROM danh_sach_tai_khoan()','KHONG_CO_QUYEN');
+SELECT t.as_(:cn1);
+SELECT t.loi('chu nuoi khong xem duoc email tai khoan', 'SELECT * FROM danh_sach_tai_khoan()','KHONG_CO_QUYEN');
 SELECT t.as_(:cn2);
 SELECT t.loi('tai khoan khoa khong goi duoc rpc', format('SELECT dat_lich(%L,%L,%L,t.gio(9,9))',:pet2,:bs1,:dvk),'TAI_KHOAN_BI_KHOA');
 SELECT t.bang('tai khoan khoa khong doc duoc thu cung', 'SELECT count(*)::text FROM thu_cung','0');
