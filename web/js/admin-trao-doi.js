@@ -22,7 +22,7 @@
     if (tuDong === true && luong === id && dem === (r.data || []).length) return;
     luong = id; dem = (r.data || []).length;
     const o = el('textarea',{rows:'2',placeholder:'Nhập tin nhắn rồi bấm Gửi',maxlength:'1000','aria-label':'Nội dung tin nhắn',style:'width:100%'});
-    const gui = async ev => { const nd = o.value.trim(); if (!nd) return; ev.currentTarget.disabled = true; A.baoLoi('');
+    const gui = async ev => { const nd = o.value.trim(); if (!nd) return; const nutBam = ev.currentTarget; nutBam.disabled = true; A.baoLoi('');
       const { error } = await db.rpc('gui_tin_nhan', { p_nhan_vien: id, p_noi_dung: nd }); if (error) A.baoLoi(loiRpc(error)); await taiTin(); await taiLuong(); };
     const hop = el('div',{style:'max-height:50vh;overflow:auto;padding:12px 0'}, ...((r.data || []).length ? r.data.map(t => el('div',{style:'margin:8px 0;display:flex;flex-direction:column;align-items:' + (t.nguoi_gui_id === me ? 'flex-end' : 'flex-start')},
       el('div',{style:'max-width:80%;padding:8px 12px;border:1px solid var(--muc);border-radius:2px;white-space:pre-wrap;word-break:break-word;' + (t.nguoi_gui_id === me ? 'background:var(--nen-nhat)' : '')}, t.noi_dung),

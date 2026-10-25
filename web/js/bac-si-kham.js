@@ -71,7 +71,7 @@
   const so = v => { v = String(v).trim().replace(',', '.'); return v === '' ? null : Number(v); };
 
   async function luu(ev){
-    ev.currentTarget.disabled = true; baoLoi('');
+    const nutBam = ev.currentTarget; nutBam.disabled = true; baoLoi('');
     const btn = ev.currentTarget;
     try {
       const canNang = so(cn.value), nhietDo = so(nd.value);
@@ -95,9 +95,9 @@
     const nt = el('input',{id:'nt',type:'date',min:new Date(Date.now()+864e5).toISOString().slice(0,10)});
     const nut = el('button',{class:'nut chinh',type:'button',onclick:async ev => {
       baoLoi(''); if (!vc.value) return baoLoi('Vui lòng chọn vaccine.');
-      ev.currentTarget.disabled = true;
+      const nutBam = ev.currentTarget; nutBam.disabled = true;
       const { error } = await db.rpc('ghi_tiem', { p_lich: l.id, p_ngay_tiem_tiep: nt.value || null, p_vaccine: vc.value });
-      ev.currentTarget.disabled = false;
+      nutBam.disabled = false;
       if (error) return baoLoi(loiRpc(error)); location.href = '/bac-si/';
     }}, 'Ghi mũi tiêm');
     return el('div',{style:'margin-top:36px;padding-top:20px;border-top:2px solid var(--muc)'},

@@ -25,9 +25,9 @@
       el('div',{style:'flex:2 1 180px'}, l.dich_vu?.ten, el('div',{class:'nho'}, 'Bác sĩ ' + (tenBs[l.bac_si_id] || ''))),
       el('div',{style:'display:flex;gap:16px;align-items:center'},
         el('button',{class:'nut chinh',type:'button',onclick:async ev => {
-          ev.currentTarget.disabled = true; baoLoi('');
+          const nutBam = ev.currentTarget; nutBam.disabled = true; baoLoi('');
           const { error } = await db.rpc('xac_nhan_lich', { p_lich: l.id });
-          if (error) { ev.currentTarget.disabled = false; baoLoi(loiRpc(error)); }
+          if (error) { nutBam.disabled = false; baoLoi(loiRpc(error)); }
           await tai();
         }}, 'Xác nhận'),
         el('button',{class:'lien-ket',type:'button',onclick:() => moTuChoi(l)}, 'Từ chối')));
@@ -77,9 +77,9 @@
     else $('ds-nhac').replaceChildren(...(nhac.data.length ? nhac.data.map(n => {
       const tiem = n.loai_nhac === 'mui_tiem';
       const ghi = kenh => async ev => {
-        ev.currentTarget.disabled = true; baoLoi('');
+        const nutBam = ev.currentTarget; nutBam.disabled = true; baoLoi('');
         const { error } = await db.rpc('ghi_nhan_nhac', { p_lich: tiem ? null : n.lich_hen_id, p_mui_tiem: tiem ? n.mui_tiem_id : null, p_kenh: kenh, p_trang_thai: 'da_gui' });
-        if (error) { ev.currentTarget.disabled = false; baoLoi(loiRpc(error)); return; } await tai(); };
+        if (error) { nutBam.disabled = false; baoLoi(loiRpc(error)); return; } await tai(); };
       const d = new Date(n.thoi_diem).toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',timeZone:'Asia/Ho_Chi_Minh'});
       return el('div',{class:'nhac'},
         el('div',{style:'font-weight:700'}, tiem ? 'Tiêm ' + n.ten_dich_vu + ' cho ' + n.ten_thu_cung + ', nhắc lại ' + d : n.ten_thu_cung + ', lịch ' + d + ' ' + gio(n.thoi_diem)),
