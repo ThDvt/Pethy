@@ -84,6 +84,8 @@ form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 .thanh-ben.gon .tb-nhom{height:1px;background:#2A2D32;margin:12px 8px;padding:0;font-size:0;overflow:hidden}
 .tb-m{position:relative;display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:10px;color:#B8BAB4;text-decoration:none;font-size:15px;white-space:nowrap;transition:background-color .15s,color .15s}
 .tb-m svg{flex:0 0 20px}
+.tb-so{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#C2410C;color:#fff;font:700 12px/20px var(--so,ui-monospace,monospace);text-align:center}
+.thanh-ben.gon .tb-so{position:absolute;top:2px;right:6px;min-width:16px;height:16px;padding:0 4px;font-size:10px;line-height:16px;margin:0;box-shadow:0 0 0 2px var(--nen-nhat,#fff)}
 .tb-m:hover{background:#21252B;color:#fff}
 .tb-m[aria-current=page]{background:#2B3038;color:#fff;font-weight:700;border-bottom:0}
 .tb-m[aria-current=page]::before{content:"";position:absolute;left:-16px;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:#FFC83D}

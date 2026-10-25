@@ -79,7 +79,21 @@
     ng.appendChild(av); ng.appendChild(tt); ng.appendChild(ra); chan.appendChild(ng); nav.appendChild(chan);
     return nav;
   }
-  window.PethyThanhBen = { dung: dung };
+  // Đặt số nhỏ (huy hiệu) ở mục thực đơn có đường dẫn href; n = 0 thì bỏ huy hiệu.
+  function datSo(href, n){
+    var muc = document.querySelectorAll('.thanh-ben .tb-m');
+    for (var i = 0; i < muc.length; i++) {
+      var a = muc[i];
+      if (chuan(a.getAttribute('href') || '') !== chuan(href)) continue;
+      var cu = a.querySelector('.tb-so'); if (cu) cu.remove();
+      var ten = a.getAttribute('data-ten') || '';
+      if (n > 0) {
+        var s = dd('span', 'tb-so', n > 9 ? '9+' : String(n)); s.setAttribute('aria-hidden', 'true'); a.appendChild(s);
+        a.setAttribute('aria-label', ten + ', ' + n + ' mục mới');
+      } else a.removeAttribute('aria-label');
+    }
+  }
+  window.PethyThanhBen = { dung: dung, datSo: datSo };
 
   try {
     var c = JSON.parse(sessionStorage.getItem('pethy.menu') || 'null');
