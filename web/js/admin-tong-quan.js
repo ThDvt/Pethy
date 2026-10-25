@@ -91,14 +91,18 @@
   const khung = el('div',{id:'db-khung'});
   const loc = el('div',{class:'db-loc',role:'group','aria-label':'Khoảng thời gian'});
   const gl = k => { ky = k; ve(); };
-  function veLoc(){ loc.replaceChildren(...TRUOC.map(t => el('button',{type:'button',class:'db-nut','aria-pressed':String(t.k === ky),onclick:() => gl(t.k)}, t.ten))); }
+  // Giờ cập nhật số liệu và nút làm mới nằm cuối hàng lọc.
+  const gioCapNhat = el('span',{role:'status'}, 'Đang tải…');
+  const lamMoi = el('button',{type:'button',class:'lien-ket',onclick:() => ve()}, 'Làm mới');
+  const phai = el('div',{class:'db-cap'}, gioCapNhat, lamMoi);
+  function veLoc(){ loc.replaceChildren(...TRUOC.map(t => el('button',{type:'button',class:'db-nut','aria-pressed':String(t.k === ky),onclick:() => gl(t.k)}, t.ten)), phai); }
   $('vung').replaceChildren(loc, khung);
   const gop = rows => ({ tong: rows.reduce((s, r) => s + Number(r.tong_thu), 0), so: rows.reduce((s, r) => s + Number(r.so_giao_dich), 0), tm: rows.reduce((s, r) => s + Number(r.tien_mat), 0), ck: rows.reduce((s, r) => s + Number(r.chuyen_khoan), 0) });
   const dem = async (tt, tu, den) => { const r = await db.from('lich_hen').select('id,trang_thai', { count:'exact', head:true }).eq('trang_thai', tt).gte('thoi_gian', new Date(tu + 'T00:00:00+07:00').toISOString()).lt('thoi_gian', new Date(cong(den, 1) + 'T00:00:00+07:00').toISOString());
     return r.count != null ? r.count : (r.data || []).filter(x => x.trang_thai === tt).length; };
   let lanVe = 0;
   async function ve(){
-    const lan = ++lanVe; A.baoLoi(''); veLoc(); khung.style.opacity = '.5';
+    const lan = ++lanVe; A.baoLoi(''); veLoc(); khung.style.opacity = '.5'; gioCapNhat.textContent = 'Đang tải…';
     const k = khoang(ky);
     const [cur, pre, dv, cn, cb, hoanThanh, huy, khongDen] = await Promise.all([
       db.rpc('doanh_thu_theo_ngay', { p_tu:k.tu, p_den:k.den }), db.rpc('doanh_thu_theo_ngay', { p_tu:k.pTu, p_den:k.pDen }),
@@ -108,6 +112,7 @@
       dem('da_hoan_thanh', k.tu, k.den), dem('da_huy', k.tu, k.den), dem('khong_den', k.tu, k.den)]);
     if (lan !== lanVe) return;   // người dùng đã bấm khoảng khác trong lúc chờ
     khung.style.opacity = '';
+    gioCapNhat.textContent = 'Cập nhật lúc ' + new Date().toLocaleTimeString('vi-VN', { hour:'2-digit', minute:'2-digit', timeZone:'Asia/Ho_Chi_Minh' });
     if (cur.error || pre.error || dv.error || cn.error) return A.baoLoi('Không tải được số liệu. Vui lòng tải lại trang.');
     const c = gop(cur.data || []), p = gop(pre.data || []);
     // gom theo ngày (đủ mọi ngày, ngày không thu = 0) hoặc theo tháng nếu kỳ dài

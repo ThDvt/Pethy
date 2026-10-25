@@ -92,3 +92,6 @@ select.nho,input.nho{font-size:14px;padding:6px 8px}
 .muc-dau h2{font-size:14px;margin:0;color:var(--xam)}
 .xem-ct{font-size:13px;font-weight:600;color:var(--muc);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent}
 .xem-ct:hover,.xem-ct:focus-visible{border-bottom-color:var(--muc)}
+
+.db-cap{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:13px;color:var(--xam)}
+.db-cap .lien-ket{font-size:13px;font-weight:600}
