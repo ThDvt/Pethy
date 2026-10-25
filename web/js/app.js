@@ -1,7 +1,7 @@
 // Lõi dùng chung: khởi tạo Supabase, dựng DOM an toàn, định dạng, phân vai trò.
 (function(){
   // Nếu Supabase đưa liên kết đặt lại mật khẩu về trang khác (Redirect URL chưa khai báo), chuyển sang trang đăng nhập.
-  if (/[#&]type=recovery/.test(location.hash) && !/dang-nhap\.html$/.test(location.pathname)) { location.replace('/dang-nhap.html' + location.hash); return; }
+  if (/[#&]type=recovery/.test(location.hash) && !/^\/dang-nhap(\.html)?\/?$/.test(location.pathname)) { location.replace('/dang-nhap.html' + location.hash); return; }
   const cfg = window.PETHY_CONFIG || {};
   const thuc = !!(cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY && window.supabase);
   const db = thuc ? window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY, {
