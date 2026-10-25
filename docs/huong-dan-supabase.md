@@ -21,6 +21,13 @@ select count(*) from pg_tables where schemaname = 'public' and not rowsecurity;
 - Cùng trang: tắt **Allow anonymous sign-ins**.
 - **Authentication, URL Configuration**: đặt **Site URL** là địa chỉ web thật khi đã triển khai (tạm thời để mặc định).
 
+### Tắt xác nhận email và bật Turnstile
+
+1. Authentication, Sign In / Providers, Email: tắt **Confirm email**. Đăng ký xong vào thẳng khu chủ nuôi, tạo nhân viên không phát sinh thư.
+2. Cloudflare dashboard, Turnstile, Add site: nhập `pethy.bo3tuoi1999.workers.dev` (thêm `localhost` nếu muốn thử cục bộ), chế độ Managed. Lấy **Site key** và **Secret key**.
+3. Supabase, Authentication, Attack Protection: bật **Enable CAPTCHA protection**, chọn Turnstile, dán **Secret key**.
+4. Dán **Site key** vào `TURNSTILE_SITE_KEY` trong `web/js/config.js` (khóa công khai, được phép để trong mã), commit và đợi deploy. Để trống thì web chưa hiện ô kiểm tra; nếu Supabase đã bật CAPTCHA mà web chưa có site key thì đăng ký và đăng nhập đều bị từ chối, nên làm bước 3 và 4 sát nhau.
+
 ## 3. Cấu hình API
 **Project Settings, API (hoặc Data API)**: mục **Exposed schemas** chỉ để `public`. Không để thêm schema nào khác.
 

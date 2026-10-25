@@ -27,6 +27,7 @@
     <div class="truong"><label for="mat-khau">Mật khẩu</label><input id="mat-khau" placeholder="Ít nhất 8 ký tự" type="password" autocomplete="current-password" required minlength="8"></div>
     <div class="truong dk" hidden><label for="mat-khau-2">Nhập lại mật khẩu</label><input id="mat-khau-2" placeholder="Nhập lại đúng mật khẩu ở trên" type="password" autocomplete="new-password" minlength="8"></div>
     <div class="truong" id="khoi-2fa" hidden><label for="ma-2fa">Mã xác thực 6 số từ ứng dụng xác thực</label><input id="ma-2fa" placeholder="6 số trong ứng dụng xác thực" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}"></div>
+    <div id="captcha" style="margin:4px 0 12px"></div>
     <p class="loi" id="loi" role="alert" hidden></p>
     <p class="ghi-chu" id="thong-bao" role="status" hidden></p>
     <button class="nut chinh" id="gui" type="submit" style="width:100%">Đăng nhập</button>
@@ -37,6 +38,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="/js/config.js"></script>
 <script src="/js/app.js"></script>
+<script src="/js/captcha.js"></script>
 <script src="/js/dang-nhap.js"></script>
 </body>
 </html>

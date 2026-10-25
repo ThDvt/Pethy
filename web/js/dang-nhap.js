@@ -7,6 +7,7 @@
     const m = String(e.message || ''), ma = e.code || e.status || '';
     let nd = 'Không tạo được tài khoản. Thử lại sau ít phút.';
     if (/already|registered|exists/i.test(m)) nd = 'Email này đã có tài khoản. Hãy đăng nhập.';
+    else if (/captcha/i.test(m + ma)) nd = 'Ô kiểm tra "không phải robot" chưa hợp lệ hoặc đã hết hạn. Tải lại trang và thử lại.';
     else if (/rate|limit|too many|over_email/i.test(m + ma)) nd = 'Hệ thống đang giới hạn số thư xác nhận. Thử lại sau khoảng 1 giờ.';
     else if (/not authorized/i.test(m)) nd = 'Hệ thống thư chưa gửi được tới email này.';
     else if (/password/i.test(m)) nd = 'Mật khẩu chưa đủ mạnh. Dùng ít nhất 8 ký tự, có cả chữ và số.';
@@ -14,6 +15,7 @@
     else if (/database|saving new user/i.test(m)) nd = 'Lỗi hệ thống khi lưu tài khoản. Báo cho phòng khám.';
     return nd + (ma ? ' (' + ma + ')' : '');
   }
+  const cap = Pethy.captcha.gan($('captcha'));
   let dangKy = new URLSearchParams(location.search).has('dang-ky');
 
   function hienChe(){
@@ -67,6 +69,8 @@
     }
     const email = $('email').value.trim(), mk = $('mat-khau').value;
     if (!email || mk.length < 8) { loi('Nhập email và mật khẩu (tối thiểu 8 ký tự).'); return; }
+    const captchaToken = cap.lay();
+    if (cap.bat && !captchaToken) { loi('Vui lòng đợi ô kiểm tra "không phải robot" hoàn tất rồi thử lại.'); return; }
     $('gui').disabled = true;
     try {
       if (dangKy) {
@@ -74,15 +78,15 @@
         if (!ten) { loi('Vui lòng nhập họ tên.'); return; }
         if ($('mat-khau-2').value !== mk) { loi('Hai mật khẩu chưa giống nhau. Nhập lại cho khớp.'); $('mat-khau-2').focus(); return; }
         if (!/^(\+84|0)[0-9]{9}$/.test(sdt)) { loi('Số điện thoại chưa hợp lệ (ví dụ 0901234567).'); return; }
-        const { data, error } = await db.auth.signUp({ email, password: mk, options: { data: { ho_ten: ten, so_dien_thoai: sdt } } });
+        const { data, error } = await db.auth.signUp({ email, password: mk, options: { captchaToken, data: { ho_ten: ten, so_dien_thoai: sdt } } });
         if (error) { loi(loiDangKy(error)); return; }
         if (data.session) await vaoKhu(); else tb('Đã gửi email xác nhận. Mở email và bấm liên kết, rồi quay lại đăng nhập.');
       } else {
-        const { error } = await db.auth.signInWithPassword({ email, password: mk });
+        const { error } = await db.auth.signInWithPassword({ email, password: mk, options: { captchaToken } });
         if (error) { loi('Email hoặc mật khẩu không đúng.'); return; }   // một thông báo chung, không lộ email nào tồn tại
         await vaoKhu();
       }
-    } finally { $('gui').disabled = false; }
+    } finally { $('gui').disabled = false; cap.moi(); }
   });
   if (new URLSearchParams(location.search).has('het-phien')) tb('Phiên đăng nhập đã kết thúc do lâu không thao tác. Vui lòng đăng nhập lại.');
 })();

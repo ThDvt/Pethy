@@ -18,7 +18,7 @@ Tác nhân: người lạ trên internet (quét, spam, dò mật khẩu), chủ 
 
 1. **Ứng dụng (trình duyệt)**: chống chèn mã, tiêu đề bảo mật, không để lộ bí mật.
 2. **Biên (Cloudflare)**: chặn lưu lượng bất thường trước khi tới trang.
-3. **Xác thực (Supabase Auth)**: giới hạn tần suất, CAPTCHA, xác nhận email.
+3. **Xác thực (Supabase Auth)**: giới hạn tần suất, CAPTCHA (Cloudflare Turnstile). Xác nhận email được tắt có chủ đích: gói Free chỉ gửi khoảng 2 thư mỗi giờ nên không dùng được thực tế; đánh đổi là không kiểm tra được chủ sở hữu email, được bù bằng Turnstile.
 4. **Dữ liệu (PostgreSQL)**: RLS, quyền theo cột, hàm nghiệp vụ, bảng chỉ-thêm, nhật ký. **Lớp này đã làm xong và kiểm thử 279 trường hợp.**
 
 ## 3. Từng kiểu tấn công và cách phòng thủ
@@ -28,7 +28,7 @@ Tác nhân: người lạ trên internet (quét, spam, dò mật khẩu), chủ 
 | **Spam F5 làm sập** | Trang là tệp tĩnh phát qua CDN của Cloudflare nên F5 không chạm cơ sở dữ liệu; Cloudflare tự giảm thiểu DDoS. Trang chủ chỉ đọc ít dữ liệu công khai (dịch vụ, bác sĩ, cấu hình) và lưu tạm trong phiên để F5 không gọi lại. Thêm một luật giới hạn tần suất trên Cloudflare | Cần cấu hình và viết mã |
 | **Lưu lượng dồn vào API Supabase** (không đi qua Cloudflare) | Hạn chế dữ liệu khách chưa đăng nhập đọc được (đã giới hạn ở 3 nguồn); Supabase có giới hạn riêng. Khi bị tấn công có thể bật chế độ bảo trì để chặn mọi vai trò trừ admin | Giảm thiểu, **không loại bỏ hoàn toàn** |
 | **Dò mật khẩu, nhồi thông tin đăng nhập** | Supabase giới hạn theo IP (mặc định 30 yêu cầu đăng ký/đăng nhập mỗi 5 phút, trả lỗi 429); CAPTCHA ở đăng nhập, đăng ký, quên mật khẩu; thông báo lỗi chung "Email hoặc mật khẩu không đúng" để không lộ tài khoản nào tồn tại; mật khẩu tối thiểu dài; admin bật xác thực hai lớp | Cần cấu hình |
-| **Đăng ký hàng loạt tài khoản giả** | Bắt buộc xác nhận email; CAPTCHA; giới hạn theo IP; tài khoản mới luôn chỉ là chủ nuôi (trigger bỏ qua mọi vai trò client gửi lên) | Vai trò đã có; phần còn lại cần cấu hình |
+| **Đăng ký hàng loạt tài khoản giả** | Cloudflare Turnstile ở đăng ký và đăng nhập (đã tích hợp, cần site key và secret key); xác nhận email tắt có chủ đích; giới hạn theo IP; tài khoản mới luôn chỉ là chủ nuôi (trigger bỏ qua mọi vai trò client gửi lên) | Vai trò đã có; phần còn lại cần cấu hình |
 | **Làm cạn hạn mức email** | Dịch vụ email mặc định của Supabase chỉ gửi 2 email mỗi giờ cho cả dự án, kẻ tấn công kích hoạt gửi liên tục thì người thật không đăng ký được. Phải dùng SMTP riêng khi chạy thật | Cần cấu hình |
 | **Chiếm hết giờ trống** | Tối đa 5 lịch chưa diễn ra mỗi chủ nuôi; lễ tân xác nhận; phải đặt cách giờ hiện tại tối thiểu 2 giờ; hủy sát giờ bị chặn; ghi nhận "không đến". Có thể bổ sung: tự hủy lịch chờ xác nhận quá hạn | Đã có phần lớn |
 | **Xem hoặc sửa dữ liệu người khác (IDOR)** | RLS theo chủ sở hữu trên mọi bảng; quyền ghi theo cột; ghi giao dịch chỉ qua hàm; hàm kiểm tra vai trò và quyền sở hữu bên trong. Đã kiểm thử cô lập giữa chủ nuôi, giữa nhân viên | **Đã có, đã kiểm thử** |
@@ -71,8 +71,8 @@ Tác nhân: người lạ trên internet (quét, spam, dò mật khẩu), chủ 
 
 ## 5. Danh sách cần làm trước khi chạy thật (theo thứ tự ưu tiên)
 
-1. Bật xác nhận email, tắt đăng nhập ẩn danh, cấu hình SMTP riêng.
-2. Bật CAPTCHA (Cloudflare Turnstile) cho đăng nhập, đăng ký, quên mật khẩu.
+1. Tắt đăng nhập ẩn danh. Xác nhận email: đã quyết định tắt (xem mục 1); chỉ bật lại nếu cấu hình SMTP riêng.
+2. Bật CAPTCHA (Cloudflare Turnstile) cho đăng nhập và đăng ký: mã đã có, chỉ còn tạo site Turnstile, điền `TURNSTILE_SITE_KEY` trong `web/js/config.js` và dán secret key vào Supabase. Chưa có chức năng quên mật khẩu.
 3. Thêm luật giới hạn tần suất trên Cloudflare và bật chế độ chống bot cơ bản.
 4. Thêm tiêu đề bảo mật và Content-Security-Policy qua tệp `_headers` của Cloudflare Pages.
 5. Bật xác thực hai lớp cho admin; đặt tên miền và địa chỉ chuyển hướng cho phép trong Supabase.
