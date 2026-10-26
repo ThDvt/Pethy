@@ -6,7 +6,7 @@
     if (!thuc) return { dich_vu: MAU.dich_vu, bac_si: MAU.bac_si, cau_hinh: MAU.cau_hinh, danh_gia: MAU.danh_gia, mau: true };
     const [a, b, c, e] = await Promise.all([
       db.from('dich_vu').select('id,ten,loai,gia,mo_ta').eq('dang_ap_dung', true).order('loai').order('ten'),
-      db.from('bac_si_cong_khai').select('id,ho_ten,chuyen_mon,gioi_thieu,anh_dai_dien,lich_lam_viec,diem_tb,so_danh_gia').order('ho_ten'),
+      db.from('bac_si_cong_khai').select('id,ho_ten,chuyen_mon,gioi_thieu,anh_dai_dien,lich_lam_viec,diem_tb,so_danh_gia,trinh_do,nam_hanh_nghe,so_chung_chi,chung_chi').order('ho_ten'),
       db.from('cau_hinh').select('khoa,gia_tri').eq('cong_khai', true),
       db.from('danh_gia_cong_khai').select('id,so_sao,nhan_xet,ten_hien_thi,ngay,tong,diem_tb').not('nhan_xet','is',null).order('ngay',{ascending:false}).limit(6)
     ]);
@@ -25,8 +25,15 @@
                    tiem:'Tiêm vaccine phòng bệnh đúng lịch. Mũi tiêm được ghi vào sổ tiêm điện tử và web nhắc bạn mũi tiếp theo.' };
     const THU = ['', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ nhật'];
     const lichTheoThu = l => { const m = new Map(); (l || []).forEach(c => { if (!m.has(c.thu)) m.set(c.thu, []); m.get(c.thu).push(c.tu + ' đến ' + c.den); }); return [...m].sort((a, b) => a[0] - b[0]); };
+    const namKN = x => { const n = x.nam_hanh_nghe ? new Date().getFullYear() - x.nam_hanh_nghe : 0; return n >= 1 ? n + ' năm kinh nghiệm' : ''; };
     const chiTiet = x => { const l = lichTheoThu(x.lich_lam_viec);
-      return el('div',{class:'bs-ct'}, el('h3',{}, 'Lịch làm việc'),
+      const dsCC = String(x.chung_chi || '').split(/\n+/).map(t => t.trim()).filter(Boolean);
+      const phan = (tieuDe, nd) => [el('h3',{}, tieuDe), nd];
+      return el('div',{class:'bs-ct'},
+        ...(x.trinh_do ? phan('Trình độ', el('p',{class:'cm'}, x.trinh_do)) : []),
+        ...(x.so_chung_chi ? phan('Chứng chỉ hành nghề', el('p',{class:'cm'}, 'Số ' + x.so_chung_chi)) : []),
+        ...(dsCC.length ? phan('Chứng chỉ và đào tạo', el('ul',{class:'bs-lich bs-cc'}, dsCC.map(t => el('li',{}, t)))) : []),
+        el('h3',{}, 'Lịch làm việc'),
         l.length ? el('ul',{class:'bs-lich'}, l.map(([t, g]) => el('li',{}, el('b',{}, THU[t]), g.join(', '))))
                  : el('p',{class:'cm'}, 'Chưa có lịch cố định. Giờ trống hiện ở bước chọn giờ khi đặt lịch.')); };
     // Khung trượt ngang: cuộn mượt bằng CSS scroll-snap, mũi tên cuộn đúng một thẻ, chuột kéo được, màn hình cảm ứng vuốt tự nhiên.
@@ -74,6 +81,7 @@
         el('div',{class:'ten'}, 'Bs. ' + x.ho_ten),
         x.so_danh_gia ? el('div',{class:'diem-bs'}, Pethy.sao(x.diem_tb), el('span',{}, Number(x.diem_tb).toFixed(1) + ' (' + x.so_danh_gia + ' đánh giá)')) : null,
         x.chuyen_mon ? el('div',{class:'cm'}, x.chuyen_mon) : null,
+        namKN(x) ? el('div',{class:'cm kn'}, namKN(x)) : null,
         el('div',{class:'cm gt-ngan',id:'gt-' + i}, x.gioi_thieu || 'Bác sĩ chưa cập nhật phần giới thiệu.'),
         chiTiet(x),
         el('div',{class:'nut-bs'},

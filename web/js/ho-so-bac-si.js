@@ -20,8 +20,8 @@
   const chuCai = ten => (String(ten).trim().split(/\s+/).pop() || '?').charAt(0).toUpperCase();
 
   // Hồ sơ công khai của bác sĩ (hiện ở trang chủ): ảnh, chuyên môn và giới thiệu.
-  async function hoSoBs(tk, lamMoi){
-    const r = await db.from('ho_so_bac_si').select('chuyen_mon,gioi_thieu,anh_dai_dien').eq('tai_khoan_id', tk.id).maybeSingle();
+  async function hoSoBs(tk, lamMoi, tuy = {}){
+    const r = await db.from('ho_so_bac_si').select('chuyen_mon,gioi_thieu,anh_dai_dien,trinh_do,nam_hanh_nghe,so_chung_chi,chung_chi').eq('tai_khoan_id', tk.id).maybeSingle();
     if (r.error) return A.baoLoi('Không đọc được hồ sơ bác sĩ.');
     const cu = (r.data && r.data.anh_dai_dien) || null;
     let anhMoi = null, xoaAnh = false;
@@ -42,9 +42,21 @@
         el('button',{class:'nut',type:'button',onclick:() => tep.click()}, 'Chọn ảnh'), nutXoa, goiY));
     const cm = el('input',{id:'bs-cm',type:'text',maxlength:'120',placeholder:'Ví dụ: Nội khoa chó mèo'}); cm.value = (r.data && r.data.chuyen_mon) || '';
     const gt = el('textarea',{id:'bs-gt',rows:'5',maxlength:'600',placeholder:'Ví dụ: Hơn 8 năm khám và điều trị nội khoa cho chó mèo.'}); gt.value = (r.data && r.data.gioi_thieu) || '';
+    // Trình độ và chứng chỉ hiển thị công khai nên chỉ admin nhập (sau khi đối chiếu giấy tờ); database cũng chặn bác sĩ tự sửa.
+    const d0 = r.data || {};
+    const td = el('input',{id:'bs-td',type:'text',maxlength:'160',placeholder:'Ví dụ: Bác sĩ thú y, Học viện Nông nghiệp Việt Nam'}); td.value = d0.trinh_do || '';
+    const nh = el('input',{id:'bs-nh',type:'number',min:'1970',max:'2100',step:'1',inputmode:'numeric',placeholder:'Ví dụ: 2016'}); nh.value = d0.nam_hanh_nghe || '';
+    const sc = el('input',{id:'bs-sc',type:'text',maxlength:'40',placeholder:'Số chứng chỉ hành nghề thú y'}); sc.value = d0.so_chung_chi || '';
+    const cc = el('textarea',{id:'bs-cc',rows:'3',maxlength:'600',placeholder:'Mỗi dòng một chứng chỉ hoặc khóa đào tạo. Ví dụ:\nChứng chỉ siêu âm thú y, 2021\nKhóa da liễu thú y nâng cao, 2023'}); cc.value = d0.chung_chi || '';
+    const truongChungChi = tuy.admin ? [A.o('bs-td','Trình độ, nơi đào tạo',td), A.o('bs-nh','Năm bắt đầu hành nghề',nh), A.o('bs-sc','Số chứng chỉ hành nghề',sc), A.o('bs-cc','Chứng chỉ và đào tạo',cc)] : [];
     A.hop('Hồ sơ Bs. ' + tk.ho_ten, 'Khách xem thông tin này khi bấm "Xem thông tin" ở trang chủ.',
-      [el('div',{class:'truong'}, el('div',{class:'nho',style:'margin-bottom:6px'}, 'Ảnh đại diện'), dongAnh, tep, loiAnh), A.o('bs-cm','Chuyên môn',cm), A.o('bs-gt','Giới thiệu (tối đa 600 ký tự)',gt)], 'Lưu hồ sơ', async () => {
+      [el('div',{class:'truong'}, el('div',{class:'nho',style:'margin-bottom:6px'}, 'Ảnh đại diện'), dongAnh, tep, loiAnh), A.o('bs-cm','Chuyên môn',cm), A.o('bs-gt','Giới thiệu (tối đa 600 ký tự)',gt), ...truongChungChi], 'Lưu hồ sơ', async () => {
       const cot = { chuyen_mon: cm.value.trim() || null, gioi_thieu: gt.value.trim() || null };
+      if (tuy.admin) {
+        const nam = nh.value.trim();
+        if (nam && !(/^\d{4}$/.test(nam) && +nam >= 1970 && +nam <= 2100)) return 'Năm bắt đầu hành nghề chưa đúng (từ 1970).';
+        Object.assign(cot, { trinh_do: td.value.trim() || null, nam_hanh_nghe: nam ? +nam : null, so_chung_chi: sc.value.trim() || null, chung_chi: cc.value.trim() || null });
+      }
       let duongMoi = null;
       if (anhMoi) {
         duongMoi = tk.id + '/avatar-' + Date.now() + '.' + anhMoi.duoi;

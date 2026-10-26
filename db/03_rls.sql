@@ -67,8 +67,8 @@ GRANT INSERT (ho_ten, so_dien_thoai, dia_chi), UPDATE (ho_ten, so_dien_thoai, di
   ON chu_nuoi TO authenticated;    -- tai_khoan_id không ghi được trực tiếp
 GRANT INSERT (chu_nuoi_id, ten, loai, ngay_sinh), UPDATE (ten, loai, ngay_sinh)
   ON thu_cung TO authenticated;
-GRANT INSERT (tai_khoan_id, chuyen_mon, gioi_thieu, anh_dai_dien),
-      UPDATE (chuyen_mon, gioi_thieu, anh_dai_dien)
+GRANT INSERT (tai_khoan_id, chuyen_mon, gioi_thieu, anh_dai_dien, trinh_do, nam_hanh_nghe, so_chung_chi, chung_chi),
+      UPDATE (chuyen_mon, gioi_thieu, anh_dai_dien, trinh_do, nam_hanh_nghe, so_chung_chi, chung_chi)
   ON ho_so_bac_si TO authenticated;
 GRANT INSERT, UPDATE, DELETE ON lich_lam_viec TO authenticated;
 GRANT INSERT (khoa, gia_tri, mo_ta, cong_khai), UPDATE (gia_tri, mo_ta, cong_khai)

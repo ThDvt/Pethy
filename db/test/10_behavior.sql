@@ -334,6 +334,18 @@ SELECT t.loi('tai khoan khoa khong goi duoc rpc', format('SELECT dat_lich(%L,%L,
 SELECT t.bang('tai khoan khoa khong doc duoc thu cung', 'SELECT count(*)::text FROM thu_cung','0');
 RESET ROLE;
 SELECT t.bang('f4 co ho_so_bac_si', $$SELECT count(*)::text FROM ho_so_bac_si WHERE tai_khoan_id='00000000-0000-0000-0000-0000000000f4'$$,'1');
+-- trình độ và chứng chỉ: chỉ admin nhập, bác sĩ tự sửa phần còn lại
+SET ROLE authenticated; SELECT t.as_('00000000-0000-0000-0000-0000000000a1');
+SELECT t.ok('admin nhap trinh do va chung chi', $$UPDATE ho_so_bac_si SET trinh_do='Bác sĩ thú y, Học viện Nông nghiệp Việt Nam', nam_hanh_nghe=2016, so_chung_chi='HN-0123', chung_chi=E'Siêu âm thú y\nDa liễu' WHERE tai_khoan_id='00000000-0000-0000-0000-0000000000f4'$$);
+SELECT t.loi('nam hanh nghe ngoai khoang', $$UPDATE ho_so_bac_si SET nam_hanh_nghe=1800 WHERE tai_khoan_id='00000000-0000-0000-0000-0000000000f4'$$,'23514');
+SELECT t.as_('00000000-0000-0000-0000-0000000000f4');
+SELECT t.loi('bac si khong tu sua chung chi', $$UPDATE ho_so_bac_si SET so_chung_chi='GIA-999' WHERE tai_khoan_id='00000000-0000-0000-0000-0000000000f4'$$,'CHI_ADMIN_SUA_CHUNG_CHI');
+SELECT t.loi('bac si khong tu sua trinh do', $$UPDATE ho_so_bac_si SET trinh_do='Giáo sư' WHERE tai_khoan_id='00000000-0000-0000-0000-0000000000f4'$$,'CHI_ADMIN_SUA_CHUNG_CHI');
+SELECT t.ok('bac si van tu sua gioi thieu', $$UPDATE ho_so_bac_si SET gioi_thieu='Tận tâm.' WHERE tai_khoan_id='00000000-0000-0000-0000-0000000000f4'$$);
+RESET ROLE;
+SET ROLE anon; SELECT t.as_('');
+SELECT t.bang('khach thay trinh do va chung chi cua bac si', $$SELECT concat_ws('|', trinh_do, nam_hanh_nghe, so_chung_chi) FROM bac_si_cong_khai WHERE id='00000000-0000-0000-0000-0000000000f4'$$,'Bác sĩ thú y, Học viện Nông nghiệp Việt Nam|2016|HN-0123');
+RESET ROLE;
 SELECT t.loi('ho_so_bac_si chi cho bac si', $$INSERT INTO ho_so_bac_si (tai_khoan_id) VALUES ('00000000-0000-0000-0000-0000000000f1')$$,'KHONG_PHAI_BAC_SI');
 SELECT t.bang('nhat ky ghi nhan thao tac', $$SELECT (count(*)>10)::text FROM nhat_ky$$,'true');
 SELECT t.bang('nhat ky co gia tri cu/moi khi sua', $$SELECT (count(*)>0)::text FROM nhat_ky WHERE hanh_dong='sua' AND gia_tri_cu IS NOT NULL AND gia_tri_moi IS NOT NULL$$,'true');

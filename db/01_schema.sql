@@ -46,6 +46,10 @@ CREATE TABLE ho_so_bac_si (
   chuyen_mon    text,
   gioi_thieu    text,
   anh_dai_dien  text,   -- đường dẫn ảnh trong Storage, không lưu ảnh trong bảng
+  trinh_do      text CHECK (trinh_do IS NULL OR length(trinh_do) <= 160),          -- học vấn, nơi đào tạo
+  nam_hanh_nghe smallint CHECK (nam_hanh_nghe IS NULL OR nam_hanh_nghe BETWEEN 1970 AND 2100), -- năm bắt đầu hành nghề
+  so_chung_chi  text CHECK (so_chung_chi IS NULL OR length(so_chung_chi) <= 40),     -- số chứng chỉ hành nghề thú y
+  chung_chi     text CHECK (chung_chi IS NULL OR length(chung_chi) <= 600),          -- mỗi dòng một chứng chỉ hoặc khóa đào tạo
   created_at    timestamptz NOT NULL DEFAULT now()
 );
 

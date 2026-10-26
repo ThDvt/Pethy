@@ -13,7 +13,7 @@
       return el('div',{class:'hang'},
         el('div',{class:'ten'}, t.ho_ten + (minh ? ' (bạn)' : ''), el('div',{class:'nho',style:'font-weight:400;overflow-wrap:anywhere'}, (t.email || 'Chưa có email') + '  ·  ' + (t.so_dien_thoai || 'Chưa có số điện thoại') + ', tạo ' + A.ngay(t.created_at))),
         khoa ? el('span',{class:'tt do'}, 'Đã khóa') : el('span'), sel,
-        t.vai_tro === 'bac_si' ? el('button',{class:'lien-ket',type:'button',onclick:() => Pethy.hoSoBacSi.mo(t, tai)}, 'Hồ sơ') : el('span'),
+        t.vai_tro === 'bac_si' ? el('button',{class:'lien-ket',type:'button',onclick:() => Pethy.hoSoBacSi.mo(t, tai, { admin: true })}, 'Hồ sơ') : el('span'),
         minh ? el('span') : el('button',{class:'lien-ket',type:'button',onclick:() => goi('khoa_tai_khoan', { p_tai_khoan: t.id, p_khoa: !khoa }, khoa ? null : 'Khóa tài khoản ' + t.ho_ten + '? Người này sẽ không đăng nhập dùng được nữa.')}, khoa ? 'Mở khóa' : 'Khóa'),
         minh ? el('span') : el('button',{class:'lien-ket',type:'button',style:'color:var(--loi)',onclick:() => goi('xoa_tai_khoan', { p_tai_khoan: t.id }, 'Xóa vĩnh viễn tài khoản ' + t.ho_ten + '? Không thể hoàn tác.')}, 'Xóa'));
     })));

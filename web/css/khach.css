@@ -148,6 +148,10 @@ dialog.xac-nhan{border:2px solid var(--muc);border-radius:24px}
 .the-bs .bs-ct h3{margin:4px 0 8px;font:500 12px var(--so);letter-spacing:.08em;color:var(--xam);text-transform:uppercase}
 .the-bs .bs-lich{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:15px}
 .the-bs .bs-lich li{display:flex;gap:12px}
+.the-bs .bs-cc li{display:list-item;list-style:disc inside}
+.the-bs .bs-ct p.cm{margin:0;align-self:stretch;text-align:left}
+.the-bs .bs-ct h3{margin:14px 0 6px}
+.the-bs .bs-ct h3:first-child{margin-top:4px}
 .the-bs .bs-lich b{flex:0 0 76px}
 
 /* đánh giá trên trang chủ */
