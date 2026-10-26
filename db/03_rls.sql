@@ -81,8 +81,8 @@ GRANT INSERT (ten, loai, don_vi, gia_ban, nguong_canh_bao, dang_ap_dung),
       UPDATE (ten, don_vi, gia_ban, nguong_canh_bao, dang_ap_dung)
   ON thuoc TO authenticated;
 GRANT SELECT, DELETE ON bai_viet TO authenticated;
-GRANT INSERT (tieu_de, nhom, tom_tat, noi_dung, tac_gia, trang_thai),
-      UPDATE (tieu_de, nhom, tom_tat, noi_dung, tac_gia, trang_thai)
+GRANT INSERT (tieu_de, nhom, tom_tat, noi_dung, tac_gia, anh_bia, trang_thai),
+      UPDATE (tieu_de, nhom, tom_tat, noi_dung, tac_gia, anh_bia, trang_thai)
   ON bai_viet TO authenticated;
 
 -- ---------------------------------------------------------------------

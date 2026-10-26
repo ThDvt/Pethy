@@ -25,9 +25,28 @@ Pethy.baiViet = (function(){
     xaDoan(); xaDs();
     return ra;
   }
+  // Ảnh bìa: cắt khung 16:9 ở giữa ảnh, thu về rộng 1200 px, nén WebP (hoặc JPEG) trước khi tải lên kho 'anh-bai-viet'.
+  const KHO = 'anh-bai-viet';
+  async function chuanHoaBia(file){
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) throw new Error('Chỉ nhận ảnh JPG, PNG hoặc WebP.');
+    if (file.size > 15 * 1024 * 1024) throw new Error('Ảnh quá lớn (tối đa 15 MB).');
+    const bm = await createImageBitmap(file).catch(() => { throw new Error('Không đọc được ảnh này.'); });
+    if (bm.width < 600) throw new Error('Ảnh quá nhỏ, nên rộng ít nhất 600 px.');
+    const W = Math.min(1200, bm.width), H = Math.round(W * 9 / 16);
+    let sw = bm.width, sh = Math.round(bm.width * 9 / 16);
+    if (sh > bm.height) { sh = bm.height; sw = Math.round(bm.height * 16 / 9); }
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    cv.getContext('2d').drawImage(bm, (bm.width - sw) / 2, (bm.height - sh) / 2, sw, sh, 0, 0, W, H);
+    const blob = await new Promise(ok => cv.toBlob(ok, 'image/webp', 0.82));
+    const b = (blob && blob.type === 'image/webp') ? blob : await new Promise(ok => cv.toBlob(ok, 'image/jpeg', 0.85));
+    const xem = await new Promise(ok => { const f = new FileReader(); f.onload = () => ok(f.result); f.readAsDataURL(b); });
+    return { blob: b, xem, duoi: b.type === 'image/webp' ? 'webp' : 'jpg' };
+  }
+  const duongBia = url => { const k = '/' + KHO + '/'; const i = url ? url.indexOf(k) : -1; return i < 0 ? null : decodeURIComponent(url.slice(i + k.length).split('?')[0]); };
   // Thẻ bài viết: cả thẻ là một liên kết tới trang bài viết.
   Pethy.baiVietThe = x => el('a',{class:'the-bv',href:'/bai-viet.html?id=' + encodeURIComponent(x.id)},
+    x.anh_bia ? el('img',{class:'bv-anh',src:x.anh_bia,alt:'',width:1200,height:675,loading:'lazy',draggable:'false'}) : null,
     el('span',{class:'bv-nhom'}, NHOM[x.nhom] || ''), el('span',{class:'bv-tde'}, x.tieu_de),
     el('span',{class:'bv-tt'}, trich(x)), el('span',{class:'bv-ngay'}, ngay(x.ngay_dang)));
-  return { NHOM, ngay, trich, noiDung, TAC_GIA };
+  return { NHOM, ngay, trich, noiDung, TAC_GIA, KHO, chuanHoaBia, duongBia };
 })();

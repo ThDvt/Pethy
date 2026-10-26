@@ -5,7 +5,7 @@
   if (!id) return khongCo();
   let x = null;
   if (!thuc) x = (MAU.bai_viet || []).find(b => b.id === id) || null;
-  else { const r = await db.from('bai_viet').select('id,tieu_de,nhom,tom_tat,noi_dung,tac_gia,trang_thai,ngay_dang').eq('id', id).maybeSingle();
+  else { const r = await db.from('bai_viet').select('id,tieu_de,nhom,tom_tat,noi_dung,tac_gia,anh_bia,trang_thai,ngay_dang').eq('id', id).maybeSingle();
     if (r.error) { goc.replaceChildren(el('p',{class:'loi'},'Không tải được bài viết. Vui lòng tải lại trang.')); return; } x = r.data; }
   if (!x) return khongCo();
   document.title = x.tieu_de + ' - Pethy';
@@ -17,6 +17,7 @@
     el('div',{class:'bv-nhom'}, BV.NHOM[x.nhom] || ''),
     el('h1',{}, x.tieu_de),
     el('div',{class:'bv-meta'}, (x.tac_gia || BV.TAC_GIA) + (x.ngay_dang ? ' · ' + BV.ngay(x.ngay_dang) : '')),
+    x.anh_bia ? el('img',{class:'bv-bia',src:x.anh_bia,alt:'Ảnh minh họa: ' + x.tieu_de,width:1200,height:675}) : null,
     el('div',{class:'bv-nd'}, ...BV.noiDung(x.noi_dung)),
     el('div',{class:'bv-cta'}, el('div',{}, el('b',{},'Bé nhà bạn cần được khám?'), el('div',{class:'ghi-chu'},'Đặt lịch với bác sĩ của Pethy trong một phút.')), el('a',{class:'nut chinh',href:'/dang-nhap.html?dang-ky=1'},'Đặt lịch khám'))].filter(Boolean));
 })();

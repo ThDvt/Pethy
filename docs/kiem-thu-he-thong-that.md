@@ -83,7 +83,8 @@ Cần chạy `db/10_bai_viet.sql` trong Supabase trước.
 | 5b.4 | Viết thử nội dung có `## Tiêu đề`, `- mục` và chữ như `<b>x</b>` | Hiện tiêu đề nhỏ, danh sách; `<b>x</b>` hiện nguyên chữ, không in đậm |
 | 5b.5 | Admin bấm Gỡ xuống rồi Đăng lại | Bài biến mất rồi hiện lại; ngày đăng giữ nguyên |
 | 5b.6 | Đăng nhập tài khoản không phải admin, thử mở `/admin/bai-viet.html` | Không vào được trang quản lý |
-| 5b.7 | Gỡ hết bài | Mục Góc thú y trên trang chủ tự ẩn |
+| 5b.7 | Sửa một bài đã đăng, chọn ảnh bìa (ảnh ngang bất kỳ), Lưu; sau đó thử Gỡ ảnh và thay ảnh khác | Ảnh hiện ở thẻ trang chủ, trang Tin tức và đầu bài; gỡ hoặc thay thì ảnh cũ không còn |
+| 5b.8 | Gỡ hết bài | Mục Góc thú y trên trang chủ tự ẩn |
 
 ## 6. Quản trị viên: dashboard
 

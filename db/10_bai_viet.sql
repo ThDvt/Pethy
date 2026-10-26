@@ -11,11 +11,14 @@ CREATE TABLE IF NOT EXISTS bai_viet (
   tom_tat     text CHECK (tom_tat IS NULL OR length(tom_tat) <= 300),
   noi_dung    text NOT NULL CHECK (length(btrim(noi_dung)) BETWEEN 1 AND 10000),
   tac_gia     text CHECK (tac_gia IS NULL OR length(tac_gia) <= 80),
+  anh_bia     text CHECK (anh_bia IS NULL OR (anh_bia ~ '^https://' AND length(anh_bia) <= 500)),  -- địa chỉ ảnh bìa trong kho 'anh-bai-viet'
   trang_thai  text NOT NULL DEFAULT 'nhap' CHECK (trang_thai IN ('nhap','da_dang')),
   ngay_dang   timestamptz,                       -- tự đặt lần đầu đăng (trigger), client không ghi được
   created_at  timestamptz NOT NULL DEFAULT now(),
   updated_at  timestamptz NOT NULL DEFAULT now()
 );
+-- Nếu đã chạy bản cũ chưa có ảnh bìa thì thêm cột.
+ALTER TABLE bai_viet ADD COLUMN IF NOT EXISTS anh_bia text CHECK (anh_bia IS NULL OR (anh_bia ~ '^https://' AND length(anh_bia) <= 500));
 CREATE INDEX IF NOT EXISTS idx_bai_viet_dang ON bai_viet (ngay_dang DESC) WHERE trang_thai = 'da_dang';
 
 ALTER TABLE bai_viet ENABLE ROW LEVEL SECURITY;
@@ -37,8 +40,8 @@ REVOKE EXECUTE ON FUNCTION dat_ngay_bai_viet() FROM PUBLIC, anon, authenticated;
 
 GRANT SELECT ON bai_viet TO anon;
 GRANT SELECT, DELETE ON bai_viet TO authenticated;
-GRANT INSERT (tieu_de, nhom, tom_tat, noi_dung, tac_gia, trang_thai),
-      UPDATE (tieu_de, nhom, tom_tat, noi_dung, tac_gia, trang_thai)
+GRANT INSERT (tieu_de, nhom, tom_tat, noi_dung, tac_gia, anh_bia, trang_thai),
+      UPDATE (tieu_de, nhom, tom_tat, noi_dung, tac_gia, anh_bia, trang_thai)
   ON bai_viet TO authenticated;
 
 DROP POLICY IF EXISTS bai_viet_khach ON bai_viet;
@@ -58,3 +61,22 @@ CREATE POLICY bai_viet_xoa ON bai_viet FOR DELETE TO authenticated USING (vai_tr
 DROP TRIGGER IF EXISTS trg_nhat_ky ON bai_viet;
 CREATE TRIGGER trg_nhat_ky AFTER INSERT OR UPDATE OR DELETE ON bai_viet
   FOR EACH ROW EXECUTE FUNCTION ghi_nhat_ky();
+
+-- Ảnh bìa bài viết: kho ảnh công khai (ảnh hiện cho cả khách), chỉ admin tải lên, thay, xóa. Tối đa 3 MB, JPEG/PNG/WebP.
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES ('anh-bai-viet', 'anh-bai-viet', true, 3145728, ARRAY['image/jpeg', 'image/png', 'image/webp'])
+ON CONFLICT (id) DO UPDATE
+   SET public = EXCLUDED.public, file_size_limit = EXCLUDED.file_size_limit, allowed_mime_types = EXCLUDED.allowed_mime_types;
+
+DROP POLICY IF EXISTS anh_bai_viet_doc  ON storage.objects;
+DROP POLICY IF EXISTS anh_bai_viet_them ON storage.objects;
+DROP POLICY IF EXISTS anh_bai_viet_sua  ON storage.objects;
+DROP POLICY IF EXISTS anh_bai_viet_xoa  ON storage.objects;
+CREATE POLICY anh_bai_viet_doc ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'anh-bai-viet');
+CREATE POLICY anh_bai_viet_them ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'anh-bai-viet' AND public.vai_tro_hieu_luc() = 'admin');
+CREATE POLICY anh_bai_viet_sua ON storage.objects FOR UPDATE TO authenticated
+  USING (bucket_id = 'anh-bai-viet' AND public.vai_tro_hieu_luc() = 'admin')
+  WITH CHECK (bucket_id = 'anh-bai-viet' AND public.vai_tro_hieu_luc() = 'admin');
+CREATE POLICY anh_bai_viet_xoa ON storage.objects FOR DELETE TO authenticated
+  USING (bucket_id = 'anh-bai-viet' AND public.vai_tro_hieu_luc() = 'admin');

@@ -224,3 +224,5 @@ dialog.xac-nhan{border:2px solid var(--muc);border-radius:24px}
 .bv-nhap{margin:0 0 16px;padding:10px 14px;border:2px solid var(--muc);border-radius:12px;background:var(--kem2);font-size:14px}
 .bv-cta{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;margin-top:40px;padding:20px 24px;border:2px solid var(--muc);border-radius:24px}
 #bv-them[hidden]{display:none}
+img.bv-anh{display:block;width:calc(100% + 48px);max-width:none;height:auto;aspect-ratio:16/9;margin:-24px -24px 6px;border-bottom:2px solid var(--muc);border-radius:22px 22px 0 0;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+img.bv-bia{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border:2px solid var(--muc);border-radius:24px;margin:0 0 28px}

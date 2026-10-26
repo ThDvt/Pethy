@@ -340,6 +340,7 @@ CREATE TABLE bai_viet (
   tom_tat     text CHECK (tom_tat IS NULL OR length(tom_tat) <= 300),
   noi_dung    text NOT NULL CHECK (length(btrim(noi_dung)) BETWEEN 1 AND 10000),
   tac_gia     text CHECK (tac_gia IS NULL OR length(tac_gia) <= 80),
+  anh_bia     text CHECK (anh_bia IS NULL OR (anh_bia ~ '^https://' AND length(anh_bia) <= 500)),  -- địa chỉ ảnh bìa trong kho 'anh-bai-viet'
   trang_thai  text NOT NULL DEFAULT 'nhap' CHECK (trang_thai IN ('nhap','da_dang')),
   ngay_dang   timestamptz,                       -- tự đặt lần đầu đăng (trigger), client không ghi được
   created_at  timestamptz NOT NULL DEFAULT now(),

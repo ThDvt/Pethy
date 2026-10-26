@@ -87,7 +87,7 @@
     // Góc thú y: tối đa 3 bài mới nhất; lỗi hoặc chưa có bài thì ẩn cả mục, không ảnh hưởng phần còn lại của trang chủ.
     try {
       const bv = !thuc ? (MAU.bai_viet || []).slice(0, 3)
-        : (await db.from('bai_viet').select('id,tieu_de,nhom,tom_tat,noi_dung,ngay_dang').eq('trang_thai','da_dang').order('ngay_dang',{ascending:false}).limit(3)).data || [];
+        : (await db.from('bai_viet').select('id,tieu_de,nhom,tom_tat,noi_dung,anh_bia,ngay_dang').eq('trang_thai','da_dang').order('ngay_dang',{ascending:false}).limit(3)).data || [];
       if (bv.length) { document.getElementById('ds-bai-viet').replaceChildren(khungTruot(bv.map(Pethy.baiVietThe), 'bài viết', '.the-bv')); document.getElementById('goc-thu-y').hidden = false; }
     } catch (_) {}
     if (d.danh_gia && d.danh_gia.length) {

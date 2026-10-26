@@ -2,7 +2,7 @@
   const { db, thuc, el, MAU } = Pethy, BV = Pethy.baiViet, CO = 9;
   const ds = document.getElementById('bv-ds'), loc = document.getElementById('bv-loc'), them = document.getElementById('bv-them');
   let nhom = '', dem = 0, het = false;
-  const COT = 'id,tieu_de,nhom,tom_tat,noi_dung,ngay_dang,tac_gia';
+  const COT = 'id,tieu_de,nhom,tom_tat,noi_dung,anh_bia,ngay_dang,tac_gia';
   async function lay(tu){
     if (!thuc) { const a = (MAU.bai_viet || []).filter(x => !nhom || x.nhom === nhom); return { data: a.slice(tu, tu + CO + 1) }; }
     let q = db.from('bai_viet').select(COT).eq('trang_thai','da_dang').order('ngay_dang',{ascending:false});
