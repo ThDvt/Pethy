@@ -142,6 +142,8 @@ dialog.xac-nhan{border:2px solid var(--muc);border-radius:24px}
 #ds-bac-si .luoi-the{align-items:start}
 .the-bs .bs-ct{display:none;width:100%}
 .the-bs.mo .bs-ct{display:block}
+.truot-dai.co-mo{align-items:flex-start}
+.truot-dai.co-mo .the-bs:not(.mo){min-height:var(--cao-dong)}
 .the-bs.mo .gt-ngan{display:block;-webkit-line-clamp:unset;overflow:visible;white-space:pre-line}
 .the-bs .bs-ct h3{margin:4px 0 8px;font:500 12px var(--so);letter-spacing:.08em;color:var(--xam);text-transform:uppercase}
 .the-bs .bs-lich{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:15px}
