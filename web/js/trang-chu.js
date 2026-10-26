@@ -80,7 +80,7 @@
           (() => { const b = el('button',{class:'lien-ket',type:'button','aria-expanded':'false','aria-label':'Xem thông tin bác sĩ ' + x.ho_ten}, 'Xem thông tin');
             b.addEventListener('click', () => { const c = b.closest('.the-bs'), mo = c.classList.toggle('mo'); b.setAttribute('aria-expanded', String(mo)); b.textContent = mo ? 'Thu gọn' : 'Xem thông tin'; });
             return b; })(),
-          el('a',{class:'nut trang',href:'/dang-nhap.html?dang-ky=1',onclick:nho({ bs:x.id })}, 'Đặt với Bs. ' + x.ho_ten.trim().split(/\s+/).pop(), ' ', el('span',{'aria-hidden':'true'}, '→')))) : x), 'bác sĩ', '.the-bs'));
+          el('a',{class:'nut trang',href:'/dang-nhap.html?dang-ky=1',onclick:nho({ bs:x.id }),'aria-label':'Đặt lịch với bác sĩ ' + x.ho_ten}, 'Đặt lịch ', el('span',{'aria-hidden':'true'}, '→')))) : x), 'bác sĩ', '.the-bs'));
     if (d.danh_gia && d.danh_gia.length) {
       const g = d.danh_gia[0];
       document.getElementById('dg-tong').replaceChildren(Pethy.sao(g.diem_tb), ' ' + Number(g.diem_tb).toFixed(1) + ' trên 5, từ ' + g.tong + ' đánh giá của chủ nuôi sau khi khám.');
