@@ -104,6 +104,7 @@ Thời gian dự kiến: khoảng 60 đến 90 phút. Nên dùng hai trình duy�
 | 8.5 | Ô số điện thoại | Tự định dạng khi rời ô, không nhân đôi số 0 |
 | 8.6 | Admin gửi một tin cho bác sĩ. Đăng nhập bác sĩ ở cửa sổ khác | Mục Tin nhắn của bác sĩ hiện số 1 (tối đa 1 phút); mở Tin nhắn thì số biến mất |
 | 8.7 | Lễ tân: có lịch chờ xác nhận. Thu ngân và chủ nuôi: có hóa đơn còn nợ. Thủ kho: có thuốc sắp hết | Mục tương ứng ở thanh bên hiện đúng số; xử lý xong thì số giảm |
+| 8.8 | Thủ kho/bác sĩ: đăng nhập bác sĩ, mở Hồ sơ của tôi, chọn ảnh, nhập chuyên môn, giới thiệu, Lưu hồ sơ | Ảnh hiện tròn đều; trang chủ (chưa đăng nhập) hiện đúng ảnh ở thẻ bác sĩ. Báo "Chưa có kho ảnh" nghĩa là chưa chạy `db/04_storage.sql` |
 
 ## Khi gặp lỗi
 

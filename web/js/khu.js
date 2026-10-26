@@ -15,7 +15,7 @@
   const TRAO_DOI = {ten:'Tin nhắn',href:'/trao-doi.html'};
   const MENU_NV = {
     le_tan:[{ten:'Lịch hôm nay',href:'/le-tan/'},{ten:'Khách hàng',href:'/le-tan/khach-hang.html'},TRAO_DOI],
-    bac_si:[{ten:'Lịch khám',href:'/bac-si/'},TRAO_DOI],
+    bac_si:[{ten:'Lịch khám',href:'/bac-si/'},{ten:'Hồ sơ của tôi',href:'/bac-si/ho-so.html'},TRAO_DOI],
     thu_ngan:[{ten:'Thu ngân',href:'/thu-ngan/'},TRAO_DOI],
     kho:[{ten:'Tồn kho',href:'/kho/'},TRAO_DOI]
   };

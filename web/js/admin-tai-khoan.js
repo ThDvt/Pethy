@@ -13,20 +13,10 @@
       return el('div',{class:'hang'},
         el('div',{class:'ten'}, t.ho_ten + (minh ? ' (bạn)' : ''), el('div',{class:'nho',style:'font-weight:400;overflow-wrap:anywhere'}, (t.email || 'Chưa có email') + '  ·  ' + (t.so_dien_thoai || 'Chưa có số điện thoại') + ', tạo ' + A.ngay(t.created_at))),
         khoa ? el('span',{class:'tt do'}, 'Đã khóa') : el('span'), sel,
-        t.vai_tro === 'bac_si' ? el('button',{class:'lien-ket',type:'button',onclick:() => hoSoBs(t)}, 'Hồ sơ') : el('span'),
+        t.vai_tro === 'bac_si' ? el('button',{class:'lien-ket',type:'button',onclick:() => Pethy.hoSoBacSi.mo(t, tai)}, 'Hồ sơ') : el('span'),
         minh ? el('span') : el('button',{class:'lien-ket',type:'button',onclick:() => goi('khoa_tai_khoan', { p_tai_khoan: t.id, p_khoa: !khoa }, khoa ? null : 'Khóa tài khoản ' + t.ho_ten + '? Người này sẽ không đăng nhập dùng được nữa.')}, khoa ? 'Mở khóa' : 'Khóa'),
         minh ? el('span') : el('button',{class:'lien-ket',type:'button',style:'color:var(--loi)',onclick:() => goi('xoa_tai_khoan', { p_tai_khoan: t.id }, 'Xóa vĩnh viễn tài khoản ' + t.ho_ten + '? Không thể hoàn tác.')}, 'Xóa'));
     })));
-  }
-  // Hồ sơ công khai của bác sĩ (hiện ở trang chủ): chuyên môn và giới thiệu.
-  async function hoSoBs(tk){
-    const r = await db.from('ho_so_bac_si').select('chuyen_mon,gioi_thieu').eq('tai_khoan_id', tk.id).maybeSingle();
-    if (r.error) return A.baoLoi('Không đọc được hồ sơ bác sĩ.');
-    const cm = el('input',{id:'bs-cm',type:'text',maxlength:'120',placeholder:'Ví dụ: Nội khoa chó mèo'}); cm.value = (r.data && r.data.chuyen_mon) || '';
-    const gt = el('textarea',{id:'bs-gt',rows:'5',maxlength:'600',placeholder:'Ví dụ: Hơn 8 năm khám và điều trị nội khoa cho chó mèo.'}); gt.value = (r.data && r.data.gioi_thieu) || '';
-    A.hop('Hồ sơ Bs. ' + tk.ho_ten, 'Khách xem thông tin này khi bấm "Xem thông tin" ở trang chủ.', [A.o('bs-cm','Chuyên môn',cm), A.o('bs-gt','Giới thiệu (tối đa 600 ký tự)',gt)], 'Lưu hồ sơ', async () => {
-      const { error } = await db.from('ho_so_bac_si').update({ chuyen_mon: cm.value.trim() || null, gioi_thieu: gt.value.trim() || null }).eq('tai_khoan_id', tk.id);
-      return error ? 'Không lưu được hồ sơ.' : null; }, tai);
   }
   // Tạo tài khoản nhân viên: đăng ký bằng client riêng (không lưu phiên) để admin không bị đăng xuất,
   // rồi nâng vai trò bằng RPC dat_vai_tro (vai trò chỉ đổi được qua quản trị viên).
