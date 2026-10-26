@@ -30,12 +30,12 @@
         l.length ? el('ul',{class:'bs-lich'}, l.map(([t, g]) => el('li',{}, el('b',{}, THU[t]), g.join(', '))))
                  : el('p',{class:'cm'}, 'Chưa có lịch cố định. Giờ trống hiện ở bước chọn giờ khi đặt lịch.')); };
     // Khung trượt ngang: cuộn mượt bằng CSS scroll-snap, mũi tên cuộn đúng một thẻ, chuột kéo được, màn hình cảm ứng vuốt tự nhiên.
-    function khungTruot(cacThe){
-      const lui = el('button',{type:'button',class:'truot-nut','aria-label':'Xem dịch vụ trước'}, '‹');
-      const toi = el('button',{type:'button',class:'truot-nut','aria-label':'Xem dịch vụ tiếp theo'}, '›');
-      const dai = el('div',{class:'truot-dai',tabindex:'0',role:'region','aria-label':'Danh sách dịch vụ, cuộn ngang để xem thêm'}, ...cacThe);
+    function khungTruot(cacThe, danhTu = 'dịch vụ', lopThe = '.the-dv'){
+      const lui = el('button',{type:'button',class:'truot-nut','aria-label':'Xem ' + danhTu + ' trước'}, '‹');
+      const toi = el('button',{type:'button',class:'truot-nut','aria-label':'Xem ' + danhTu + ' tiếp theo'}, '›');
+      const dai = el('div',{class:'truot-dai',tabindex:'0',role:'region','aria-label':'Danh sách ' + danhTu + ', cuộn ngang để xem thêm'}, ...cacThe);
       const goc = el('div',{class:'truot'}, dai, lui, toi);
-      const the1 = () => dai.querySelector('.the-dv');
+      const the1 = () => dai.querySelector(lopThe);
       const buoc = () => { const t = the1(); return t ? t.getBoundingClientRect().width + parseFloat(getComputedStyle(dai).columnGap || 20) : dai.clientWidth; };
       const giam = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
       const cap = () => { const du = dai.scrollWidth - dai.clientWidth > 4; lui.hidden = toi.hidden = !du;
@@ -67,7 +67,7 @@
         el('div',{class:'gia'}, tien(x.gia)),
         el('a',{class:'nut trang',href:'/dang-nhap.html?dang-ky=1',onclick:nho({ dv:x.id }),'aria-label':'Chọn dịch vụ ' + x.ten + ' và đặt lịch'}, 'Chọn dịch vụ này ', el('span',{'aria-hidden':'true'}, '→'))) : x);
     dv.replaceChildren(khungTruot(the));
-    bs.replaceChildren(el('div',{class:'luoi-the'}, ...(d.bac_si.length ? d.bac_si : [el('p',{class:'ghi-chu'},'Chưa có bác sĩ.')]).map((x,i) =>
+    bs.replaceChildren(khungTruot((d.bac_si.length ? d.bac_si : [el('p',{class:'ghi-chu'},'Chưa có bác sĩ.')]).map((x,i) =>
       x.ho_ten ? el('div',{class:'the-bs'},
         x.anh_dai_dien ? el('img',{class:'ava',src:x.anh_dai_dien,alt:'Ảnh bác sĩ '+x.ho_ten,loading:'lazy'})
           : el('div',{class:'ava','aria-hidden':'true',style:'background:'+MAUNEN[i%3]}, x.ho_ten.trim().split(/\s+/).pop().charAt(0).toUpperCase()),
@@ -80,7 +80,7 @@
           (() => { const b = el('button',{class:'lien-ket',type:'button','aria-expanded':'false','aria-label':'Xem thông tin bác sĩ ' + x.ho_ten}, 'Xem thông tin');
             b.addEventListener('click', () => { const c = b.closest('.the-bs'), mo = c.classList.toggle('mo'); b.setAttribute('aria-expanded', String(mo)); b.textContent = mo ? 'Thu gọn' : 'Xem thông tin'; });
             return b; })(),
-          el('a',{class:'nut trang',href:'/dang-nhap.html?dang-ky=1',onclick:nho({ bs:x.id })}, 'Đặt với Bs. ' + x.ho_ten.trim().split(/\s+/).pop(), ' ', el('span',{'aria-hidden':'true'}, '→')))) : x)));
+          el('a',{class:'nut trang',href:'/dang-nhap.html?dang-ky=1',onclick:nho({ bs:x.id })}, 'Đặt với Bs. ' + x.ho_ten.trim().split(/\s+/).pop(), ' ', el('span',{'aria-hidden':'true'}, '→')))) : x), 'bác sĩ', '.the-bs'));
     if (d.danh_gia && d.danh_gia.length) {
       const g = d.danh_gia[0];
       document.getElementById('dg-tong').replaceChildren(Pethy.sao(g.diem_tb), ' ' + Number(g.diem_tb).toFixed(1) + ' trên 5, từ ' + g.tong + ' đánh giá của chủ nuôi sau khi khám.');
