@@ -146,6 +146,11 @@ dialog.xac-nhan{border:2px solid var(--muc);border-radius:24px}
 .truot-dai.co-mo .the-bs:not(.mo){min-height:var(--cao-dong)}
 .the-bs.mo .gt-ngan{display:block;-webkit-line-clamp:unset;overflow:visible;white-space:pre-line}
 .the-bs .bs-ct h3{margin:4px 0 8px;font:500 12px var(--so);letter-spacing:.08em;color:var(--xam);text-transform:uppercase}
+.the-bs .bs-muc{margin-bottom:10px}
+.the-bs .bs-muc p{margin:0;font-size:15px;line-height:1.5}
+.the-bs .bs-cc{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:15px;line-height:1.45}
+.the-bs .bs-cc li{padding-left:16px;position:relative}
+.the-bs .bs-cc li::before{content:'';position:absolute;left:2px;top:.6em;width:6px;height:6px;border-radius:50%;background:var(--muc)}
 .the-bs .bs-lich{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:15px}
 .the-bs .bs-lich li{display:flex;gap:12px}
 .the-bs .bs-lich b{flex:0 0 76px}

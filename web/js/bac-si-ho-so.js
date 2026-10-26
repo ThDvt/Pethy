@@ -9,7 +9,7 @@
   async function tai(){
     const [tk, hs] = await Promise.all([
       db.from('tai_khoan').select('ho_ten').eq('id', u.id).maybeSingle(),
-      db.from('ho_so_bac_si').select('chuyen_mon,gioi_thieu,anh_dai_dien').eq('tai_khoan_id', u.id).maybeSingle()]);
+      db.from('ho_so_bac_si').select('chuyen_mon,gioi_thieu,anh_dai_dien,trinh_do,kinh_nghiem_nam,chung_chi').eq('tai_khoan_id', u.id).maybeSingle()]);
     if (tk.error || hs.error || !tk.data) return A.baoLoi('Không tải được hồ sơ. Vui lòng thử lại.');
     const ten = tk.data.ho_ten, d = hs.data || {};
     const anh = el('div',{style:'flex:0 0 96px;width:96px;height:96px;border-radius:50%;border:1px solid var(--muc);overflow:hidden;display:flex;align-items:center;justify-content:center;font:800 38px var(--chu);background:var(--nen)'},
@@ -18,7 +18,11 @@
       el('div',{style:'flex:1 1 260px;min-width:0'},
         el('div',{style:'font-weight:800;font-size:20px'}, 'Bs. ' + ten),
         el('div',{class:'nho',style:'margin:2px 0 10px'}, d.chuyen_mon || 'Chưa nhập chuyên môn'),
-        el('p',{style:'margin:0 0 16px;white-space:pre-wrap;overflow-wrap:anywhere'}, d.gioi_thieu || 'Chưa có phần giới thiệu.'),
+        el('p',{style:'margin:0 0 12px;white-space:pre-wrap;overflow-wrap:anywhere'}, d.gioi_thieu || 'Chưa có phần giới thiệu.'),
+        el('dl',{style:'margin:0 0 16px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:15px'},
+          el('dt',{class:'nho'}, 'Trình độ'), el('dd',{style:'margin:0'}, d.trinh_do || 'Chưa nhập'),
+          el('dt',{class:'nho'}, 'Kinh nghiệm'), el('dd',{style:'margin:0'}, d.kinh_nghiem_nam != null ? d.kinh_nghiem_nam + ' năm' : 'Chưa nhập'),
+          el('dt',{class:'nho'}, 'Chứng chỉ'), el('dd',{style:'margin:0;white-space:pre-line'}, d.chung_chi || 'Chưa nhập')),
         el('button',{class:'nut chinh',type:'button',onclick:() => Pethy.hoSoBacSi.mo({ id: u.id, ho_ten: ten }, tai)}, 'Sửa hồ sơ'))));
   }
   await tai();
