@@ -58,6 +58,8 @@ body.khach{
 .gia{align-self:flex-start;background:var(--kem2);border:2px solid var(--muc);border-radius:999px;padding:4px 14px;font:500 17px var(--so)}
 .the-bs{align-items:flex-start}
 .ava{width:88px;height:88px;border-radius:50%;border:2px solid var(--muc);display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;object-fit:cover;overflow:hidden}
+.the-bs .ava{align-self:center}
+.the-bs .ten,.the-bs .diem-bs,.the-bs .cm:not(.gt-ngan){align-self:center;text-align:center;justify-content:center}
 .the-bs .ten{font-size:20px;font-weight:800;letter-spacing:-.02em}
 .the-bs .cm{color:var(--xam);font-size:15px;line-height:1.5}
 .the-bs a.nut{margin-top:auto}
