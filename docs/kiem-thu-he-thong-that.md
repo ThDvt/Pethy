@@ -9,7 +9,7 @@ Thời gian dự kiến: khoảng 60 đến 90 phút. Nên dùng hai trình duy�
 | Bước | Việc cần làm | Kết quả đúng |
 |---|---|---|
 | 0.1 | Merge các pull request đang chờ trên GitHub, đợi Cloudflare deploy xong | Trang chủ mở được, không báo lỗi |
-| 0.2 | Chạy `db/06_...sql` rồi `db/07_danh_gia.sql` và `db/08_email_tai_khoan.sql` trong Supabase SQL Editor (nếu chưa chạy) | Mỗi file báo Success |
+| 0.2 | Chạy `db/06_...sql` rồi `db/07_danh_gia.sql` `db/08_email_tai_khoan.sql` và `db/09_chung_chi_bac_si.sql` trong Supabase SQL Editor (nếu chưa chạy) | Mỗi file báo Success |
 | 0.3 | Mở `https://<project>.supabase.co/auth/v1/settings?apikey=<anon key>` | `email` là true, `mailer_autoconfirm` là false |
 | 0.4 | Authentication, URL Configuration: Site URL là địa chỉ web thật (`pethy.bo3tuoi1999.workers.dev`) | Link trong email xác nhận mở đúng web thật, không về localhost |
 | 0.5 | Đăng nhập admin, vào trang Bảo mật, bấm kiểm tra cấu hình Supabase | Mọi dòng đều đạt |
@@ -105,6 +105,7 @@ Thời gian dự kiến: khoảng 60 đến 90 phút. Nên dùng hai trình duy�
 | 8.6 | Admin gửi một tin cho bác sĩ. Đăng nhập bác sĩ ở cửa sổ khác | Mục Tin nhắn của bác sĩ hiện số 1 (tối đa 1 phút); mở Tin nhắn thì số biến mất |
 | 8.7 | Lễ tân: có lịch chờ xác nhận. Thu ngân và chủ nuôi: có hóa đơn còn nợ. Thủ kho: có thuốc sắp hết | Mục tương ứng ở thanh bên hiện đúng số; xử lý xong thì số giảm |
 | 8.8 | Thủ kho/bác sĩ: đăng nhập bác sĩ, mở Hồ sơ của tôi, chọn ảnh, nhập chuyên môn, giới thiệu, Lưu hồ sơ | Ảnh hiện tròn đều; trang chủ (chưa đăng nhập) hiện đúng ảnh ở thẻ bác sĩ. Báo "Chưa có kho ảnh" nghĩa là chưa chạy `db/04_storage.sql` |
+| 8.9 | Bác sĩ: Hồ sơ của tôi, nhập trình độ, số năm kinh nghiệm, chứng chỉ (mỗi dòng một mục), Lưu. Nhập số năm 61 hoặc -1 | Lưu được; số năm sai bị chặn với thông báo rõ. Trang chủ (ẩn danh), thẻ bác sĩ, Xem thông tin: hiện đủ trình độ, kinh nghiệm, danh sách chứng chỉ |
 
 ## Khi gặp lỗi
 
