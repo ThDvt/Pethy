@@ -16,7 +16,7 @@ PostgreSQL trên Supabase. Toàn bộ nghiệp vụ và phân quyền nằm ở 
 | `08_email_tai_khoan.sql` | Bản vá cho CSDL đã cài trước: hàm `danh_sach_tai_khoan()` (chỉ admin) để trang Tài khoản hiện email. |
 | `09_chung_chi_bac_si.sql` | Bản vá cho CSDL đã cài trước: thêm `trinh_do`, `kinh_nghiem_nam`, `chung_chi` vào hồ sơ bác sĩ và vào view `bac_si_cong_khai`. |
 | `10_bai_viet.sql` | Bản vá cho CSDL đã cài trước: bảng `bai_viet` (tin tức do admin viết), hàm/trigger `dat_ngay_bai_viet`, chính sách RLS (khách chỉ đọc bài đã đăng, chỉ admin ghi), nhật ký thay đổi. |
-| `test/` | Stub Supabase, `reset.sh`, `10_behavior.sql` (175 kiểm thử), `11_reports_chat.sql` (75 kiểm thử), `12_security.sql` (86 kiểm thử, gồm quét RLS và quyền) |
+| `test/` | Stub Supabase và các script thử cục bộ |
 
 ## Cài lên Supabase
 
@@ -38,21 +38,6 @@ UPDATE tai_khoan SET vai_tro = 'admin'
 ```
 
 Từ đó admin đổi vai trò cho người khác qua `dat_vai_tro`. Không tự đổi/khóa/xóa chính mình nên hệ thống không bao giờ mất admin.
-
-## Kiểm thử cục bộ
-
-Cần PostgreSQL 16 chạy ở cổng 5544, thư mục socket `/var/tmp/pgtest-vet`.
-
-```bash
-./test/reset.sh                                   # dựng lại DB thử, in RESET_OK
-psql -h /var/tmp/pgtest-vet -p 5544 -U postgres -d vettest -q -f test/10_behavior.sql
-psql -h /var/tmp/pgtest-vet -p 5544 -U postgres -d vettest -q -f test/11_reports_chat.sql   # chạy sau file 10
-psql -h /var/tmp/pgtest-vet -p 5544 -U postgres -d vettest -q -f test/12_security.sql        # chạy sau file 11
-```
-
-Kết quả cuối cùng: 175/175, 75/75 và 86/86 (tổng 336 kiểm thử, 0 lỗi). Ba file test phải chạy theo thứ tự 10, 11, 12 trên cơ sở dữ liệu vừa `reset.sh`; chạy lại một file riêng sẽ cho kết quả sai vì dữ liệu đã thay đổi. Ngoài ra đã chạy thử 8 phiên đồng thời cùng đặt một khung giờ: đúng 1 thành công, 7 nhận `KHUNG_GIO_DA_DAT`.
-
-Bộ kiểm thử bao gồm: quyền từng vai trò, cô lập dữ liệu giữa các chủ nuôi, đặt trùng giờ, quy tắc hủy/đổi, giới hạn lịch chờ, kho FEFO, kê đơn thiếu hàng (hoàn tác toàn bộ), kê lại đơn (hoàn kho), hóa đơn/thanh toán nhiều lần, bảng chỉ-thêm, chế độ bảo trì, khách chưa đăng nhập, trigger đăng ký không tin vai trò từ client, khóa/xóa tài khoản, nhật ký.
 
 ## Cách giao diện làm việc với CSDL
 
