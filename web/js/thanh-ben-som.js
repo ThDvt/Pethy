@@ -21,6 +21,7 @@
     chan:[['circle',{cx:6,cy:11,r:1.8}],['circle',{cx:10,cy:6,r:1.8}],['circle',{cx:14,cy:6,r:1.8}],['circle',{cx:18,cy:11,r:1.8}],['path',{d:'M12 12c-3 0-5 3-5 5 0 2 2 2.5 5 2.5s5-.5 5-2.5c0-2-2-5-5-5z'}]],
     hoaDon:[['path',{d:'M6 3h12v18l-3-2-3 2-3-2-3 2V3zM9 8h6M9 12h6'}]],
     ra:[['path',{d:'M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9'}]],
+    menu:[['path',{d:'M4 7h16M4 12h16M4 17h16'}]],
     sao:[['path',{d:'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z'}]],
     trai:[['rect',{x:'3',y:'3',width:'18',height:'18',rx:'5'}],['path',{d:'M9 3v18'}]],
     cham:[['circle',{cx:12,cy:12,r:3}]]
@@ -60,13 +61,21 @@
     var capNhat = function(){ var g = nav.classList.contains('gon'); gon.setAttribute('aria-expanded', String(!g)); gon.setAttribute('aria-label', g ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên'); };
     gon.onclick = function(){ nav.classList.toggle('gon'); luu(nav.classList.contains('gon')); capNhat(); };
     capNhat(); dau.appendChild(gon); nav.appendChild(dau);
+    // Điện thoại: một nút lớn ghi tên trang đang mở, bấm để mở danh sách mục (CSS chỉ hiện nút này ở màn hình hẹp).
+    var mo = dd('button', 'tb-mo'); mo.type = 'button'; mo.setAttribute('aria-expanded', 'false'); mo.setAttribute('aria-controls', 'tb-danh-sach');
+    var tenTrang = dd('span', 'tb-mo-ten', 'Menu'); mo.appendChild(tenTrang); mo.appendChild(svg('menu'));
+    var dongMo = function(){ nav.classList.remove('mo-menu'); mo.setAttribute('aria-expanded', 'false'); };
+    mo.onclick = function(){ var m = nav.classList.toggle('mo-menu'); mo.setAttribute('aria-expanded', String(m)); };
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && nav.classList.contains('mo-menu')) { dongMo(); mo.focus(); } });
+    document.addEventListener('click', function(e){ if (nav.classList.contains('mo-menu') && !nav.contains(e.target)) dongMo(); });
+    nav.appendChild(mo);
 
-    var hien = chuan(c.hien || location.pathname), nhomCu = null, ds = dd('div', 'tb-muc');
+    var hien = chuan(c.hien || location.pathname), nhomCu = null, ds = dd('div', 'tb-muc'); ds.id = 'tb-danh-sach';
     (c.muc || []).forEach(function(m){
       if (m.nhom && m.nhom !== nhomCu) { nhomCu = m.nhom; ds.appendChild(dd('div', 'tb-nhom', m.nhom)); }
       var a = dd('a', 'tb-m'); a.href = m.href; a.setAttribute('data-ten', m.ten);
       a.appendChild(svg(m.bt || chonBt(m.href))); a.appendChild(dd('span', 'tb-ten', m.ten));
-      if (chuan(m.href) === hien) a.setAttribute('aria-current', 'page');
+      if (chuan(m.href) === hien) { a.setAttribute('aria-current', 'page'); tenTrang.textContent = m.ten; }
       ds.appendChild(a);
     });
     nav.appendChild(ds);
@@ -75,7 +84,7 @@
     var ten = c.nguoi || c.ten || '';
     var av = dd('span', 'tb-av', (ten.trim().charAt(0) || '?').toUpperCase()); av.setAttribute('aria-hidden', 'true');
     var tt = dd('div', 'tb-tt'); tt.appendChild(dd('div', 'tb-tn', ten)); tt.appendChild(dd('div', 'tb-vt', c.ten || ''));
-    var ra = dd('button', 'tb-ra dang-xuat'); ra.type = 'button'; ra.title = 'Đăng xuất'; ra.setAttribute('aria-label', 'Đăng xuất'); ra.appendChild(svg('ra')); ra.onclick = raKhoi;
+    var ra = dd('button', 'tb-ra dang-xuat'); ra.type = 'button'; ra.title = 'Đăng xuất'; ra.setAttribute('aria-label', 'Đăng xuất'); ra.appendChild(svg('ra')); ra.appendChild(dd('span', 'tb-ra-ch', 'Đăng xuất')); ra.onclick = raKhoi;
     ng.appendChild(av); ng.appendChild(tt); ng.appendChild(ra); chan.appendChild(ng); nav.appendChild(chan);
     return nav;
   }

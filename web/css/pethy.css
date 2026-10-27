@@ -104,7 +104,29 @@ form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 .thanh-ben.gon .tb-tt{display:none}
 .thanh-ben.gon .tb-nguoi{flex-direction:column;gap:8px}
 .noi-dung-khu{flex:999 1 560px;min-width:0;padding:28px 36px}
-@media(max-width:760px){.thanh-ben,.thanh-ben.gon{flex:1 1 100%;width:100%;height:auto;position:static;flex-direction:row;align-items:center;padding:8px 12px;gap:8px}.tb-dau,.thanh-ben.gon .tb-dau{height:auto;margin:0;flex-direction:row}.tb-chu{height:36px}.tb-gon,.tb-nhom,.tb-vt,.tb-tt{display:none}.tb-muc,.thanh-ben.gon .tb-muc{flex-direction:row;overflow-x:auto;flex:1;gap:4px}.tb-m,.thanh-ben.gon .tb-m{padding:0 12px;justify-content:flex-start;flex:0 0 auto}.thanh-ben.gon .tb-ten{display:inline}.tb-m[aria-current=page]::before{display:none}.tb-chan{border:0;margin:0;padding:0}.noi-dung-khu{padding:20px}}
+.tb-mo,.tb-ra-ch{display:none}
+@media(max-width:760px){
+.thanh-ben,.thanh-ben.gon{flex:1 1 100%;width:100%;height:auto;max-height:100vh;max-height:100dvh;overflow-y:auto;position:sticky;top:0;z-index:30;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:8px 16px;gap:0}
+.tb-dau,.thanh-ben.gon .tb-dau{height:auto;margin:0;flex-direction:row;width:auto}
+.tb-chu,.thanh-ben.gon .tb-chu{display:block;height:36px;width:auto}.thanh-ben.gon .tb-dau-logo{display:none}
+.tb-gon,.tb-nhom,.tb-vt,.tb-tt{display:none}
+.tb-mo{display:inline-flex;align-items:center;gap:10px;min-height:48px;max-width:70%;padding:0 16px;border:2px solid currentColor;border-radius:12px;background:transparent;color:inherit;font:700 16px var(--chu);cursor:pointer}
+.tb-mo-ten{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb-mo svg{flex:0 0 22px;width:22px;height:22px}
+.tb-mo:focus-visible{outline:3px solid #FFC83D;outline-offset:2px}
+.tb-muc,.thanh-ben.gon .tb-muc,.tb-chan{display:none}
+.thanh-ben.mo-menu .tb-muc{display:flex;flex:1 1 100%;flex-direction:column;overflow:visible;gap:2px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(128,128,128,.35)}
+.thanh-ben.mo-menu .tb-nhom{display:block;margin:14px 0 4px}
+.thanh-ben.mo-menu .tb-m,.thanh-ben.mo-menu.gon .tb-m{height:52px;padding:0 14px;font-size:17px;justify-content:flex-start}
+.thanh-ben.gon .tb-ten{display:inline}
+.tb-m[aria-current=page]::before{display:none}
+.thanh-ben.mo-menu .tb-chan{display:block;flex:1 1 100%;margin:8px 0 4px;padding-top:12px;border-top:1px solid rgba(128,128,128,.35)}
+.thanh-ben.mo-menu .tb-nguoi{gap:12px;min-height:52px}
+.thanh-ben.mo-menu .tb-tt{display:block}.thanh-ben.mo-menu .tb-vt{display:block}
+.thanh-ben.mo-menu .tb-ra{flex:0 0 auto;width:auto;height:48px;padding:0 16px;gap:8px;border:2px solid currentColor;border-radius:12px;font:700 15px var(--chu)}
+.thanh-ben.mo-menu .tb-ra-ch{display:inline}
+.tb-m,.tb-ra,.tb-mo{-webkit-tap-highlight-color:transparent}
+.noi-dung-khu{padding:20px}}
 .trang-thai-tai{padding:40px 0;color:var(--xam)}
 
 /* thanh tiến trình các bước */
@@ -119,7 +141,7 @@ dialog.xac-nhan::backdrop{background:rgba(20,22,26,.5)}
 dialog.xac-nhan p{white-space:pre-line}
 .thanh-ben.gon .tb-muc{overflow:visible}
 #them-nv{margin:4px 0 16px}
-@media(max-width:760px){.tb-muc{min-width:0}.tb-nguoi{gap:0}}
+
 /* ô soạn tin nhắn: nút Gửi cao bằng ô nhập, thẳng hàng hai mép trên và dưới */
 .soan-tin{display:flex;gap:12px;align-items:stretch}
 .soan-tin textarea{display:block;margin:0;min-height:64px;resize:vertical}
