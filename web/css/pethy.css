@@ -113,7 +113,7 @@ form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 .tb-chu,.thanh-ben.gon .tb-chu{display:block;height:36px;width:auto}.thanh-ben.gon .tb-dau-logo{display:none}
 .tb-gon,.tb-nhom,.tb-vt,.tb-tt{display:none}
 .bo-khu,.khach-khu{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
-.tb-vien{position:fixed;z-index:40;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex}
+.tb-vien{position:fixed;z-index:40;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex}
 .tb-vien .tb-v[href]{display:none}   /* điện thoại chỉ giữ một nút tròn 3 gạch; các mục nằm trong bảng mở lên */
 .tb-v{position:relative;flex:0 0 56px;width:56px;height:56px;border-radius:50%;border:0;background:var(--muc,#14161A);box-shadow:0 6px 18px rgba(0,0,0,.3);color:#fff;display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent}
 .tb-v svg{width:24px;height:24px}
