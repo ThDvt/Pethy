@@ -21,6 +21,7 @@
     chan:[['circle',{cx:6,cy:11,r:1.8}],['circle',{cx:10,cy:6,r:1.8}],['circle',{cx:14,cy:6,r:1.8}],['circle',{cx:18,cy:11,r:1.8}],['path',{d:'M12 12c-3 0-5 3-5 5 0 2 2 2.5 5 2.5s5-.5 5-2.5c0-2-2-5-5-5z'}]],
     hoaDon:[['path',{d:'M6 3h12v18l-3-2-3 2-3-2-3 2V3zM9 8h6M9 12h6'}]],
     ra:[['path',{d:'M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9'}]],
+    menu:[['path',{d:'M4 7h16M4 12h16M4 17h16'}]],
     baiViet:[['path',{d:'M6 3h9l4 4v14H6V3zM14 3v5h5M9 12h7M9 16h7'}]],
     sao:[['path',{d:'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z'}]],
     trai:[['rect',{x:'3',y:'3',width:'18',height:'18',rx:'5'}],['path',{d:'M9 3v18'}]],
@@ -62,27 +63,54 @@
     gon.onclick = function(){ nav.classList.toggle('gon'); luu(nav.classList.contains('gon')); capNhat(); };
     capNhat(); dau.appendChild(gon); nav.appendChild(dau);
 
-    var hien = chuan(c.hien || location.pathname), nhomCu = null, ds = dd('div', 'tb-muc');
+
+    var hien = chuan(c.hien || location.pathname), nhomCu = null, ds = dd('div', 'tb-muc'); ds.id = 'tb-danh-sach';
     (c.muc || []).forEach(function(m){
       if (m.nhom && m.nhom !== nhomCu) { nhomCu = m.nhom; ds.appendChild(dd('div', 'tb-nhom', m.nhom)); }
       var a = dd('a', 'tb-m'); a.href = m.href; a.setAttribute('data-ten', m.ten);
       a.appendChild(svg(m.bt || chonBt(m.href))); a.appendChild(dd('span', 'tb-ten', m.ten));
-      if (chuan(m.href) === hien) a.setAttribute('aria-current', 'page');
+      if (chuan(m.href) === hien) { a.setAttribute('aria-current', 'page'); }
       ds.appendChild(a);
     });
-    nav.appendChild(ds);
+    var tam = dd('div', 'tb-tam'); tam.id = 'tb-tam'; tam.appendChild(ds);   // máy tính: không có khung riêng; điện thoại: bảng mở lên từ thanh viên thuốc
 
     var chan = dd('div', 'tb-chan'), ng = dd('div', 'tb-nguoi');
     var ten = c.nguoi || c.ten || '';
     var av = dd('span', 'tb-av', (ten.trim().charAt(0) || '?').toUpperCase()); av.setAttribute('aria-hidden', 'true');
     var tt = dd('div', 'tb-tt'); tt.appendChild(dd('div', 'tb-tn', ten)); tt.appendChild(dd('div', 'tb-vt', c.ten || ''));
-    var ra = dd('button', 'tb-ra dang-xuat'); ra.type = 'button'; ra.title = 'Đăng xuất'; ra.setAttribute('aria-label', 'Đăng xuất'); ra.appendChild(svg('ra')); ra.onclick = raKhoi;
-    ng.appendChild(av); ng.appendChild(tt); ng.appendChild(ra); chan.appendChild(ng); nav.appendChild(chan);
+    var ra = dd('button', 'tb-ra dang-xuat'); ra.type = 'button'; ra.title = 'Đăng xuất'; ra.setAttribute('aria-label', 'Đăng xuất'); ra.appendChild(svg('ra')); ra.appendChild(dd('span', 'tb-ra-ch', 'Đăng xuất')); ra.onclick = raKhoi;
+    ng.appendChild(av); ng.appendChild(tt); ng.appendChild(ra); chan.appendChild(ng); tam.appendChild(chan); nav.appendChild(tam);
+
+    // Điện thoại: thanh dạng viên thuốc nổi ở đáy màn hình, chỉ có biểu tượng (tối đa 4 mục + nút "Thêm" mở danh sách đầy đủ có chữ và Đăng xuất).
+    var muc = c.muc || [], chon = muc.slice(0, 4), iHien = -1;
+    muc.forEach(function(m, i){ if (chuan(m.href) === hien) iHien = i; });
+    if (muc.length > 4 && iHien > 3) chon[3] = muc[iHien];
+    var vien = dd('div', 'tb-vien'); vien.setAttribute('role', 'group'); vien.setAttribute('aria-label', 'Chuyển trang nhanh');
+    chon.forEach(function(m){
+      var v = dd('a', 'tb-v'); v.href = m.href; v.setAttribute('data-ten', m.ten); v.setAttribute('aria-label', m.ten); v.title = m.ten;
+      v.appendChild(svg(m.bt || chonBt(m.href)));
+      if (chuan(m.href) === hien) v.setAttribute('aria-current', 'page');
+      vien.appendChild(v);
+    });
+    var them = dd('button', 'tb-v tb-them'); them.type = 'button'; them.setAttribute('aria-label', 'Thêm mục và tài khoản'); them.title = 'Thêm';
+    them.setAttribute('aria-expanded', 'false'); them.setAttribute('aria-controls', 'tb-tam'); them.appendChild(svg('menu'));
+    var dongMo = function(){ nav.classList.remove('mo-menu'); them.setAttribute('aria-expanded', 'false'); };
+    them.onclick = function(){ var m = nav.classList.toggle('mo-menu'); them.setAttribute('aria-expanded', String(m)); };
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && nav.classList.contains('mo-menu')) { dongMo(); them.focus(); } });
+    document.addEventListener('click', function(e){ if (nav.classList.contains('mo-menu') && !nav.contains(e.target)) dongMo(); });
+    vien.appendChild(them); nav.appendChild(vien);
+    // Mục nằm trong bảng "Thêm" mà có số mới thì nút Thêm hiện chấm, để không bỏ sót.
+    nav.capNhatCham = function(){
+      var co = false, mm = tam.querySelectorAll('.tb-m');
+      for (var i = 0; i < mm.length; i++) { var h = chuan(mm[i].getAttribute('href') || ''), trongVien = chon.some(function(x){ return chuan(x.href) === h; }); if (!trongVien && mm[i].querySelector('.tb-so')) co = true; }
+      var cu = them.querySelector('.tb-cham'); if (cu) cu.remove();
+      if (co) { var d = dd('span', 'tb-cham'); d.setAttribute('aria-hidden', 'true'); them.appendChild(d); }
+    };
     return nav;
   }
   // Đặt số nhỏ (huy hiệu) ở mục thực đơn có đường dẫn href; n = 0 thì bỏ huy hiệu.
   function datSo(href, n){
-    var muc = document.querySelectorAll('.thanh-ben .tb-m');
+    var muc = document.querySelectorAll('.thanh-ben .tb-m, .thanh-ben .tb-v[href]');
     for (var i = 0; i < muc.length; i++) {
       var a = muc[i];
       if (chuan(a.getAttribute('href') || '') !== chuan(href)) continue;
@@ -91,8 +119,9 @@
       if (n > 0) {
         var s = dd('span', 'tb-so', n > 9 ? '9+' : String(n)); s.setAttribute('aria-hidden', 'true'); a.appendChild(s);
         a.setAttribute('aria-label', ten + ', ' + n + ' mục mới');
-      } else a.removeAttribute('aria-label');
+      } else if (a.classList.contains('tb-v')) a.setAttribute('aria-label', ten); else a.removeAttribute('aria-label');
     }
+    var nv = document.querySelector('.thanh-ben'); if (nv && nv.capNhatCham) nv.capNhatCham();
   }
   window.PethyThanhBen = { dung: dung, datSo: datSo };
 

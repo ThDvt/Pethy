@@ -104,7 +104,36 @@ form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 .thanh-ben.gon .tb-tt{display:none}
 .thanh-ben.gon .tb-nguoi{flex-direction:column;gap:8px}
 .noi-dung-khu{flex:999 1 560px;min-width:0;padding:28px 36px}
-@media(max-width:760px){.thanh-ben,.thanh-ben.gon{flex:1 1 100%;width:100%;height:auto;position:static;flex-direction:row;align-items:center;padding:8px 12px;gap:8px}.tb-dau,.thanh-ben.gon .tb-dau{height:auto;margin:0;flex-direction:row}.tb-chu{height:36px}.tb-gon,.tb-nhom,.tb-vt,.tb-tt{display:none}.tb-muc,.thanh-ben.gon .tb-muc{flex-direction:row;overflow-x:auto;flex:1;gap:4px}.tb-m,.thanh-ben.gon .tb-m{padding:0 12px;justify-content:flex-start;flex:0 0 auto}.thanh-ben.gon .tb-ten{display:inline}.tb-m[aria-current=page]::before{display:none}.tb-chan{border:0;margin:0;padding:0}.noi-dung-khu{padding:20px}}
+.tb-vien,.tb-ra-ch{display:none}
+.tb-tam{display:contents}
+@media(max-width:760px){
+/* thanh trên chỉ còn logo; điều hướng nằm ở thanh viên thuốc dưới đáy */
+.thanh-ben,.thanh-ben.gon{flex:1 1 100%;width:100%;height:auto;position:static;flex-direction:row;align-items:center;padding:10px 16px 0}
+.tb-dau,.thanh-ben.gon .tb-dau{height:auto;margin:0;flex-direction:row;width:auto}
+.tb-chu,.thanh-ben.gon .tb-chu{display:block;height:36px;width:auto}.thanh-ben.gon .tb-dau-logo{display:none}
+.tb-gon,.tb-nhom,.tb-vt,.tb-tt{display:none}
+.bo-khu,.khach-khu{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+.tb-vien{position:fixed;z-index:40;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;align-items:center;gap:6px;padding:6px;max-width:calc(100% - 24px);border-radius:999px;background:var(--muc,#14161A);box-shadow:0 8px 24px rgba(0,0,0,.28)}
+.tb-v{position:relative;flex:0 0 52px;width:52px;height:52px;border-radius:50%;border:0;background:transparent;color:#E7E5DF;display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.tb-v svg{width:24px;height:24px}
+.tb-v[aria-current=page],.tb-them[aria-expanded=true]{background:#FFC83D;color:var(--muc,#14161A)}
+.tb-v:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.tb-v .tb-so{position:absolute;top:2px;right:2px;min-width:18px;height:18px;padding:0 4px;margin:0;font-size:11px;line-height:18px;box-shadow:0 0 0 2px var(--muc,#14161A)}
+.tb-cham{position:absolute;top:8px;right:8px;width:10px;height:10px;border-radius:50%;background:#C2410C;box-shadow:0 0 0 2px var(--muc,#14161A)}
+/* bảng "Thêm": mở lên phía trên thanh viên thuốc, có chữ và Đăng xuất */
+.tb-tam{display:none}
+.thanh-ben.mo-menu .tb-tam{display:block;position:fixed;z-index:39;left:12px;right:12px;bottom:calc(86px + env(safe-area-inset-bottom,0px));max-height:calc(100vh - 170px);max-height:calc(100dvh - 170px);overflow-y:auto;padding:8px 12px 12px;background:var(--nen,#fff);border:2px solid var(--muc,#14161A);border-radius:24px;box-shadow:0 12px 32px rgba(0,0,0,.25)}
+.thanh-ben.mo-menu .tb-muc{display:flex;flex-direction:column;overflow:visible;gap:2px}
+.thanh-ben.mo-menu .tb-nhom{display:block;margin:12px 0 4px}
+.thanh-ben.mo-menu .tb-m,.thanh-ben.mo-menu.gon .tb-m{height:52px;padding:0 14px;font-size:17px;justify-content:flex-start}
+.thanh-ben.gon .tb-ten{display:inline}
+.tb-m[aria-current=page]::before{display:none}
+.thanh-ben.mo-menu .tb-chan{display:block;position:sticky;bottom:-12px;margin:8px -12px -12px;padding:12px 12px;background:var(--nen,#fff);border-top:1px solid rgba(128,128,128,.35)}
+.thanh-ben.mo-menu .tb-nguoi{gap:12px;min-height:52px}
+.thanh-ben.mo-menu .tb-tt,.thanh-ben.mo-menu .tb-vt{display:block}
+.thanh-ben.mo-menu .tb-ra{flex:0 0 auto;width:auto;height:48px;padding:0 16px;gap:8px;border:2px solid currentColor;border-radius:999px;font:700 15px var(--chu)}
+.thanh-ben.mo-menu .tb-ra-ch{display:inline}
+.noi-dung-khu{padding:20px}}
 .trang-thai-tai{padding:40px 0;color:var(--xam)}
 
 /* thanh tiến trình các bước */
@@ -119,7 +148,7 @@ dialog.xac-nhan::backdrop{background:rgba(20,22,26,.5)}
 dialog.xac-nhan p{white-space:pre-line}
 .thanh-ben.gon .tb-muc{overflow:visible}
 #them-nv{margin:4px 0 16px}
-@media(max-width:760px){.tb-muc{min-width:0}.tb-nguoi{gap:0}}
+
 /* ô soạn tin nhắn: nút Gửi cao bằng ô nhập, thẳng hàng hai mép trên và dưới */
 .soan-tin{display:flex;gap:12px;align-items:stretch}
 .soan-tin textarea{display:block;margin:0;min-height:64px;resize:vertical}
