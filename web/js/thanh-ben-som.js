@@ -61,36 +61,55 @@
     var capNhat = function(){ var g = nav.classList.contains('gon'); gon.setAttribute('aria-expanded', String(!g)); gon.setAttribute('aria-label', g ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên'); };
     gon.onclick = function(){ nav.classList.toggle('gon'); luu(nav.classList.contains('gon')); capNhat(); };
     capNhat(); dau.appendChild(gon); nav.appendChild(dau);
-    // Điện thoại: một nút lớn ghi tên trang đang mở, bấm để mở danh sách mục (CSS chỉ hiện nút này ở màn hình hẹp).
-    var mo = dd('button', 'tb-mo'); mo.type = 'button'; mo.setAttribute('aria-expanded', 'false'); mo.setAttribute('aria-controls', 'tb-danh-sach');
-    var tenTrang = dd('span', 'tb-mo-ten', 'Menu'); mo.appendChild(tenTrang); mo.appendChild(svg('menu'));
-    var dongMo = function(){ nav.classList.remove('mo-menu'); mo.setAttribute('aria-expanded', 'false'); };
-    mo.onclick = function(){ var m = nav.classList.toggle('mo-menu'); mo.setAttribute('aria-expanded', String(m)); };
-    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && nav.classList.contains('mo-menu')) { dongMo(); mo.focus(); } });
-    document.addEventListener('click', function(e){ if (nav.classList.contains('mo-menu') && !nav.contains(e.target)) dongMo(); });
-    nav.appendChild(mo);
+
 
     var hien = chuan(c.hien || location.pathname), nhomCu = null, ds = dd('div', 'tb-muc'); ds.id = 'tb-danh-sach';
     (c.muc || []).forEach(function(m){
       if (m.nhom && m.nhom !== nhomCu) { nhomCu = m.nhom; ds.appendChild(dd('div', 'tb-nhom', m.nhom)); }
       var a = dd('a', 'tb-m'); a.href = m.href; a.setAttribute('data-ten', m.ten);
       a.appendChild(svg(m.bt || chonBt(m.href))); a.appendChild(dd('span', 'tb-ten', m.ten));
-      if (chuan(m.href) === hien) { a.setAttribute('aria-current', 'page'); tenTrang.textContent = m.ten; }
+      if (chuan(m.href) === hien) { a.setAttribute('aria-current', 'page'); }
       ds.appendChild(a);
     });
-    nav.appendChild(ds);
+    var tam = dd('div', 'tb-tam'); tam.id = 'tb-tam'; tam.appendChild(ds);   // máy tính: không có khung riêng; điện thoại: bảng mở lên từ thanh viên thuốc
 
     var chan = dd('div', 'tb-chan'), ng = dd('div', 'tb-nguoi');
     var ten = c.nguoi || c.ten || '';
     var av = dd('span', 'tb-av', (ten.trim().charAt(0) || '?').toUpperCase()); av.setAttribute('aria-hidden', 'true');
     var tt = dd('div', 'tb-tt'); tt.appendChild(dd('div', 'tb-tn', ten)); tt.appendChild(dd('div', 'tb-vt', c.ten || ''));
     var ra = dd('button', 'tb-ra dang-xuat'); ra.type = 'button'; ra.title = 'Đăng xuất'; ra.setAttribute('aria-label', 'Đăng xuất'); ra.appendChild(svg('ra')); ra.appendChild(dd('span', 'tb-ra-ch', 'Đăng xuất')); ra.onclick = raKhoi;
-    ng.appendChild(av); ng.appendChild(tt); ng.appendChild(ra); chan.appendChild(ng); nav.appendChild(chan);
+    ng.appendChild(av); ng.appendChild(tt); ng.appendChild(ra); chan.appendChild(ng); tam.appendChild(chan); nav.appendChild(tam);
+
+    // Điện thoại: thanh dạng viên thuốc nổi ở đáy màn hình, chỉ có biểu tượng (tối đa 4 mục + nút "Thêm" mở danh sách đầy đủ có chữ và Đăng xuất).
+    var muc = c.muc || [], chon = muc.slice(0, 4), iHien = -1;
+    muc.forEach(function(m, i){ if (chuan(m.href) === hien) iHien = i; });
+    if (muc.length > 4 && iHien > 3) chon[3] = muc[iHien];
+    var vien = dd('div', 'tb-vien'); vien.setAttribute('role', 'group'); vien.setAttribute('aria-label', 'Chuyển trang nhanh');
+    chon.forEach(function(m){
+      var v = dd('a', 'tb-v'); v.href = m.href; v.setAttribute('data-ten', m.ten); v.setAttribute('aria-label', m.ten); v.title = m.ten;
+      v.appendChild(svg(m.bt || chonBt(m.href)));
+      if (chuan(m.href) === hien) v.setAttribute('aria-current', 'page');
+      vien.appendChild(v);
+    });
+    var them = dd('button', 'tb-v tb-them'); them.type = 'button'; them.setAttribute('aria-label', 'Thêm mục và tài khoản'); them.title = 'Thêm';
+    them.setAttribute('aria-expanded', 'false'); them.setAttribute('aria-controls', 'tb-tam'); them.appendChild(svg('menu'));
+    var dongMo = function(){ nav.classList.remove('mo-menu'); them.setAttribute('aria-expanded', 'false'); };
+    them.onclick = function(){ var m = nav.classList.toggle('mo-menu'); them.setAttribute('aria-expanded', String(m)); };
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && nav.classList.contains('mo-menu')) { dongMo(); them.focus(); } });
+    document.addEventListener('click', function(e){ if (nav.classList.contains('mo-menu') && !nav.contains(e.target)) dongMo(); });
+    vien.appendChild(them); nav.appendChild(vien);
+    // Mục nằm trong bảng "Thêm" mà có số mới thì nút Thêm hiện chấm, để không bỏ sót.
+    nav.capNhatCham = function(){
+      var co = false, mm = tam.querySelectorAll('.tb-m');
+      for (var i = 0; i < mm.length; i++) { var h = chuan(mm[i].getAttribute('href') || ''), trongVien = chon.some(function(x){ return chuan(x.href) === h; }); if (!trongVien && mm[i].querySelector('.tb-so')) co = true; }
+      var cu = them.querySelector('.tb-cham'); if (cu) cu.remove();
+      if (co) { var d = dd('span', 'tb-cham'); d.setAttribute('aria-hidden', 'true'); them.appendChild(d); }
+    };
     return nav;
   }
   // Đặt số nhỏ (huy hiệu) ở mục thực đơn có đường dẫn href; n = 0 thì bỏ huy hiệu.
   function datSo(href, n){
-    var muc = document.querySelectorAll('.thanh-ben .tb-m');
+    var muc = document.querySelectorAll('.thanh-ben .tb-m, .thanh-ben .tb-v[href]');
     for (var i = 0; i < muc.length; i++) {
       var a = muc[i];
       if (chuan(a.getAttribute('href') || '') !== chuan(href)) continue;
@@ -99,8 +118,9 @@
       if (n > 0) {
         var s = dd('span', 'tb-so', n > 9 ? '9+' : String(n)); s.setAttribute('aria-hidden', 'true'); a.appendChild(s);
         a.setAttribute('aria-label', ten + ', ' + n + ' mục mới');
-      } else a.removeAttribute('aria-label');
+      } else if (a.classList.contains('tb-v')) a.setAttribute('aria-label', ten); else a.removeAttribute('aria-label');
     }
+    var nv = document.querySelector('.thanh-ben'); if (nv && nv.capNhatCham) nv.capNhatCham();
   }
   window.PethyThanhBen = { dung: dung, datSo: datSo };
 
