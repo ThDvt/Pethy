@@ -31,7 +31,7 @@ Chi tiết: [`docs/thiet-ke-bao-mat.md`](docs/thiet-ke-bao-mat.md).
 
 ```
 web/     Giao diện (trang tĩnh), cấu hình công khai trong web/js/config.js
-db/      Lược đồ, nghiệp vụ, RLS, Storage và bộ kiểm thử PostgreSQL
+db/      Lược đồ, nghiệp vụ, RLS và Storage
 docs/    Thiết kế bảo mật, hướng dẫn dựng Supabase, tiến độ, nguồn vẽ sơ đồ
 tools/   Trang tự tấn công: bằng khóa anon, và bằng hai tài khoản chủ nuôi (IDOR, nâng quyền)
 ```
@@ -43,8 +43,3 @@ tools/   Trang tự tấn công: bằng khóa anon, và bằng hai tài khoản 
 3. Phát thư mục `web` bằng máy chủ tĩnh bất kỳ, ví dụ `python3 -m http.server` trong thư mục `web`.
 
 Xem giao diện không cần Supabase: mở `http://localhost:8000/?mau=1&vt=admin` (đổi `vt` thành `chu_nuoi`, `le_tan`, `bac_si`, `thu_ngan`, `kho`). Chế độ dữ liệu mẫu chỉ hoạt động trên localhost.
-
-## Kiểm thử
-
-- 288 kiểm thử hành vi và bảo mật trên PostgreSQL 16 (151 hành vi, 75 báo cáo và trao đổi, 62 bảo mật), xem [`db/README.md`](db/README.md).
-- `tools/kiem-tra-anon.html`: đóng vai kẻ lạ chỉ có URL và khóa anon, thử đọc 30 bảng và view, thử nâng quyền, thử gọi hàm nhạy cảm. Kết quả trên hệ thống thật: không mục nào bị lộ.
