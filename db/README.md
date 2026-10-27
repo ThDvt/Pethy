@@ -14,8 +14,9 @@ PostgreSQL trên Supabase. Toàn bộ nghiệp vụ và phân quyền nằm ở 
 | `06_mo_ta_dich_vu_va_lich_bac_si.sql` | Bản vá cho CSDL đã cài trước: thêm `dich_vu.mo_ta` và cột `lich_lam_viec` (công khai) trong view `bac_si_cong_khai` (bản cài mới đã có trong 01, 02, 03) |
 | `07_danh_gia.sql` | Bản vá cho CSDL đã cài trước: bảng `danh_gia`, hàm `gui_danh_gia` và `an_hien_danh_gia`, view `danh_gia_cong_khai`, điểm trung bình trong `bac_si_cong_khai` (chạy sau 06; bản cài mới đã có trong 01, 02, 03) |
 | `08_email_tai_khoan.sql` | Bản vá cho CSDL đã cài trước: hàm `danh_sach_tai_khoan()` (chỉ admin) để trang Tài khoản hiện email. |
+| `09_chung_chi_bac_si.sql` | Bản vá cho CSDL đã cài trước: thêm `trinh_do`, `kinh_nghiem_nam`, `chung_chi` vào hồ sơ bác sĩ và vào view `bac_si_cong_khai`. |
 | `10_bai_viet.sql` | Bản vá cho CSDL đã cài trước: bảng `bai_viet` (tin tức do admin viết), hàm/trigger `dat_ngay_bai_viet`, chính sách RLS (khách chỉ đọc bài đã đăng, chỉ admin ghi), nhật ký thay đổi. |
-| `test/` | Stub Supabase, `reset.sh`, `10_behavior.sql` (170 kiểm thử), `11_reports_chat.sql` (75 kiểm thử), `12_security.sql` (86 kiểm thử, gồm quét RLS và quyền) |
+| `test/` | Stub Supabase, `reset.sh`, `10_behavior.sql` (175 kiểm thử), `11_reports_chat.sql` (75 kiểm thử), `12_security.sql` (86 kiểm thử, gồm quét RLS và quyền) |
 
 ## Cài lên Supabase
 
@@ -49,7 +50,7 @@ psql -h /var/tmp/pgtest-vet -p 5544 -U postgres -d vettest -q -f test/11_reports
 psql -h /var/tmp/pgtest-vet -p 5544 -U postgres -d vettest -q -f test/12_security.sql        # chạy sau file 11
 ```
 
-Kết quả cuối cùng: 170/170, 75/75 và 86/86 (tổng 331 kiểm thử, 0 lỗi). Ba file test phải chạy theo thứ tự 10, 11, 12 trên cơ sở dữ liệu vừa `reset.sh`; chạy lại một file riêng sẽ cho kết quả sai vì dữ liệu đã thay đổi. Ngoài ra đã chạy thử 8 phiên đồng thời cùng đặt một khung giờ: đúng 1 thành công, 7 nhận `KHUNG_GIO_DA_DAT`.
+Kết quả cuối cùng: 175/175, 75/75 và 86/86 (tổng 336 kiểm thử, 0 lỗi). Ba file test phải chạy theo thứ tự 10, 11, 12 trên cơ sở dữ liệu vừa `reset.sh`; chạy lại một file riêng sẽ cho kết quả sai vì dữ liệu đã thay đổi. Ngoài ra đã chạy thử 8 phiên đồng thời cùng đặt một khung giờ: đúng 1 thành công, 7 nhận `KHUNG_GIO_DA_DAT`.
 
 Bộ kiểm thử bao gồm: quyền từng vai trò, cô lập dữ liệu giữa các chủ nuôi, đặt trùng giờ, quy tắc hủy/đổi, giới hạn lịch chờ, kho FEFO, kê đơn thiếu hàng (hoàn tác toàn bộ), kê lại đơn (hoàn kho), hóa đơn/thanh toán nhiều lần, bảng chỉ-thêm, chế độ bảo trì, khách chưa đăng nhập, trigger đăng ký không tin vai trò từ client, khóa/xóa tài khoản, nhật ký.
 
@@ -133,4 +134,5 @@ Lỗi nghiệp vụ có dạng `MA_LOI: mô tả`; mã nằm trong `error.hint` 
 - `06_mo_ta_dich_vu_va_lich_bac_si.sql`: mô tả dịch vụ và lịch làm việc công khai của bác sĩ (trang chủ).
 - `07_danh_gia.sql`: đánh giá của chủ nuôi sau lần khám (chạy sau 06).
 - `08_email_tai_khoan.sql`: cho admin xem email tài khoản (chạy sau 07).
+- `09_chung_chi_bac_si.sql`: trình độ, kinh nghiệm, chứng chỉ của bác sĩ (chạy sau 08).
 - `10_bai_viet.sql`: bài viết Góc thú y do admin quản lý (chạy sau 08).

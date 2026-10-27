@@ -1105,7 +1105,8 @@ SELECT k.id, k.ho_ten, h.chuyen_mon, h.gioi_thieu, h.anh_dai_dien,
        (SELECT round(avg(d.so_sao), 1) FROM danh_gia d JOIN lich_hen l ON l.id = d.lich_hen_id
          WHERE l.bac_si_id = k.id AND d.hien_thi) AS diem_tb,
        (SELECT count(*)::int FROM danh_gia d JOIN lich_hen l ON l.id = d.lich_hen_id
-         WHERE l.bac_si_id = k.id AND d.hien_thi) AS so_danh_gia
+         WHERE l.bac_si_id = k.id AND d.hien_thi) AS so_danh_gia,
+       h.trinh_do, h.kinh_nghiem_nam, h.chung_chi
   FROM tai_khoan k
   JOIN ho_so_bac_si h ON h.tai_khoan_id = k.id
  WHERE k.vai_tro = 'bac_si' AND k.trang_thai = 'hoat_dong';
