@@ -203,7 +203,7 @@ dialog.xac-nhan{border:2px solid var(--muc);border-radius:24px}
 .khach .dau{flex-wrap:nowrap;gap:8px;padding-top:12px;padding-bottom:12px}
 .khach .logo img{height:36px}
 .khach .menu{flex-wrap:nowrap;gap:4px;font-size:15px}
-.khach .menu a[href^="#"]{display:none}
+.khach .menu a[href^="#"],.khach .menu a[href="/"]{display:none}
 .khach .menu a{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;white-space:nowrap}
 .khach .menu a.nut{padding:0 16px}
 }
