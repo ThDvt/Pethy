@@ -99,10 +99,10 @@
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && nav.classList.contains('mo-menu')) { dongMo(); them.focus(); } });
     document.addEventListener('click', function(e){ if (nav.classList.contains('mo-menu') && !nav.contains(e.target)) dongMo(); });
     vien.appendChild(them); nav.appendChild(vien);
-    // Mục nằm trong bảng "Thêm" mà có số mới thì nút Thêm hiện chấm, để không bỏ sót.
+    // Có mục nào có số mới thì nút menu hiện chấm đỏ, để không bỏ sót.
     nav.capNhatCham = function(){
       var co = false, mm = tam.querySelectorAll('.tb-m');
-      for (var i = 0; i < mm.length; i++) { var h = chuan(mm[i].getAttribute('href') || ''), trongVien = chon.some(function(x){ return chuan(x.href) === h; }); if (!trongVien && mm[i].querySelector('.tb-so')) co = true; }
+      for (var i = 0; i < mm.length; i++) { if (mm[i].querySelector('.tb-so')) co = true; }
       var cu = them.querySelector('.tb-cham'); if (cu) cu.remove();
       if (co) { var d = dd('span', 'tb-cham'); d.setAttribute('aria-hidden', 'true'); them.appendChild(d); }
     };
