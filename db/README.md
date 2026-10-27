@@ -14,7 +14,9 @@ PostgreSQL trên Supabase. Toàn bộ nghiệp vụ và phân quyền nằm ở 
 | `06_mo_ta_dich_vu_va_lich_bac_si.sql` | Bản vá cho CSDL đã cài trước: thêm `dich_vu.mo_ta` và cột `lich_lam_viec` (công khai) trong view `bac_si_cong_khai` (bản cài mới đã có trong 01, 02, 03) |
 | `07_danh_gia.sql` | Bản vá cho CSDL đã cài trước: bảng `danh_gia`, hàm `gui_danh_gia` và `an_hien_danh_gia`, view `danh_gia_cong_khai`, điểm trung bình trong `bac_si_cong_khai` (chạy sau 06; bản cài mới đã có trong 01, 02, 03) |
 | `08_email_tai_khoan.sql` | Bản vá cho CSDL đã cài trước: hàm `danh_sach_tai_khoan()` (chỉ admin) để trang Tài khoản hiện email. |
-| `test/` | Stub Supabase, `reset.sh`, `10_behavior.sql` (155 kiểm thử), `11_reports_chat.sql` (75 kiểm thử), `12_security.sql` (86 kiểm thử, gồm quét RLS và quyền) |
+| `09_chung_chi_bac_si.sql` | Bản vá cho CSDL đã cài trước: thêm `trinh_do`, `kinh_nghiem_nam`, `chung_chi` vào hồ sơ bác sĩ và vào view `bac_si_cong_khai`. |
+| `10_bai_viet.sql` | Bản vá cho CSDL đã cài trước: bảng `bai_viet` (tin tức do admin viết), hàm/trigger `dat_ngay_bai_viet`, chính sách RLS (khách chỉ đọc bài đã đăng, chỉ admin ghi), nhật ký thay đổi. |
+| `test/` | Stub Supabase, `reset.sh`, `10_behavior.sql` (175 kiểm thử), `11_reports_chat.sql` (75 kiểm thử), `12_security.sql` (86 kiểm thử, gồm quét RLS và quyền) |
 
 ## Cài lên Supabase
 
@@ -48,7 +50,7 @@ psql -h /var/tmp/pgtest-vet -p 5544 -U postgres -d vettest -q -f test/11_reports
 psql -h /var/tmp/pgtest-vet -p 5544 -U postgres -d vettest -q -f test/12_security.sql        # chạy sau file 11
 ```
 
-Kết quả cuối cùng: 155/155, 75/75 và 86/86 (tổng 316 kiểm thử, 0 lỗi). Ba file test phải chạy theo thứ tự 10, 11, 12 trên cơ sở dữ liệu vừa `reset.sh`; chạy lại một file riêng sẽ cho kết quả sai vì dữ liệu đã thay đổi. Ngoài ra đã chạy thử 8 phiên đồng thời cùng đặt một khung giờ: đúng 1 thành công, 7 nhận `KHUNG_GIO_DA_DAT`.
+Kết quả cuối cùng: 175/175, 75/75 và 86/86 (tổng 336 kiểm thử, 0 lỗi). Ba file test phải chạy theo thứ tự 10, 11, 12 trên cơ sở dữ liệu vừa `reset.sh`; chạy lại một file riêng sẽ cho kết quả sai vì dữ liệu đã thay đổi. Ngoài ra đã chạy thử 8 phiên đồng thời cùng đặt một khung giờ: đúng 1 thành công, 7 nhận `KHUNG_GIO_DA_DAT`.
 
 Bộ kiểm thử bao gồm: quyền từng vai trò, cô lập dữ liệu giữa các chủ nuôi, đặt trùng giờ, quy tắc hủy/đổi, giới hạn lịch chờ, kho FEFO, kê đơn thiếu hàng (hoàn tác toàn bộ), kê lại đơn (hoàn kho), hóa đơn/thanh toán nhiều lần, bảng chỉ-thêm, chế độ bảo trì, khách chưa đăng nhập, trigger đăng ký không tin vai trò từ client, khóa/xóa tài khoản, nhật ký.
 
@@ -98,7 +100,7 @@ Lỗi nghiệp vụ có dạng `MA_LOI: mô tả`; mã nằm trong `error.hint` 
 
 - **Giới hạn tần suất cho chủ nuôi** (bảng `gioi_han_goi`, hàm `_gioi_han`): xem giờ trống tối đa 30 lần mỗi phút; đặt, đổi, hủy lịch tối đa 10 lần mỗi phút mỗi loại. Vượt thì nhận `QUA_NHIEU_YEU_CAU`. Nhân viên và admin không bị giới hạn. Lần gọi bị lỗi bị hoàn tác cùng dòng đếm của nó nên giới hạn tính theo lần gọi **thành công**; chặn lưu lượng lỗi là việc của Cloudflare và Supabase.
 - **Nhật ký đọc**: mở hồ sơ khám của một thú cưng qua `xem_ho_so_kham` để lại dòng `hanh_dong = 'xem'` trong `nhat_ky`.
-- **Kiểm tra tự động** (`test/12_security.sql`): mọi bảng trong `public` phải bật RLS; khách chỉ có quyền với 3 đối tượng công khai; người đăng nhập chỉ ghi trực tiếp được 8 bảng; mọi hàm `SECURITY DEFINER` phải cố định `search_path`; hàm nội bộ và hàm trigger không gọi được từ trình duyệt. Thêm bảng mới mà quên cấu hình thì các kiểm tra này báo đỏ (con số 23 bảng trong test cần cập nhật khi thêm bảng có chủ đích).
+- **Kiểm tra tự động** (`test/12_security.sql`): mọi bảng trong `public` phải bật RLS; khách chỉ có quyền với 5 đối tượng công khai (trong đó bài viết chỉ đọc được bài đã đăng); người đăng nhập chỉ ghi trực tiếp được 9 bảng; mọi hàm `SECURITY DEFINER` phải cố định `search_path`; hàm nội bộ và hàm trigger không gọi được từ trình duyệt. Thêm bảng mới mà quên cấu hình thì các kiểm tra này báo đỏ (con số 23 bảng trong test cần cập nhật khi thêm bảng có chủ đích).
 
 ## Trao đổi nội bộ (đợt 1, bản nhỏ)
 
@@ -132,3 +134,5 @@ Lỗi nghiệp vụ có dạng `MA_LOI: mô tả`; mã nằm trong `error.hint` 
 - `06_mo_ta_dich_vu_va_lich_bac_si.sql`: mô tả dịch vụ và lịch làm việc công khai của bác sĩ (trang chủ).
 - `07_danh_gia.sql`: đánh giá của chủ nuôi sau lần khám (chạy sau 06).
 - `08_email_tai_khoan.sql`: cho admin xem email tài khoản (chạy sau 07).
+- `09_chung_chi_bac_si.sql`: trình độ, kinh nghiệm, chứng chỉ của bác sĩ (chạy sau 08).
+- `10_bai_viet.sql`: bài viết Góc thú y do admin quản lý (chạy sau 08).

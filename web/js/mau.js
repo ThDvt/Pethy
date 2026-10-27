@@ -4,6 +4,7 @@
   const VT = (location.search.match(/[?&]vt=([a-z_]+)/)||[])[1] || 'chu_nuoi';
   const sau = h => new Date(Date.now() + h * 3600e3).toISOString();
   const BANG = {
+    bai_viet:[{id:'bv1',nhom:'tiem_phong',tieu_de:'Lịch tiêm phòng cơ bản cho chó con',tom_tat:'Mũi nào tiêm lúc mấy tuần tuổi.',tac_gia:null,trang_thai:'da_dang',ngay_dang:sau(-72),created_at:sau(-80),noi_dung:'Chó con thường bắt đầu tiêm từ 6 đến 8 tuần tuổi.\n\n## Trước ngày tiêm\n- Bé ăn uống bình thường'},{id:'bv5',nhom:'cham_soc',tieu_de:'Chăm sóc mèo vào mùa lạnh (bản nháp)',tom_tat:null,tac_gia:null,trang_thai:'nhap',ngay_dang:null,created_at:sau(-5),noi_dung:'Đang viết…'}],
     thu_cung:[{id:'p1',ten:'Mít',loai:'Chó',ngay_sinh:'2021-03-02'},{id:'p2',ten:'Kem',loai:'Mèo',ngay_sinh:null}],
     dich_vu:[{id:'d1',ten:'Khám tổng quát',loai:'kham',gia:150000},{id:'d2',ten:'Tiêm phòng',loai:'tiem',gia:50000},{id:'d3',ten:'Tái khám',loai:'kham',gia:80000}],
     thuoc:[{id:'v1',ten:'Dại',loai:'vaccine',don_vi:'liều',gia_ban:180000}],

@@ -21,7 +21,7 @@
 
   // Hồ sơ công khai của bác sĩ (hiện ở trang chủ): ảnh, chuyên môn và giới thiệu.
   async function hoSoBs(tk, lamMoi){
-    const r = await db.from('ho_so_bac_si').select('chuyen_mon,gioi_thieu,anh_dai_dien').eq('tai_khoan_id', tk.id).maybeSingle();
+    const r = await db.from('ho_so_bac_si').select('chuyen_mon,gioi_thieu,anh_dai_dien,trinh_do,kinh_nghiem_nam,chung_chi').eq('tai_khoan_id', tk.id).maybeSingle();
     if (r.error) return A.baoLoi('Không đọc được hồ sơ bác sĩ.');
     const cu = (r.data && r.data.anh_dai_dien) || null;
     let anhMoi = null, xoaAnh = false;
@@ -41,10 +41,18 @@
       el('div',{style:'display:flex;flex-direction:column;gap:6px;align-items:flex-start'},
         el('button',{class:'nut',type:'button',onclick:() => tep.click()}, 'Chọn ảnh'), nutXoa, goiY));
     const cm = el('input',{id:'bs-cm',type:'text',maxlength:'120',placeholder:'Ví dụ: Nội khoa chó mèo'}); cm.value = (r.data && r.data.chuyen_mon) || '';
-    const gt = el('textarea',{id:'bs-gt',rows:'5',maxlength:'600',placeholder:'Ví dụ: Hơn 8 năm khám và điều trị nội khoa cho chó mèo.'}); gt.value = (r.data && r.data.gioi_thieu) || '';
+    const gt = el('textarea',{id:'bs-gt',rows:'4',maxlength:'600',placeholder:'Ví dụ: Hơn 8 năm khám và điều trị nội khoa cho chó mèo.'}); gt.value = (r.data && r.data.gioi_thieu) || '';
+    const rong = e => { e.style.flex = '1 1 100%'; return e; };
+    const td = el('input',{id:'bs-td',type:'text',maxlength:'200',placeholder:'Ví dụ: Bác sĩ thú y, Học viện Nông nghiệp Việt Nam (2016)'}); td.value = (r.data && r.data.trinh_do) || '';
+    const kn = el('input',{id:'bs-kn',type:'number',min:'0',max:'60',step:'1',inputmode:'numeric',placeholder:'Ví dụ: 8'}); kn.value = (r.data && r.data.kinh_nghiem_nam != null) ? r.data.kinh_nghiem_nam : '';
+    const cc = el('textarea',{id:'bs-cc',rows:'4',style:'min-height:96px',maxlength:'600',placeholder:'Mỗi dòng một mục. Ví dụ:\nChứng chỉ hành nghề thú y số …\nChứng nhận tiêm phòng và chẩn đoán hình ảnh'}); cc.value = (r.data && r.data.chung_chi) || '';
     A.hop('Hồ sơ Bs. ' + tk.ho_ten, 'Khách xem thông tin này khi bấm "Xem thông tin" ở trang chủ.',
-      [el('div',{class:'truong'}, el('div',{class:'nho',style:'margin-bottom:6px'}, 'Ảnh đại diện'), dongAnh, tep, loiAnh), A.o('bs-cm','Chuyên môn',cm), A.o('bs-gt','Giới thiệu (tối đa 600 ký tự)',gt)], 'Lưu hồ sơ', async () => {
-      const cot = { chuyen_mon: cm.value.trim() || null, gioi_thieu: gt.value.trim() || null };
+      [rong(el('div',{class:'truong'}, el('div',{class:'nho',style:'margin-bottom:6px'}, 'Ảnh đại diện'), dongAnh, tep, loiAnh)), A.o('bs-cm','Chuyên môn',cm), A.o('bs-kn','Số năm kinh nghiệm',kn), rong(A.o('bs-td','Trình độ, nơi đào tạo',td)), rong(A.o('bs-cc','Chứng chỉ và chứng nhận (mỗi dòng một mục, chỉ ghi thông tin thật)',cc)), rong(A.o('bs-gt','Giới thiệu (tối đa 600 ký tự)',gt))], 'Lưu hồ sơ', async () => {
+      const nam = kn.value.trim();
+      if (nam !== '' && !(/^\d+$/.test(nam) && Number(nam) <= 60)) return 'Số năm kinh nghiệm là số nguyên từ 0 đến 60.';
+      const dongCC = cc.value.split('\n').map(x => x.trim()).filter(Boolean);
+      const cot = { chuyen_mon: cm.value.trim() || null, gioi_thieu: gt.value.trim() || null, trinh_do: td.value.trim() || null,
+        kinh_nghiem_nam: nam === '' ? null : Number(nam), chung_chi: dongCC.length ? dongCC.join('\n') : null };
       let duongMoi = null;
       if (anhMoi) {
         duongMoi = tk.id + '/avatar-' + Date.now() + '.' + anhMoi.duoi;

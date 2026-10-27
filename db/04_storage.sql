@@ -46,3 +46,22 @@ CREATE POLICY avatar_bac_si_xoa ON storage.objects FOR DELETE TO authenticated
          AND (public.vai_tro_hieu_luc() = 'admin'
               OR (public.vai_tro_hieu_luc() = 'bac_si'
                   AND (storage.foldername(name))[1] = auth.uid()::text)));
+
+-- Ảnh bìa bài viết: kho ảnh công khai (ảnh hiện cho cả khách), chỉ admin tải lên, thay, xóa. Tối đa 3 MB, JPEG/PNG/WebP.
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES ('anh-bai-viet', 'anh-bai-viet', true, 3145728, ARRAY['image/jpeg', 'image/png', 'image/webp'])
+ON CONFLICT (id) DO UPDATE
+   SET public = EXCLUDED.public, file_size_limit = EXCLUDED.file_size_limit, allowed_mime_types = EXCLUDED.allowed_mime_types;
+
+DROP POLICY IF EXISTS anh_bai_viet_doc  ON storage.objects;
+DROP POLICY IF EXISTS anh_bai_viet_them ON storage.objects;
+DROP POLICY IF EXISTS anh_bai_viet_sua  ON storage.objects;
+DROP POLICY IF EXISTS anh_bai_viet_xoa  ON storage.objects;
+CREATE POLICY anh_bai_viet_doc ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'anh-bai-viet');
+CREATE POLICY anh_bai_viet_them ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'anh-bai-viet' AND public.vai_tro_hieu_luc() = 'admin');
+CREATE POLICY anh_bai_viet_sua ON storage.objects FOR UPDATE TO authenticated
+  USING (bucket_id = 'anh-bai-viet' AND public.vai_tro_hieu_luc() = 'admin')
+  WITH CHECK (bucket_id = 'anh-bai-viet' AND public.vai_tro_hieu_luc() = 'admin');
+CREATE POLICY anh_bai_viet_xoa ON storage.objects FOR DELETE TO authenticated
+  USING (bucket_id = 'anh-bai-viet' AND public.vai_tro_hieu_luc() = 'admin');

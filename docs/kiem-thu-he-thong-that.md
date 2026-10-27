@@ -9,7 +9,7 @@ Thời gian dự kiến: khoảng 60 đến 90 phút. Nên dùng hai trình duy�
 | Bước | Việc cần làm | Kết quả đúng |
 |---|---|---|
 | 0.1 | Merge các pull request đang chờ trên GitHub, đợi Cloudflare deploy xong | Trang chủ mở được, không báo lỗi |
-| 0.2 | Chạy `db/06_...sql` rồi `db/07_danh_gia.sql` và `db/08_email_tai_khoan.sql` trong Supabase SQL Editor (nếu chưa chạy) | Mỗi file báo Success |
+| 0.2 | Chạy `db/06_...sql` rồi `db/07_danh_gia.sql` `db/08_email_tai_khoan.sql` và `db/09_chung_chi_bac_si.sql` trong Supabase SQL Editor (nếu chưa chạy) | Mỗi file báo Success |
 | 0.3 | Mở `https://<project>.supabase.co/auth/v1/settings?apikey=<anon key>` | `email` là true, `mailer_autoconfirm` là false |
 | 0.4 | Authentication, URL Configuration: Site URL là địa chỉ web thật (`pethy.bo3tuoi1999.workers.dev`) | Link trong email xác nhận mở đúng web thật, không về localhost |
 | 0.5 | Đăng nhập admin, vào trang Bảo mật, bấm kiểm tra cấu hình Supabase | Mọi dòng đều đạt |
@@ -71,6 +71,21 @@ Thời gian dự kiến: khoảng 60 đến 90 phút. Nên dùng hai trình duy�
 | 5.2 | Mở trang chủ khi chưa đăng nhập | Thấy điểm trung bình và nhận xét (tên rút gọn, không lộ họ tên đầy đủ) |
 | 5.3 | Admin ẩn đánh giá đó | Trang chủ không còn hiện; điểm trung bình tính lại |
 
+## 5b. Bài viết (Góc thú y)
+
+Cần chạy `db/10_bai_viet.sql` trong Supabase trước.
+
+| Bước | Việc cần làm | Kết quả đúng |
+|---|---|---|
+| 5b.1 | Admin vào mục Bài viết, viết bài mới, để trạng thái Nháp | Bài có trong danh sách; trang chủ và trang Tin tức (khi chưa đăng nhập) không thấy bài |
+| 5b.2 | Mở thẳng liên kết bài nháp khi chưa đăng nhập | Báo "Không tìm thấy bài viết" |
+| 5b.3 | Admin bấm Đăng | Trang chủ hiện mục Góc thú y với bài này; trang Tin tức có bài; ngày đăng là hôm nay |
+| 5b.4 | Viết thử nội dung có `## Tiêu đề`, `- mục` và chữ như `<b>x</b>` | Hiện tiêu đề nhỏ, danh sách; `<b>x</b>` hiện nguyên chữ, không in đậm |
+| 5b.5 | Admin bấm Gỡ xuống rồi Đăng lại | Bài biến mất rồi hiện lại; ngày đăng giữ nguyên |
+| 5b.6 | Đăng nhập tài khoản không phải admin, thử mở `/admin/bai-viet.html` | Không vào được trang quản lý |
+| 5b.7 | Sửa một bài đã đăng, chọn ảnh bìa (ảnh ngang bất kỳ), Lưu; sau đó thử Gỡ ảnh và thay ảnh khác | Ảnh hiện ở thẻ trang chủ, trang Tin tức và đầu bài; gỡ hoặc thay thì ảnh cũ không còn |
+| 5b.8 | Gỡ hết bài | Mục Góc thú y trên trang chủ tự ẩn |
+
 ## 6. Quản trị viên: dashboard
 
 | Bước | Việc cần làm | Kết quả đúng |
@@ -105,6 +120,7 @@ Thời gian dự kiến: khoảng 60 đến 90 phút. Nên dùng hai trình duy�
 | 8.6 | Admin gửi một tin cho bác sĩ. Đăng nhập bác sĩ ở cửa sổ khác | Mục Tin nhắn của bác sĩ hiện số 1 (tối đa 1 phút); mở Tin nhắn thì số biến mất |
 | 8.7 | Lễ tân: có lịch chờ xác nhận. Thu ngân và chủ nuôi: có hóa đơn còn nợ. Thủ kho: có thuốc sắp hết | Mục tương ứng ở thanh bên hiện đúng số; xử lý xong thì số giảm |
 | 8.8 | Thủ kho/bác sĩ: đăng nhập bác sĩ, mở Hồ sơ của tôi, chọn ảnh, nhập chuyên môn, giới thiệu, Lưu hồ sơ | Ảnh hiện tròn đều; trang chủ (chưa đăng nhập) hiện đúng ảnh ở thẻ bác sĩ. Báo "Chưa có kho ảnh" nghĩa là chưa chạy `db/04_storage.sql` |
+| 8.9 | Bác sĩ: Hồ sơ của tôi, nhập trình độ, số năm kinh nghiệm, chứng chỉ (mỗi dòng một mục), Lưu. Nhập số năm 61 hoặc -1 | Lưu được; số năm sai bị chặn với thông báo rõ. Trang chủ (ẩn danh), thẻ bác sĩ, Xem thông tin: hiện đủ trình độ, kinh nghiệm, danh sách chứng chỉ |
 
 ## Khi gặp lỗi
 

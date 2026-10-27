@@ -84,16 +84,16 @@ UPDATE cau_hinh SET gia_tri='false' WHERE khoa='che_do_bao_tri';
 SELECT t.bang('moi bang public deu bat RLS (liet ke bang thieu)',
   $$SELECT coalesce(string_agg(c.relname, ',' ORDER BY c.relname),'') FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p') AND NOT c.relrowsecurity$$,'');
 SELECT t.bang('so bang public (dem de phat hien bang moi)',
-  $$SELECT count(*)::text FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p')$$,'24');
-SELECT t.bang('khach (anon) chi co quyen voi 4 doi tuong cong khai',
+  $$SELECT count(*)::text FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p')$$,'25');
+SELECT t.bang('khach (anon) chi co quyen voi 5 doi tuong cong khai',
   $$SELECT coalesce(string_agg(c.relname, ',' ORDER BY c.relname),'') FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p','v','m') AND (has_any_column_privilege('anon', c.oid, 'SELECT,INSERT,UPDATE,REFERENCES') OR has_table_privilege('anon', c.oid, 'DELETE,TRUNCATE,TRIGGER'))$$,
-  'bac_si_cong_khai,cau_hinh,danh_gia_cong_khai,dich_vu');
-SELECT t.bang('nguoi dang nhap chi ghi truc tiep duoc 8 bang danh muc/ho so',
+  'bac_si_cong_khai,bai_viet,cau_hinh,danh_gia_cong_khai,dich_vu');
+SELECT t.bang('nguoi dang nhap chi ghi truc tiep duoc 9 bang danh muc/ho so',
   $$SELECT coalesce(string_agg(c.relname, ',' ORDER BY c.relname),'') FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p','v','m') AND (has_any_column_privilege('authenticated', c.oid, 'INSERT,UPDATE') OR has_table_privilege('authenticated', c.oid, 'DELETE,TRUNCATE,TRIGGER'))$$,
-  'cau_hinh,chu_nuoi,dich_vu,ho_so_bac_si,lich_lam_viec,tai_khoan,thu_cung,thuoc');
+  'bai_viet,cau_hinh,chu_nuoi,dich_vu,ho_so_bac_si,lich_lam_viec,tai_khoan,thu_cung,thuoc');
 SELECT t.bang('chi lich_lam_viec cho xoa truc tiep',
   $$SELECT coalesce(string_agg(c.relname, ',' ORDER BY c.relname),'') FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p','v','m') AND has_table_privilege('authenticated', c.oid, 'DELETE,TRUNCATE')$$,
-  'lich_lam_viec');
+  'bai_viet,lich_lam_viec');
 SELECT t.bang('moi ham SECURITY DEFINER deu co search_path co dinh (liet ke ham thieu)',
   $$SELECT coalesce(string_agg(p.proname, ',' ORDER BY p.proname),'') FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.prosecdef AND NOT EXISTS (SELECT 1 FROM unnest(coalesce(p.proconfig,'{}')) cfg WHERE cfg LIKE 'search_path=%')$$,'');
 SELECT t.bang('khach chi goi duoc 3 ham ho tro',

@@ -334,7 +334,38 @@ SELECT t.loi('tai khoan khoa khong goi duoc rpc', format('SELECT dat_lich(%L,%L,
 SELECT t.bang('tai khoan khoa khong doc duoc thu cung', 'SELECT count(*)::text FROM thu_cung','0');
 RESET ROLE;
 SELECT t.bang('f4 co ho_so_bac_si', $$SELECT count(*)::text FROM ho_so_bac_si WHERE tai_khoan_id='00000000-0000-0000-0000-0000000000f4'$$,'1');
+-- bài viết tin tức: admin quản lý, khách chỉ thấy bài đã đăng
+SET ROLE authenticated; SELECT t.as_('00000000-0000-0000-0000-0000000000a1');
+SELECT t.ok('admin viet bai nhap', $$INSERT INTO bai_viet (tieu_de, nhom, noi_dung) VALUES ('Bài nháp', 'cham_soc', 'Nội dung nháp.')$$);
+SELECT t.ok('admin viet bai va dang ngay', $$INSERT INTO bai_viet (tieu_de, nhom, tom_tat, noi_dung, tac_gia, trang_thai) VALUES ('Tiêm phòng cho mèo con', 'tiem_phong', 'Lịch tiêm cơ bản.', E'## Mũi đầu\nTừ 8 tuần tuổi.', 'Bs. Lan', 'da_dang')$$);
+SELECT t.bang('bai nhap chua co ngay dang', $$SELECT (ngay_dang IS NULL)::text FROM bai_viet WHERE tieu_de='Bài nháp'$$,'true');
+SELECT t.bang('bai dang tu co ngay dang', $$SELECT (ngay_dang IS NOT NULL)::text FROM bai_viet WHERE tieu_de='Tiêm phòng cho mèo con'$$,'true');
+SELECT t.loi('nhom bai viet khong hop le', $$INSERT INTO bai_viet (tieu_de, nhom, noi_dung) VALUES ('X','abc','Y')$$,'23514');
+SELECT t.loi('client khong tu dat ngay dang', $$UPDATE bai_viet SET ngay_dang = now() - interval '5 years'$$,'42501');
+SELECT t.ok('admin go bai ve nhap', $$UPDATE bai_viet SET trang_thai='nhap' WHERE tieu_de='Tiêm phòng cho mèo con'$$);
+SELECT t.bang('go bai van giu ngay dang cu', $$SELECT (ngay_dang IS NOT NULL)::text FROM bai_viet WHERE tieu_de='Tiêm phòng cho mèo con'$$,'true');
+SELECT t.ok('admin dang lai', $$UPDATE bai_viet SET trang_thai='da_dang' WHERE tieu_de='Tiêm phòng cho mèo con'$$);
+SELECT t.as_(:cn1);
+SELECT t.bang('chu nuoi chi thay bai da dang', 'SELECT count(*)::text FROM bai_viet','1');
+SELECT t.loi('chu nuoi khong viet bai', $$INSERT INTO bai_viet (tieu_de, noi_dung) VALUES ('Spam','Spam')$$,'42501');
+SELECT t.ok('chu nuoi xoa bai: khong loi nhung khong xoa', 'DELETE FROM bai_viet');
+RESET ROLE;
+SET ROLE anon; SELECT t.as_('');
+SELECT t.bang('khach chi thay bai da dang', 'SELECT count(*)::text FROM bai_viet','1');
+SELECT t.loi('khach khong viet bai', $$INSERT INTO bai_viet (tieu_de, noi_dung) VALUES ('Spam','Spam')$$,'42501');
+RESET ROLE;
+SELECT t.bang('bai viet con du sau khi chu nuoi thu xoa', 'SELECT count(*)::text FROM bai_viet','2');
 SELECT t.loi('ho_so_bac_si chi cho bac si', $$INSERT INTO ho_so_bac_si (tai_khoan_id) VALUES ('00000000-0000-0000-0000-0000000000f1')$$,'KHONG_PHAI_BAC_SI');
+-- Hồ sơ công khai: trình độ, kinh nghiệm, chứng chỉ
+SET ROLE authenticated; SELECT t.as_(:bs1);
+SELECT t.ok('bac si cap nhat trinh do, kinh nghiem, chung chi cua minh', format($q$UPDATE ho_so_bac_si SET trinh_do='Bác sĩ thú y, Học viện Nông nghiệp', kinh_nghiem_nam=8, chung_chi=E'Chứng chỉ hành nghề thú y\nTiêm phòng nâng cao' WHERE tai_khoan_id=%L$q$,:bs1));
+SELECT t.loi('kinh nghiem am bi tu choi', format($q$UPDATE ho_so_bac_si SET kinh_nghiem_nam=-1 WHERE tai_khoan_id=%L$q$,:bs1),'23514');
+SELECT t.loi('kinh nghiem qua 60 nam bi tu choi', format($q$UPDATE ho_so_bac_si SET kinh_nghiem_nam=61 WHERE tai_khoan_id=%L$q$,:bs1),'23514');
+SELECT t.loi('chung chi qua dai bi tu choi', format($q$UPDATE ho_so_bac_si SET chung_chi=repeat('x',601) WHERE tai_khoan_id=%L$q$,:bs1),'23514');
+RESET ROLE;
+SET ROLE anon;
+SELECT t.bang('khach thay trinh do cua bac si tren trang cong khai', format($q$SELECT kinh_nghiem_nam::text FROM bac_si_cong_khai WHERE id=%L$q$,:bs1),'8');
+RESET ROLE;
 SELECT t.bang('nhat ky ghi nhan thao tac', $$SELECT (count(*)>10)::text FROM nhat_ky$$,'true');
 SELECT t.bang('nhat ky co gia tri cu/moi khi sua', $$SELECT (count(*)>0)::text FROM nhat_ky WHERE hanh_dong='sua' AND gia_tri_cu IS NOT NULL AND gia_tri_moi IS NOT NULL$$,'true');
 

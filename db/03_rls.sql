@@ -37,6 +37,7 @@ ALTER TABLE thanh_toan     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE nhat_ky        ENABLE ROW LEVEL SECURITY;
 ALTER TABLE nhac_lich      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE danh_gia       ENABLE ROW LEVEL SECURITY;
+ALTER TABLE bai_viet       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tin_nhan       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE doc_tin_nhan   ENABLE ROW LEVEL SECURITY;
 ALTER TABLE gioi_han_goi   ENABLE ROW LEVEL SECURITY;   -- không có chính sách nào: trình duyệt không chạm tới
@@ -49,6 +50,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authen
 
 -- Khách chưa đăng nhập: chỉ đọc cấu hình công khai, dịch vụ và danh sách bác sĩ.
 GRANT SELECT ON cau_hinh, dich_vu, bac_si_cong_khai, danh_gia_cong_khai TO anon;
+GRANT SELECT ON bai_viet TO anon;
 
 -- Người đã đăng nhập: được đọc (RLS quyết định hàng nào thấy được).
 GRANT SELECT ON
@@ -67,8 +69,8 @@ GRANT INSERT (ho_ten, so_dien_thoai, dia_chi), UPDATE (ho_ten, so_dien_thoai, di
   ON chu_nuoi TO authenticated;    -- tai_khoan_id không ghi được trực tiếp
 GRANT INSERT (chu_nuoi_id, ten, loai, ngay_sinh), UPDATE (ten, loai, ngay_sinh)
   ON thu_cung TO authenticated;
-GRANT INSERT (tai_khoan_id, chuyen_mon, gioi_thieu, anh_dai_dien),
-      UPDATE (chuyen_mon, gioi_thieu, anh_dai_dien)
+GRANT INSERT (tai_khoan_id, chuyen_mon, gioi_thieu, anh_dai_dien, trinh_do, kinh_nghiem_nam, chung_chi),
+      UPDATE (chuyen_mon, gioi_thieu, anh_dai_dien, trinh_do, kinh_nghiem_nam, chung_chi)
   ON ho_so_bac_si TO authenticated;
 GRANT INSERT, UPDATE, DELETE ON lich_lam_viec TO authenticated;
 GRANT INSERT (khoa, gia_tri, mo_ta, cong_khai), UPDATE (gia_tri, mo_ta, cong_khai)
@@ -78,6 +80,10 @@ GRANT INSERT (ten, loai, gia, mo_ta, dang_ap_dung), UPDATE (ten, gia, mo_ta, dan
 GRANT INSERT (ten, loai, don_vi, gia_ban, nguong_canh_bao, dang_ap_dung),
       UPDATE (ten, don_vi, gia_ban, nguong_canh_bao, dang_ap_dung)
   ON thuoc TO authenticated;
+GRANT SELECT, DELETE ON bai_viet TO authenticated;
+GRANT INSERT (tieu_de, nhom, tom_tat, noi_dung, tac_gia, anh_bia, trang_thai),
+      UPDATE (tieu_de, nhom, tom_tat, noi_dung, tac_gia, anh_bia, trang_thai)
+  ON bai_viet TO authenticated;
 
 -- ---------------------------------------------------------------------
 -- 3. CHÍNH SÁCH THEO BẢNG
@@ -221,6 +227,15 @@ CREATE POLICY tin_nhan_doc ON tin_nhan FOR SELECT TO authenticated
 -- doc_tin_nhan: mỗi người chỉ đọc mốc đã đọc của chính mình. Ghi qua danh_dau_da_doc.
 CREATE POLICY doc_tin_nhan_doc ON doc_tin_nhan FOR SELECT TO authenticated
   USING (tai_khoan_id = auth.uid() AND vai_tro_hieu_luc() IS NOT NULL);
+
+-- bai_viet: khách và người dùng thường chỉ thấy bài đã đăng; admin thấy và quản lý tất cả.
+CREATE POLICY bai_viet_khach ON bai_viet FOR SELECT TO anon USING (trang_thai = 'da_dang');
+CREATE POLICY bai_viet_doc ON bai_viet FOR SELECT TO authenticated
+  USING (trang_thai = 'da_dang' OR vai_tro_hieu_luc() = 'admin');
+CREATE POLICY bai_viet_them ON bai_viet FOR INSERT TO authenticated WITH CHECK (vai_tro_hieu_luc() = 'admin');
+CREATE POLICY bai_viet_sua ON bai_viet FOR UPDATE TO authenticated
+  USING (vai_tro_hieu_luc() = 'admin') WITH CHECK (vai_tro_hieu_luc() = 'admin');
+CREATE POLICY bai_viet_xoa ON bai_viet FOR DELETE TO authenticated USING (vai_tro_hieu_luc() = 'admin');
 
 -- danh_gia: chủ nuôi xem đánh giá của chính mình, admin xem tất cả. Ghi chỉ qua gui_danh_gia / an_hien_danh_gia.
 CREATE POLICY danh_gia_doc ON danh_gia FOR SELECT TO authenticated

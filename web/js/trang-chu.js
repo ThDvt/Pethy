@@ -6,7 +6,7 @@
     if (!thuc) return { dich_vu: MAU.dich_vu, bac_si: MAU.bac_si, cau_hinh: MAU.cau_hinh, danh_gia: MAU.danh_gia, mau: true };
     const [a, b, c, e] = await Promise.all([
       db.from('dich_vu').select('id,ten,loai,gia,mo_ta').eq('dang_ap_dung', true).order('loai').order('ten'),
-      db.from('bac_si_cong_khai').select('id,ho_ten,chuyen_mon,gioi_thieu,anh_dai_dien,lich_lam_viec,diem_tb,so_danh_gia').order('ho_ten'),
+      db.from('bac_si_cong_khai').select('id,ho_ten,chuyen_mon,gioi_thieu,anh_dai_dien,lich_lam_viec,diem_tb,so_danh_gia,trinh_do,kinh_nghiem_nam,chung_chi').order('ho_ten'),
       db.from('cau_hinh').select('khoa,gia_tri').eq('cong_khai', true),
       db.from('danh_gia_cong_khai').select('id,so_sao,nhan_xet,ten_hien_thi,ngay,tong,diem_tb').not('nhan_xet','is',null).order('ngay',{ascending:false}).limit(6)
     ]);
@@ -25,8 +25,13 @@
                    tiem:'Tiêm vaccine phòng bệnh đúng lịch. Mũi tiêm được ghi vào sổ tiêm điện tử và web nhắc bạn mũi tiếp theo.' };
     const THU = ['', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ nhật'];
     const lichTheoThu = l => { const m = new Map(); (l || []).forEach(c => { if (!m.has(c.thu)) m.set(c.thu, []); m.get(c.thu).push(c.tu + ' đến ' + c.den); }); return [...m].sort((a, b) => a[0] - b[0]); };
-    const chiTiet = x => { const l = lichTheoThu(x.lich_lam_viec);
-      return el('div',{class:'bs-ct'}, el('h3',{}, 'Lịch làm việc'),
+    const dongChungChi = x => String(x.chung_chi || '').split('\n').map(s => s.trim()).filter(Boolean);
+    const chiTiet = x => { const l = lichTheoThu(x.lich_lam_viec), cc = dongChungChi(x);
+      return el('div',{class:'bs-ct'},
+        x.trinh_do ? el('div',{class:'bs-muc'}, el('h3',{}, 'Trình độ'), el('p',{}, x.trinh_do)) : null,
+        x.kinh_nghiem_nam != null ? el('div',{class:'bs-muc'}, el('h3',{}, 'Kinh nghiệm'), el('p',{}, x.kinh_nghiem_nam + ' năm')) : null,
+        cc.length ? el('div',{class:'bs-muc'}, el('h3',{}, 'Chứng chỉ và chứng nhận'), el('ul',{class:'bs-cc'}, cc.map(t => el('li',{}, t)))) : null,
+        el('h3',{}, 'Lịch làm việc'),
         l.length ? el('ul',{class:'bs-lich'}, l.map(([t, g]) => el('li',{}, el('b',{}, THU[t]), g.join(', '))))
                  : el('p',{class:'cm'}, 'Chưa có lịch cố định. Giờ trống hiện ở bước chọn giờ khi đặt lịch.')); };
     // Khung trượt ngang: cuộn mượt bằng CSS scroll-snap, mũi tên cuộn đúng một thẻ, chuột kéo được, màn hình cảm ứng vuốt tự nhiên.
@@ -73,7 +78,7 @@
           : el('div',{class:'ava','aria-hidden':'true',style:'background:'+MAUNEN[i%3]}, x.ho_ten.trim().split(/\s+/).pop().charAt(0).toUpperCase()),
         el('div',{class:'ten'}, 'Bs. ' + x.ho_ten),
         x.so_danh_gia ? el('div',{class:'diem-bs'}, Pethy.sao(x.diem_tb), el('span',{}, Number(x.diem_tb).toFixed(1) + ' (' + x.so_danh_gia + ' đánh giá)')) : null,
-        x.chuyen_mon ? el('div',{class:'cm'}, x.chuyen_mon) : null,
+        (x.chuyen_mon || x.kinh_nghiem_nam != null) ? el('div',{class:'cm'}, [x.chuyen_mon, x.kinh_nghiem_nam != null ? x.kinh_nghiem_nam + ' năm kinh nghiệm' : null].filter(Boolean).join(' · ')) : null,
         el('div',{class:'cm gt-ngan',id:'gt-' + i}, x.gioi_thieu || 'Bác sĩ chưa cập nhật phần giới thiệu.'),
         chiTiet(x),
         el('div',{class:'nut-bs'},
@@ -84,6 +89,12 @@
               const mo = c.classList.toggle('mo'); if (dai) dai.classList.toggle('co-mo', !!dai.querySelector('.the-bs.mo')); b.setAttribute('aria-expanded', String(mo)); b.textContent = mo ? 'Thu gọn' : 'Xem thông tin'; });
             return b; })(),
           el('a',{class:'nut trang',href:'/dang-nhap.html?dang-ky=1',onclick:nho({ bs:x.id }),'aria-label':'Đặt lịch với bác sĩ ' + x.ho_ten}, 'Đặt lịch ', el('span',{'aria-hidden':'true'}, '→')))) : x), 'bác sĩ', '.the-bs'));
+    // Góc thú y: tối đa 3 bài mới nhất; lỗi hoặc chưa có bài thì ẩn cả mục, không ảnh hưởng phần còn lại của trang chủ.
+    try {
+      const bv = !thuc ? (MAU.bai_viet || []).slice(0, 3)
+        : (await db.from('bai_viet').select('id,tieu_de,nhom,tom_tat,noi_dung,anh_bia,ngay_dang').eq('trang_thai','da_dang').order('ngay_dang',{ascending:false}).limit(3)).data || [];
+      if (bv.length) { document.getElementById('ds-bai-viet').replaceChildren(khungTruot(bv.map(Pethy.baiVietThe), 'bài viết', '.the-bv')); document.getElementById('goc-thu-y').hidden = false; }
+    } catch (_) {}
     if (d.danh_gia && d.danh_gia.length) {
       const g = d.danh_gia[0];
       document.getElementById('dg-tong').replaceChildren(Pethy.sao(g.diem_tb), ' ' + Number(g.diem_tb).toFixed(1) + ' trên 5, từ ' + g.tong + ' đánh giá của chủ nuôi sau khi khám.');

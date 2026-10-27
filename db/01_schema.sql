@@ -46,6 +46,9 @@ CREATE TABLE ho_so_bac_si (
   chuyen_mon    text,
   gioi_thieu    text,
   anh_dai_dien  text,   -- đường dẫn ảnh trong Storage, không lưu ảnh trong bảng
+  trinh_do        text CHECK (trinh_do IS NULL OR length(trinh_do) <= 200),            -- học vị, nơi đào tạo
+  kinh_nghiem_nam smallint CHECK (kinh_nghiem_nam IS NULL OR kinh_nghiem_nam BETWEEN 0 AND 60),
+  chung_chi       text CHECK (chung_chi IS NULL OR length(chung_chi) <= 600),          -- mỗi dòng một chứng chỉ hoặc chứng nhận
   created_at    timestamptz NOT NULL DEFAULT now()
 );
 
@@ -331,6 +334,22 @@ CREATE TABLE doc_tin_nhan (
   doc_den      timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (nhan_vien_id, tai_khoan_id)
 );
+
+-- Bài viết tin tức thú cưng và thú y. Chỉ admin viết; khách chỉ thấy bài đã đăng.
+CREATE TABLE bai_viet (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  tieu_de     text NOT NULL CHECK (length(btrim(tieu_de)) BETWEEN 1 AND 150),
+  nhom        text NOT NULL DEFAULT 'cham_soc' CHECK (nhom IN ('cham_soc','tiem_phong','benh','phong_kham')),
+  tom_tat     text CHECK (tom_tat IS NULL OR length(tom_tat) <= 300),
+  noi_dung    text NOT NULL CHECK (length(btrim(noi_dung)) BETWEEN 1 AND 10000),
+  tac_gia     text CHECK (tac_gia IS NULL OR length(tac_gia) <= 80),
+  anh_bia     text CHECK (anh_bia IS NULL OR (anh_bia ~ '^https://' AND length(anh_bia) <= 500)),  -- địa chỉ ảnh bìa trong kho 'anh-bai-viet'
+  trang_thai  text NOT NULL DEFAULT 'nhap' CHECK (trang_thai IN ('nhap','da_dang')),
+  ngay_dang   timestamptz,                       -- tự đặt lần đầu đăng (trigger), client không ghi được
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  updated_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_bai_viet_dang ON bai_viet (ngay_dang DESC) WHERE trang_thai = 'da_dang';
 
 -- ---------------------------------------------------------------------
 -- DỮ LIỆU CẤU HÌNH KHỞI TẠO (bắt buộc để hệ thống chạy)
