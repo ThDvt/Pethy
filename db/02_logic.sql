@@ -1250,7 +1250,7 @@ DECLARE b text;
 BEGIN
   FOREACH b IN ARRAY ARRAY['tai_khoan','chu_nuoi','ho_so_bac_si','lich_lam_viec','cau_hinh',
                            'thu_cung','dich_vu','thuoc','lo_thuoc','lich_hen','ho_so_kham',
-                           'don_thuoc','ct_don_thuoc','mui_tiem','hoa_don','thanh_toan','danh_gia']
+                           'don_thuoc','ct_don_thuoc','mui_tiem','hoa_don','thanh_toan','danh_gia','bai_viet']
   LOOP
     EXECUTE format('CREATE TRIGGER trg_nhat_ky AFTER INSERT OR UPDATE OR DELETE ON %I
                     FOR EACH ROW EXECUTE FUNCTION ghi_nhat_ky()', b);
@@ -1296,6 +1296,19 @@ CREATE TRIGGER trg_bat_bien_cat BEFORE TRUNCATE ON bien_dong_kho
 
 -- Hồ sơ bác sĩ và lịch làm việc chỉ gắn được cho tài khoản có vai trò bác sĩ.
 -- Tham số trigger: tên cột chứa id tài khoản.
+-- Bài viết: tự đặt ngày đăng lần đầu và ngày sửa. Client không ghi được hai cột này.
+CREATE FUNCTION dat_ngay_bai_viet() RETURNS trigger
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp AS $$
+BEGIN
+  NEW.updated_at := now();
+  IF TG_OP = 'INSERT' THEN NEW.ngay_dang := NULL; ELSE NEW.ngay_dang := OLD.ngay_dang; END IF;
+  IF NEW.trang_thai = 'da_dang' AND NEW.ngay_dang IS NULL THEN NEW.ngay_dang := now(); END IF;
+  RETURN NEW;
+END
+$$;
+CREATE TRIGGER trg_ngay_bai_viet BEFORE INSERT OR UPDATE ON bai_viet
+  FOR EACH ROW EXECUTE FUNCTION dat_ngay_bai_viet();
+
 CREATE FUNCTION kiem_tra_la_bac_si() RETURNS trigger
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp AS $$
 DECLARE v_id uuid := (to_jsonb(NEW) ->> TG_ARGV[0])::uuid;
