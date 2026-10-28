@@ -14,6 +14,11 @@ function pngGia(w = 800, h = 450){
 
 test('admin viết bài: nháp thì khách không thấy, đăng thì thấy, HTML không chạy, gỡ và xóa thì mất', async ({ browser, page }) => {
   const tde = 'Bài thử tự động ' + Date.now();
+  const nhatKy = [];   // ghi lại lỗi mạng và lỗi console để biết bước nào hỏng
+  page.on('response', r => { if (r.status() >= 400) nhatKy.push(`${r.status()} ${r.request().method()} ${r.url().replace(/^https?:\/\/[^/]+/, '')}`); });
+  page.on('requestfailed', r => nhatKy.push(`FAILED ${r.method()} ${r.url().replace(/^https?:\/\/[^/]+/, '')} ${r.failure()?.errorText}`));
+  page.on('console', m => { if (m.type() === 'error') nhatKy.push('console: ' + m.text().slice(0, 200)); });
+  page.on('pageerror', e => nhatKy.push('pageerror: ' + e.message.slice(0, 200)));
   await dangNhap(page, TK.admin, KHU.admin);
   await page.goto('/admin/bai-viet.html');
   await page.getByRole('button', { name: 'Viết bài mới' }).click();
@@ -22,6 +27,11 @@ test('admin viết bài: nháp thì khách không thấy, đăng thì thấy, HT
   await page.locator('#b-anh').setInputFiles({ name: 'bia.png', mimeType: 'image/png', buffer: pngGia() });
   await expect(page.locator('#hop img[alt="Ảnh bìa"]')).toBeVisible();
   await page.getByRole('button', { name: 'Tạo bài' }).click();
+  await page.waitForTimeout(8000);
+  const loiHop = await page.locator('#hop .loi').textContent().catch(() => '');
+  const trang = { hopMo: await page.locator('#hop').evaluate(d => d.open).catch(() => null), loiChung: await page.locator('#loi-chung').textContent().catch(() => ''),
+    nutTaoBai: await page.getByRole('button', { name: 'Tạo bài' }).isDisabled().catch(() => 'khong thay'), dsHang: await page.locator('.hang').count() };
+  expect({ loiHop: (loiHop || '').trim(), ...trang, nhatKy }, 'tình trạng sau khi bấm Tạo bài').toMatchObject({ loiHop: '', hopMo: false, dsHang: 1 });
   const hang = page.locator('.hang', { hasText: tde });
   await expect(hang).toBeVisible();
 
