@@ -32,7 +32,7 @@ test('admin viết bài: nháp thì khách không thấy, đăng thì thấy, HT
     cacLoiTrongHop: (await page.locator('#hop .loi').allTextContents()).map(t => t.trim()).filter(Boolean),
     hopMo: await page.locator('#hop').evaluate(d => d.open).catch(() => null),
     loiChung: ((await page.locator('#loi-chung').textContent().catch(() => '')) || '').trim(),
-    nutTaoBaiBiKhoa: await page.getByRole('button', { name: 'Tạo bài' }).isDisabled().catch(() => 'khong thay'),
+    nutTaoBai: (await page.getByRole('button', { name: 'Tạo bài' }).count()) ? 'con' : 'da dong',
     soHang: await page.locator('.hang').count(), nhatKy };
   if (trang.hopMo || trang.cacLoiTrongHop.length || trang.soHang !== 1) throw new Error('Tình trạng sau khi bấm Tạo bài: ' + JSON.stringify(trang, null, 1));
   const hang = page.locator('.hang', { hasText: tde });
