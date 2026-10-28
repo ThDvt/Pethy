@@ -1,0 +1,69 @@
+# Kiểm thử tự động bằng trình duyệt thật (Playwright).
+#  - Job "giao-dien-voi-supabase-thu": chạy giao diện trong repo, nối vào project Supabase THỬ (không phải hệ thống thật).
+#  - Job "ban-dang-chay": chỉ đọc, kiểm tra bản đã triển khai (trang tải được, tiêu đề bảo mật, dữ liệu công khai).
+# Cần GitHub Secrets cho job thứ nhất (xem docs/kiem-thu-tu-dong.md):
+#   E2E_SUPABASE_URL, E2E_SUPABASE_ANON_KEY, E2E_ADMIN_EMAIL, E2E_ADMIN_PASSWORD, E2E_MAT_KHAU
+name: Kiểm thử tự động
+
+on:
+  pull_request:
+    paths: ['web/**', 'e2e/**', 'db/**', '.github/workflows/kiem-thu-e2e.yml']
+  schedule:
+    - cron: "37 21 * * *"   # 04:37 giờ Việt Nam mỗi ngày
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  giao-dien-voi-supabase-thu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      E2E_SUPABASE_URL: ${{ secrets.E2E_SUPABASE_URL }}
+      E2E_SUPABASE_ANON_KEY: ${{ secrets.E2E_SUPABASE_ANON_KEY }}
+      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+      E2E_MAT_KHAU: ${{ secrets.E2E_MAT_KHAU }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Kiểm tra đã có đủ secrets
+        id: co
+        run: |
+          if [ -z "$E2E_SUPABASE_URL" ] || [ -z "$E2E_SUPABASE_ANON_KEY" ] || [ -z "$E2E_ADMIN_EMAIL" ] || [ -z "$E2E_ADMIN_PASSWORD" ] || [ -z "$E2E_MAT_KHAU" ]; then
+            echo "::warning::Chưa cấu hình đủ GitHub Secrets E2E_*, bỏ qua job này. Xem docs/kiem-thu-tu-dong.md"
+            echo "du=false" >> "$GITHUB_OUTPUT"
+          else echo "du=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-node@v4
+        if: steps.co.outputs.du == 'true'
+        with: { node-version: 22 }
+      - name: Cài thư viện và trình duyệt
+        if: steps.co.outputs.du == 'true'
+        working-directory: e2e
+        run: npm install --no-audit --no-fund && npx playwright install --with-deps chromium
+      - name: Chạy kiểm thử
+        if: steps.co.outputs.du == 'true'
+        working-directory: e2e
+        run: npx playwright test
+      - name: Lưu báo cáo và ảnh chụp khi lỗi
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with: { name: bao-cao-giao-dien, path: "e2e/playwright-report\ne2e/test-results", retention-days: 14 }
+
+  ban-dang-chay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Cài thư viện và trình duyệt
+        working-directory: e2e
+        run: npm install --no-audit --no-fund && npx playwright install --with-deps chromium
+      - name: Kiểm tra bản đang chạy (chỉ đọc)
+        working-directory: e2e
+        run: npx playwright test -c playwright.prod.config.js
+      - name: Lưu báo cáo khi lỗi
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with: { name: bao-cao-ban-dang-chay, path: "e2e/playwright-report-prod\ne2e/test-results", retention-days: 14 }
