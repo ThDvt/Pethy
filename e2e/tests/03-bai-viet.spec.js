@@ -28,10 +28,13 @@ test('admin viết bài: nháp thì khách không thấy, đăng thì thấy, HT
   await expect(page.locator('#hop img[alt="Ảnh bìa"]')).toBeVisible();
   await page.getByRole('button', { name: 'Tạo bài' }).click();
   await page.waitForTimeout(8000);
-  const loiHop = await page.locator('#hop .loi').textContent().catch(() => '');
-  const trang = { hopMo: await page.locator('#hop').evaluate(d => d.open).catch(() => null), loiChung: await page.locator('#loi-chung').textContent().catch(() => ''),
-    nutTaoBai: await page.getByRole('button', { name: 'Tạo bài' }).isDisabled().catch(() => 'khong thay'), dsHang: await page.locator('.hang').count() };
-  expect({ loiHop: (loiHop || '').trim(), ...trang, nhatKy }, 'tình trạng sau khi bấm Tạo bài').toMatchObject({ loiHop: '', hopMo: false, dsHang: 1 });
+  const trang = {
+    cacLoiTrongHop: (await page.locator('#hop .loi').allTextContents()).map(t => t.trim()).filter(Boolean),
+    hopMo: await page.locator('#hop').evaluate(d => d.open).catch(() => null),
+    loiChung: ((await page.locator('#loi-chung').textContent().catch(() => '')) || '').trim(),
+    nutTaoBaiBiKhoa: await page.getByRole('button', { name: 'Tạo bài' }).isDisabled().catch(() => 'khong thay'),
+    soHang: await page.locator('.hang').count(), nhatKy };
+  if (trang.hopMo || trang.cacLoiTrongHop.length || trang.soHang !== 1) throw new Error('Tình trạng sau khi bấm Tạo bài: ' + JSON.stringify(trang, null, 1));
   const hang = page.locator('.hang', { hasText: tde });
   await expect(hang).toBeVisible();
 

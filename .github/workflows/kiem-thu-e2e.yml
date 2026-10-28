@@ -36,6 +36,15 @@ jobs:
           set -euo pipefail
           . /tmp/sb.env
           for f in 01_schema 02_logic 03_rls 04_storage; do psql "$DB_URL" -v ON_ERROR_STOP=1 -q -f "db/$f.sql" > /dev/null; done
+          # Supabase cục bộ trả địa chỉ ảnh dạng http://127.0.0.1, còn ràng buộc thật chỉ nhận https:// (đúng cho hệ thống thật). Chỉ nới trong CSDL thử này.
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -q <<'SQL'
+          DO $$ DECLARE c text; BEGIN
+            FOR c IN SELECT conname FROM pg_constraint WHERE conrelid = 'public.bai_viet'::regclass AND contype = 'c' AND pg_get_constraintdef(oid) LIKE '%anh_bia%' LOOP
+              EXECUTE format('ALTER TABLE public.bai_viet DROP CONSTRAINT %I', c);
+            END LOOP;
+            ALTER TABLE public.bai_viet ADD CONSTRAINT bai_viet_anh_bia_thu CHECK (anh_bia IS NULL OR (anh_bia ~ '^https?://' AND length(anh_bia) <= 500));
+          END $$;
+          SQL
           ADMIN_EMAIL="admin-thu@example.com"; ADMIN_PASS="$(openssl rand -hex 12)A1"; TEST_PASS="$(openssl rand -hex 12)A1"
           echo "::add-mask::$ADMIN_PASS"; echo "::add-mask::$TEST_PASS"
           curl -sSf -X POST "$API_URL/auth/v1/admin/users" -H "apikey: $SERVICE_ROLE_KEY" -H "Authorization: Bearer $SERVICE_ROLE_KEY" -H "Content-Type: application/json" \
