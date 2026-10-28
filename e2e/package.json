@@ -1,0 +1,10 @@
+{
+  "name": "pethy-e2e",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "playwright test" },
+  "devDependencies": {
+    "@playwright/test": "1.49.1",
+    "@supabase/supabase-js": "2.45.4"
+  }
+}
