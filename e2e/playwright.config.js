@@ -8,7 +8,7 @@ export default defineConfig({
   expect: { timeout: 15_000 },
   retries: process.env.CI ? 1 : 0,
   workers: 1,   // các test dùng chung tài khoản thử, chạy lần lượt cho dễ đọc lỗi
-  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
+  reporter: process.env.CI ? [['list'], ['github'], ['html', { open: 'never' }]] : 'list',
   use: { baseURL: 'http://localhost:4173', trace: 'retain-on-failure', screenshot: 'only-on-failure', locale: 'vi-VN' },
   webServer: { command: 'python3 -m http.server 4173 --directory ../web', url: 'http://localhost:4173/index.html', reuseExistingServer: !process.env.CI },
   projects: [
