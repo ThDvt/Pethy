@@ -23,11 +23,11 @@ test('nhân viên gửi tin cho admin: nút Gửi không bị kẹt, admin nhậ
     await dangNhap(ad, TK.admin, KHU.admin);
     await ad.goto('/admin/trao-doi.html');
     await ad.getByRole('button', { name: new RegExp(TK.le_tan.ten) }).click();
-    await expect(ad.getByText(nd)).toBeVisible();
+    await expect(ad.getByText(nd).last()).toBeVisible();
     const tl = 'Trả lời thử ' + Date.now();
     await ad.getByLabel('Nội dung tin nhắn').fill(tl);
     await ad.getByRole('button', { name: 'Gửi', exact: true }).click();
-    await expect(ad.getByText(tl)).toBeVisible();
+    await expect(ad.getByText(tl).last()).toBeVisible();
     await nv.reload();
     await expect(nv.getByText(tl)).toBeVisible();
   } finally { await cn.close(); await ca.close(); }

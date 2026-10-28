@@ -22,6 +22,9 @@ test('admin viết bài: nháp thì khách không thấy, đăng thì thấy, HT
   await page.locator('#b-anh').setInputFiles({ name: 'bia.png', mimeType: 'image/png', buffer: pngGia() });
   await expect(page.locator('#hop img[alt="Ảnh bìa"]')).toBeVisible();
   await page.getByRole('button', { name: 'Tạo bài' }).click();
+  await page.waitForTimeout(8000);
+  const loiHop = await page.locator('#hop .loi').innerText().catch(() => '');
+  expect(loiHop, 'lỗi báo trong hộp soạn bài').toBe('');
   const hang = page.locator('.hang', { hasText: tde });
   await expect(hang).toBeVisible();
 
