@@ -1,8 +1,7 @@
 # Kiểm thử tự động bằng trình duyệt thật (Playwright).
-#  - Job "giao-dien-voi-supabase-thu": chạy giao diện trong repo, nối vào project Supabase THỬ (không phải hệ thống thật).
+#  - Job "giao-dien-voi-supabase-thu": dựng một Supabase CỤC BỘ tạm thời ngay trong GitHub Actions (Docker, miễn phí, không đụng hệ thống thật,
+#    không cần tạo project hay thêm secrets), chạy db/01 đến 04, rồi chạy giao diện trong repo nối vào đó. Mỗi lần chạy là một cơ sở dữ liệu mới.
 #  - Job "ban-dang-chay": chỉ đọc, kiểm tra bản đã triển khai (trang tải được, tiêu đề bảo mật, dữ liệu công khai).
-# Cần GitHub Secrets cho job thứ nhất (xem docs/kiem-thu-tu-dong.md):
-#   E2E_SUPABASE_URL, E2E_SUPABASE_ANON_KEY, E2E_ADMIN_EMAIL, E2E_ADMIN_PASSWORD, E2E_MAT_KHAU
 name: Kiểm thử tự động
 
 on:
@@ -18,37 +17,44 @@ permissions:
 jobs:
   giao-dien-voi-supabase-thu:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    env:
-      E2E_SUPABASE_URL: ${{ secrets.E2E_SUPABASE_URL }}
-      E2E_SUPABASE_ANON_KEY: ${{ secrets.E2E_SUPABASE_ANON_KEY }}
-      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
-      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
-      E2E_MAT_KHAU: ${{ secrets.E2E_MAT_KHAU }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Kiểm tra đã có đủ secrets
-        id: co
-        run: |
-          if [ -z "$E2E_SUPABASE_URL" ] || [ -z "$E2E_SUPABASE_ANON_KEY" ] || [ -z "$E2E_ADMIN_EMAIL" ] || [ -z "$E2E_ADMIN_PASSWORD" ] || [ -z "$E2E_MAT_KHAU" ]; then
-            echo "::warning::Chưa cấu hình đủ GitHub Secrets E2E_*, bỏ qua job này. Xem docs/kiem-thu-tu-dong.md"
-            echo "du=false" >> "$GITHUB_OUTPUT"
-          else echo "du=true" >> "$GITHUB_OUTPUT"; fi
       - uses: actions/setup-node@v4
-        if: steps.co.outputs.du == 'true'
         with: { node-version: 22 }
+      - uses: supabase/setup-cli@v1
+        with: { version: latest }
+      - name: Dựng Supabase cục bộ
+        run: |
+          supabase init
+          # Giới hạn đăng nhập mặc định (30 lần mỗi 5 phút) quá thấp cho bộ kiểm thử, nơi mọi lần đăng nhập đến từ một địa chỉ.
+          sed -i 's/^sign_in_sign_ups *=.*/sign_in_sign_ups = 1000/; s/^token_refresh *=.*/token_refresh = 1000/' supabase/config.toml
+          supabase start
+          supabase status -o env > /tmp/sb.env
+      - name: Cài cơ sở dữ liệu (db/01 đến 04) và tạo admin thử
+        run: |
+          set -euo pipefail
+          . /tmp/sb.env
+          for f in 01_schema 02_logic 03_rls 04_storage; do psql "$DB_URL" -v ON_ERROR_STOP=1 -q -f "db/$f.sql" > /dev/null; done
+          ADMIN_EMAIL="admin-thu@example.com"; ADMIN_PASS="$(openssl rand -hex 12)A1"; TEST_PASS="$(openssl rand -hex 12)A1"
+          echo "::add-mask::$ADMIN_PASS"; echo "::add-mask::$TEST_PASS"
+          curl -sSf -X POST "$API_URL/auth/v1/admin/users" -H "apikey: $SERVICE_ROLE_KEY" -H "Authorization: Bearer $SERVICE_ROLE_KEY" -H "Content-Type: application/json" \
+            -d "{\"email\":\"$ADMIN_EMAIL\",\"password\":\"$ADMIN_PASS\",\"email_confirm\":true}" > /dev/null
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -q -c "UPDATE tai_khoan SET vai_tro = 'admin' WHERE id = (SELECT id FROM auth.users WHERE email = '$ADMIN_EMAIL');"
+          { echo "E2E_SUPABASE_URL=$API_URL"; echo "E2E_SUPABASE_ANON_KEY=$ANON_KEY"; echo "E2E_ADMIN_EMAIL=$ADMIN_EMAIL"; echo "E2E_ADMIN_PASSWORD=$ADMIN_PASS"; echo "E2E_MAT_KHAU=$TEST_PASS"; } >> "$GITHUB_ENV"
       - name: Cài thư viện và trình duyệt
-        if: steps.co.outputs.du == 'true'
         working-directory: e2e
         run: npm install --no-audit --no-fund && npx playwright install --with-deps chromium
       - name: Chạy kiểm thử
-        if: steps.co.outputs.du == 'true'
         working-directory: e2e
         run: npx playwright test
       - name: Lưu báo cáo và ảnh chụp khi lỗi
         if: failure()
         uses: actions/upload-artifact@v4
         with: { name: bao-cao-giao-dien, path: "e2e/playwright-report\ne2e/test-results", retention-days: 14 }
+      - name: Nhật ký Supabase khi lỗi
+        if: failure()
+        run: docker ps --format '{{.Names}}' | grep -E 'auth|rest|storage' | head -3 | xargs -I{} sh -c 'echo "== {}"; docker logs --tail 40 {}' || true
 
   ban-dang-chay:
     runs-on: ubuntu-latest
