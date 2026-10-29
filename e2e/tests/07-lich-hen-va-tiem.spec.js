@@ -17,10 +17,10 @@ test('lễ tân tạo khách trực tiếp, thêm thú cưng, đặt lịch hộ
     // số điện thoại sai thì bị chặn, đúng thì tạo được
     await p.locator('#k-t').fill(khach);
     await p.locator('#k-d').fill('123');
-    await p.locator('#hop').getByRole('button', { name: 'Thêm', exact: true }).click();
+    await p.locator('#hop').getByRole('button', { name: 'Thêm khách', exact: true }).click();
     await expect(p.locator('#hop .loi')).toBeVisible();
     await p.locator('#k-d').fill(sdt);
-    await p.locator('#hop').getByRole('button', { name: 'Thêm', exact: true }).click();
+    await p.locator('#hop').getByRole('button', { name: 'Thêm khách', exact: true }).click();
     await expect(p.locator('#hop')).not.toBeVisible();
 
     await p.locator('#tim').fill(khach);
