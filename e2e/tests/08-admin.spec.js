@@ -182,16 +182,22 @@ test('admin thêm và xóa ca làm việc; giờ sai bị chặn', async ({ brow
 
 test('các trang quản trị tải được, không lỗi JavaScript, nhật ký ghi lại thao tác của admin', async ({ page }) => {
   const loi = [];
-  page.on('pageerror', e => loi.push(e.message));
-  page.on('console', m => { if (m.type() === 'error' && !/favicon/.test(m.text())) loi.push(m.text()); });
+  let dangChuyen = false;   // yêu cầu bị hủy vì chuyển trang giữa chừng không phải lỗi của trang
+  page.on('pageerror', e => { if (!dangChuyen) loi.push(e.message); });
+  page.on('console', m => { if (m.type() === 'error' && !dangChuyen && !/favicon/.test(m.text())) loi.push(m.text()); });
   await dangNhap(page, TK.admin, KHU.admin);
+  await page.waitForLoadState('networkidle');
   for (const t of ['', 'doanh-thu', 'danh-gia', 'bao-mat', 'nhat-ky', 'bai-viet', 'tham-so', 'tai-khoan', 'dich-vu', 'lich-lam-viec', 'trao-doi']) {
+    dangChuyen = true;
     await page.goto('/admin/' + (t ? t + '.html' : ''));
+    await page.waitForLoadState('networkidle');
+    dangChuyen = false;
     await expect(page.locator('#loi-chung')).toBeHidden({ timeout: 10_000 });
     await page.waitForLoadState('networkidle');
   }
   await page.goto('/admin/nhat-ky.html');
   await expect(page.locator('.hang').first()).toBeVisible();
+  await page.waitForLoadState('networkidle');
   expect(loi, 'lỗi JavaScript hoặc lỗi mạng trên các trang quản trị').toEqual([]);
 });
 
