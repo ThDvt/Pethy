@@ -42,5 +42,5 @@ Khi lỗi, báo cáo HTML, ảnh chụp và bản ghi thao tác (trace) được
 
 - **Email thật** (Gmail SMTP, thư đặt lại mật khẩu, thư xác nhận): Supabase cục bộ không gửi thư thật, nên cần dùng tay kiểm tra.
 - **Cấu hình riêng của hệ thống thật**: Redirect URL trong Supabase, SMTP, CAPTCHA, biến môi trường Cloudflare. Phần chạy trên bản đang chạy chỉ kiểm tra những gì nhìn thấy từ ngoài (tải được trang, tiêu đề bảo mật), không đăng nhập.
-- **Luồng đặt lịch đến thanh toán**: chưa có kịch bản, cần thêm dữ liệu mẫu (bác sĩ, lịch làm việc, kho thuốc) cho cơ sở dữ liệu thử. Đây là phần nên bổ sung tiếp.
+- **Luồng đặt lịch đến thanh toán** (`e2e/tests/05-dat-lich-den-thanh-toan.spec.js`): dữ liệu nền (dịch vụ, thuốc, hồ sơ và lịch làm việc của bác sĩ thử, tồn kho) do `e2e/seed.js` tạo trên Supabase thử. Kịch bản đi hết các bước qua giao diện và kiểm tra kho bị trừ đúng số thuốc đã kê. Chưa phủ: đặt lịch hộ của lễ tân, đổi/hủy lịch, mũi tiêm vaccine, đánh giá.
 - Công cụ chỉ bắt được lỗi ở những luồng đã viết kịch bản; nó giảm rủi ro chứ không thay việc tự dùng thử.
