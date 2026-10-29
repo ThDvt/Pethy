@@ -98,6 +98,7 @@ test('tiêm vaccine: đặt lịch, lễ tân xác nhận, bác sĩ ghi mũi ti�
     await dienDatLich(cn.p, { pet, dv: DV_TIEM.ten, vaccine: VACCINE.ten, bs: TK.bac_si.ten, ngay: ngayVN(6) });
     await expect(cn.p.locator('#tieu-de')).toHaveText('Đã gửi yêu cầu đặt lịch');
 
+    await lt.p.reload();                                                     // trang lễ tân mở từ trước khi khách đặt
     const cho = lt.p.locator('#ds-cho .hang', { hasText: pet });
     await expect(cho).toHaveCount(1);
     await cho.getByRole('button', { name: 'Xác nhận' }).click();
