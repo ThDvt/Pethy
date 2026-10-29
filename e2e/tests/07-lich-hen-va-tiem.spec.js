@@ -113,6 +113,7 @@ test('tiêm vaccine: đặt lịch, lễ tân xác nhận, bác sĩ ghi mũi ti�
     await bs.p.waitForURL(u => u.pathname === '/bac-si/' || u.pathname === '/bac-si/index.html', { timeout: 20_000 });
     expect(await tonKho(vaccineId)).toBe(ton0 - 1);
 
+    await tn.p.reload();                                                     // trang thu ngân mở từ trước khi lịch hoàn thành
     const lap = tn.p.locator('#ds-lap .hang', { hasText: pet });
     await expect(lap).toHaveCount(1);
     await lap.getByRole('button', { name: 'Lập hóa đơn' }).click();
