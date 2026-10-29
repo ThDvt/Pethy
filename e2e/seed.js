@@ -3,9 +3,11 @@ import { CFG, TK, kiemTraKhongPhaiHeThongThat } from './helpers.js';
 
 // Dữ liệu nền cho luồng đặt lịch → thanh toán, chỉ dùng trên Supabase THỬ. Chạy lại nhiều lần vẫn an toàn (có thì bỏ qua).
 export const DV = { ten: 'Khám tổng quát E2E', loai: 'kham', gia: 150000 };
+export const DV_TIEM = { ten: 'Tiêm phòng E2E', loai: 'tiem', gia: 50000 };
+export const VACCINE = { ten: 'Vaccine E2E', loai: 'vaccine', don_vi: 'liều', gia_ban: 100000, nguong_canh_bao: 3 };
 export const THUOC = { ten: 'Thuốc E2E', loai: 'thuoc', don_vi: 'viên', gia_ban: 20000, nguong_canh_bao: 5 };
 
-async function dn(tk){
+export async function dn(tk){
   const c = createClient(CFG.url, CFG.anon, { auth: { persistSession: false, autoRefreshToken: false } });
   const r = await c.auth.signInWithPassword({ email: tk.email, password: tk.matKhau });
   if (r.error) throw new Error(`Không đăng nhập được ${tk.email}: ${r.error.message}`);
@@ -35,4 +37,16 @@ export async function tonKho(thuocId){
   const kho = (await dn(TK.kho)).c;
   const r = ok(await kho.from('ton_kho_thuoc').select('ton_con_han').eq('thuoc_id', thuocId), 'đọc tồn kho');
   return r[0] ? r[0].ton_con_han : 0;
+}
+
+// Thêm dịch vụ tiêm và vaccine có tồn kho (gọi sau chuanBiDuLieuDatLich).
+export async function chuanBiDuLieuTiem(){
+  await chuanBiDuLieuDatLich();
+  const ad = (await dn(TK.admin)).c, kho = (await dn(TK.kho)).c;
+  if (!ok(await ad.from('dich_vu').select('id').eq('ten', DV_TIEM.ten), 'đọc dịch vụ tiêm').length) ok(await ad.from('dich_vu').insert(DV_TIEM), 'thêm dịch vụ tiêm');
+  let v = ok(await ad.from('thuoc').select('id').eq('ten', VACCINE.ten).eq('don_vi', VACCINE.don_vi), 'đọc vaccine')[0];
+  if (!v) v = ok(await ad.from('thuoc').insert(VACCINE).select('id'), 'thêm vaccine')[0];
+  const ton = ok(await kho.from('ton_kho_thuoc').select('ton_con_han').eq('thuoc_id', v.id), 'đọc tồn vaccine')[0];
+  if (!ton || ton.ton_con_han < 10) ok(await kho.rpc('nhap_kho', { p_thuoc: v.id, p_so_lo: 'E2E-VC1', p_han_dung: '2035-12-31', p_so_luong: 30 }), 'nhập vaccine');
+  return { vaccineId: v.id };
 }
