@@ -35,7 +35,10 @@ jobs:
           if [ -z "$PASS" ]; then echo "::error::Thiếu secret BACKUP_PASSPHRASE (phải là Repository secret ở Settings > Secrets and variables > Actions)"; exit 1; fi
           case "$DB_URL" in postgres://*|postgresql://*) ;; *) echo "::error::SUPABASE_DB_URL phải bắt đầu bằng postgresql:// hoặc postgres://"; exit 1;; esac
           NGAY=$(TZ=Asia/Ho_Chi_Minh date +%Y%m%d-%H%M)
-          pg_dump "$DB_URL" --schema=public --no-owner --no-privileges --format=custom -f "pethy-$NGAY.dump"
+          PGDUMP=/usr/lib/postgresql/17/bin/pg_dump
+          test -x "$PGDUMP" || { echo "::error::Không tìm thấy $PGDUMP (cài postgresql-client-17 thất bại)"; exit 1; }
+          "$PGDUMP" --version
+          "$PGDUMP" "$DB_URL" --schema=public --no-owner --no-privileges --format=custom -f "pethy-$NGAY.dump"
           gpg --batch --yes --pinentry-mode loopback --passphrase "$PASS" --symmetric --cipher-algo AES256 -o "pethy-$NGAY.dump.gpg" "pethy-$NGAY.dump"
           rm -f "pethy-$NGAY.dump"
           ls -l pethy-*.gpg
