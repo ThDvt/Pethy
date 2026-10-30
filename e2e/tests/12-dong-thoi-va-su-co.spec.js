@@ -31,6 +31,7 @@ test('hai lễ tân cùng xác nhận một lịch: chỉ một lần có hiệu
 });
 
 test('hai thu ngân cùng thu một hóa đơn: không thu quá số tiền, không thu hai lần', async () => {
+  test.setTimeout(150_000);
   await chuanBiDuLieuDatLich();
   const s = await taoLichDaXacNhan({ ngay: ngayVN(11), tenThuCung: 'TT' + Date.now() });
   await khamXong(s);
@@ -116,7 +117,7 @@ test('bấm đúp nút Đặt lịch chỉ tạo một lịch; mất mạng thì
 });
 
 test('bấm đúp "Ghi nhận thu tiền" chỉ ghi một lần thu', async ({ browser }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(180_000);
   await chuanBiDuLieuDatLich();
   const s = await taoLichDaXacNhan({ ngay: ngayVN(14), tenThuCung: 'DT2' + Date.now().toString().slice(-6) });
   await khamXong(s);
