@@ -352,6 +352,29 @@ CREATE TABLE bai_viet (
 CREATE INDEX idx_bai_viet_dang ON bai_viet (ngay_dang DESC) WHERE trang_thai = 'da_dang';
 
 -- ---------------------------------------------------------------------
+-- GIỚI HẠN ĐỘ DÀI cho cột văn bản do người dùng nhập (cùng nội dung db/11_gioi_han_do_dai.sql)
+-- ---------------------------------------------------------------------
+DO $$
+DECLARE r record;
+BEGIN
+  FOR r IN SELECT * FROM (VALUES
+    ('thu_cung',  'ten',      100),
+    ('thu_cung',  'loai',      60),
+    ('chu_nuoi',  'ho_ten',   120),
+    ('chu_nuoi',  'dia_chi',  300),
+    ('dich_vu',   'ten',      120),
+    ('thuoc',     'ten',      120),
+    ('thuoc',     'don_vi',    30),
+    ('lich_hen',  'ghi_chu',  300)
+  ) AS v(bang, cot, toi_da) LOOP
+    EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT IF EXISTS %I', r.bang, r.bang || '_' || r.cot || '_gioi_han');
+    EXECUTE format('ALTER TABLE public.%I ADD CONSTRAINT %I CHECK (%I IS NULL OR length(%I) <= %s) NOT VALID',
+                   r.bang, r.bang || '_' || r.cot || '_gioi_han', r.cot, r.cot, r.toi_da);
+  END LOOP;
+END $$;
+
+
+-- ---------------------------------------------------------------------
 -- DỮ LIỆU CẤU HÌNH KHỞI TẠO (bắt buộc để hệ thống chạy)
 -- ---------------------------------------------------------------------
 INSERT INTO cau_hinh (khoa, gia_tri, mo_ta, cong_khai) VALUES

@@ -187,3 +187,6 @@ dialog.hop-dg::backdrop{background:rgba(20,22,26,.5)}
 .tb-ra{color:var(--loi)}
 .tb-ra:hover{background:#FBE9E7}
 .tb-gon{border:0}
+
+/* Tên hoặc ghi chú dài không có dấu cách (do người dùng nhập) phải xuống dòng, không làm tràn trang. */
+.hang, .dong, .ten, label.chon, .tomtat, .ct, .ghi-chu { overflow-wrap: anywhere; }
