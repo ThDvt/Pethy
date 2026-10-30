@@ -64,7 +64,9 @@ test('giới hạn độ dài ở tầng cơ sở dữ liệu: dữ liệu quá 
   await quaDai('hồ sơ khám: chẩn đoán 100000 ký tự', () => bs.c.rpc('ghi_ho_so_kham', { p_lich: s.lichId, p_chan_doan: DAI(100000), p_can_nang: null, p_nhiet_do: null, p_ghi_chu: null }));
   await quaDai('hồ sơ khám: ghi chú 100000 ký tự', () => bs.c.rpc('ghi_ho_so_kham', { p_lich: s.lichId, p_chan_doan: 'ok', p_can_nang: null, p_nhiet_do: null, p_ghi_chu: DAI(100000) }));
   await quaDai('hủy lịch: lý do 100000 ký tự', () => lt.rpc('huy_lich', { p_lich: s.lichId, p_ly_do: DAI(100000) }));
+  const hs = ok(await bs.c.rpc('ghi_ho_so_kham', { p_lich: s.lichId, p_chan_doan: 'Khám thử', p_can_nang: null, p_nhiet_do: null, p_ghi_chu: null }), 'hồ sơ khám hợp lệ');
   const t = ok(await ad.from('thuoc').select('id').eq('ten', 'Thuốc E2E'), 'thuốc')[0];
+  await quaDai('đơn thuốc: liều dùng 5000 ký tự', () => bs.c.rpc('ke_don', { p_ho_so: hs, p_dong: [{ thuoc_id: t.id, so_luong: 1, lieu_dung: DAI(5000) }] }));
   const lo = ok(await kho.from('lo_thuoc').select('id').eq('thuoc_id', t.id), 'lô')[0];
   await quaDai('kiểm kê: lý do 100000 ký tự', () => kho.rpc('dieu_chinh_kho', { p_lo: lo.id, p_so_luong_moi: 100, p_ly_do: DAI(100000) }));
   await quaDai('nhập kho: số lô 5000 ký tự', () => kho.rpc('nhap_kho', { p_thuoc: t.id, p_so_lo: DAI(5000), p_han_dung: '2035-12-31', p_so_luong: 1 }));

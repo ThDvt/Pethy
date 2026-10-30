@@ -365,7 +365,13 @@ BEGIN
     ('dich_vu',   'ten',      120),
     ('thuoc',     'ten',      120),
     ('thuoc',     'don_vi',    30),
-    ('lich_hen',  'ghi_chu',  300)
+    ('lich_hen',  'ghi_chu',  300),
+    ('lich_hen',  'ly_do_huy', 200),
+    ('ho_so_kham','chan_doan',1000),
+    ('ho_so_kham','ghi_chu',   300),
+    ('ct_don_thuoc','lieu_dung',120),
+    ('lo_thuoc',  'so_lo',      40),
+    ('bien_dong_kho','ly_do',  200)
   ) AS v(bang, cot, toi_da) LOOP
     EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT IF EXISTS %I', r.bang, r.bang || '_' || r.cot || '_gioi_han');
     EXECUTE format('ALTER TABLE public.%I ADD CONSTRAINT %I CHECK (%I IS NULL OR length(%I) <= %s) NOT VALID',
