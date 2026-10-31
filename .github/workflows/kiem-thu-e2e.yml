@@ -50,7 +50,7 @@ jobs:
           curl -sSf -X POST "$API_URL/auth/v1/admin/users" -H "apikey: $SERVICE_ROLE_KEY" -H "Authorization: Bearer $SERVICE_ROLE_KEY" -H "Content-Type: application/json" \
             -d "{\"email\":\"$ADMIN_EMAIL\",\"password\":\"$ADMIN_PASS\",\"email_confirm\":true}" > /dev/null
           psql "$DB_URL" -v ON_ERROR_STOP=1 -q -c "UPDATE tai_khoan SET vai_tro = 'admin' WHERE id = (SELECT id FROM auth.users WHERE email = '$ADMIN_EMAIL');"
-          { echo "E2E_SUPABASE_URL=$API_URL"; echo "E2E_SUPABASE_ANON_KEY=$ANON_KEY"; echo "E2E_ADMIN_EMAIL=$ADMIN_EMAIL"; echo "E2E_ADMIN_PASSWORD=$ADMIN_PASS"; echo "E2E_MAT_KHAU=$TEST_PASS"; } >> "$GITHUB_ENV"
+          { echo "E2E_SUPABASE_URL=$API_URL"; echo "E2E_SUPABASE_ANON_KEY=$ANON_KEY"; echo "E2E_ADMIN_EMAIL=$ADMIN_EMAIL"; echo "E2E_ADMIN_PASSWORD=$ADMIN_PASS"; echo "E2E_MAT_KHAU=$TEST_PASS"; echo "E2E_DB_URL=$DB_URL"; } >> "$GITHUB_ENV"
       - name: Cài thư viện và trình duyệt (Chrome, Firefox, WebKit gần với Safari)
         working-directory: e2e
         run: npm install --no-audit --no-fund && npx playwright install --with-deps chromium firefox webkit

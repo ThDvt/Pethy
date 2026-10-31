@@ -3,7 +3,7 @@
   if (!await khoiDong('chu_nuoi', 'Chủ nuôi', Pethy.chuNuoi.MUC, '/chu-nuoi/hoa-don.html')) return;
   const TT = {chua_thanh_toan:'Chưa thanh toán',thanh_toan_mot_phan:'Đã trả một phần',da_thanh_toan:'Đã thanh toán'};
   const PT = {tien_mat:'Tiền mặt',chuyen_khoan:'Chuyển khoản'};
-  const r = await db.from('hoa_don').select('id,tong_tien,trang_thai,created_at,thanh_toan(so_tien,phuong_thuc,thoi_gian),ct_hoa_don(mo_ta,so_luong,thanh_tien),lich_hen(thu_cung(ten))').neq('trang_thai','da_huy').order('created_at',{ascending:false}).limit(50);
+  const r = await db.from('hoa_don').select('id,tong_tien,trang_thai,created_at,thanh_toan(so_tien,phuong_thuc,thoi_gian),ct_hoa_don(mo_ta,so_luong,thanh_tien),lich_hen(thu_cung(ten))', { count: 'exact' }).neq('trang_thai','da_huy').order('created_at',{ascending:false}).limit(50);
   if (r.error) return A.baoLoi('Không tải được hóa đơn. Vui lòng tải lại trang.');
   const ds = r.data || [];
   $('vung').replaceChildren(...(ds.length ? ds.map(h => {
@@ -18,4 +18,5 @@
         h.trang_thai !== 'da_thanh_toan' ? el('div',{style:'font-weight:700;padding-top:8px'}, 'Còn lại ' + tien(h.tong_tien - da)) : null));
   }) : [A.rong('Bạn chưa có hóa đơn nào.')]));
   $('vung').firstChild && ($('vung').style.cssText = 'margin-top:20px;border-bottom:1px solid var(--vach)');
+  if (r.count > ds.length) $('vung').after(el('p',{class:'nho',id:'hd-con'},'Đang hiển thị ' + ds.length + ' hóa đơn gần nhất trong tổng số ' + r.count + '.'));
 })();
