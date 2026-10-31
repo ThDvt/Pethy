@@ -19,7 +19,7 @@ Thời gian dự kiến: khoảng 60 đến 90 phút. Nên dùng hai trình duy�
 
 | Bước | Việc cần làm | Kết quả đúng |
 |---|---|---|
-| 1.1 | Trang chủ, bấm "Đặt lịch khám", chọn tab Tạo tài khoản, nhập họ tên, số điện thoại, email A, mật khẩu và nhập lại mật khẩu | Báo đã gửi email xác nhận |
+| 1.1 | Trang chủ, bấm "Đặt lịch khám", chọn tab Tạo tài khoản, nhập họ tên, số điện thoại, email A, mật khẩu và xác nhận mật khẩu | Báo đã gửi email xác nhận |
 | 1.2 | Mở email, bấm link xác nhận, quay lại đăng nhập | Vào được khu chủ nuôi |
 | 1.3 | Thú cưng, thêm một bé (tên, loài) | Bé hiện trong danh sách |
 | 1.4 | Trang chủ, bấm "Chọn dịch vụ này" ở Tiêm phòng | Sang đăng nhập; sau đăng nhập, trang đặt lịch đã chọn sẵn dịch vụ |
