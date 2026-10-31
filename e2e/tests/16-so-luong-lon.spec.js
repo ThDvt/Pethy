@@ -56,7 +56,6 @@ test('lễ tân: danh sách khách 250+ người chỉ hiện 30, tìm theo tên
 test('thu ngân: hàng trăm hóa đơn, số liệu "Thu hôm nay" khớp CSDL, lập hóa đơn vẫn mở được hộp', async ({ page }) => {
   const ms = await vao(page, TK.thu_ngan, KHU.thu_ngan, '/thu-ngan/', () => expect(page.getByRole('button', { name: 'Lập hóa đơn' }).first()).toBeVisible());
   expect(ms).toBeLessThan(NGUONG_TAI);
-  await expect(page.locator('#ds-lap .hang')).toHaveCount(SO.thuNganChuaLap, { timeout: 5000 }).catch(() => {});
   expect(await page.locator('#ds-lap .hang').count()).toBeGreaterThanOrEqual(SO.thuNganChuaLap);
   expect(await page.locator('#ds-thu .hang').count()).toBeGreaterThanOrEqual(SO.thuNganChuaThu);
   expect(await page.locator('#ds-xong .hang').count()).toBeGreaterThanOrEqual(SO.thuNganDaThu);

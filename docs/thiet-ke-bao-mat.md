@@ -82,7 +82,7 @@ Tác nhân: người lạ trên internet (quét, spam, dò mật khẩu), chủ 
 
 ## 6. Kiểm thử đã có và còn thiếu
 
-Đã có: 279 kiểm thử trên cơ sở dữ liệu (quyền từng vai trò, cô lập dữ liệu, đặt trùng giờ đồng thời, bảng chỉ-thêm, bảo trì, tài khoản khóa, trigger đăng ký, giới hạn tần suất, nhật ký xem hồ sơ, quét RLS và quyền). Còn thiếu và sẽ làm sau khi có giao diện: kiểm thử qua trình duyệt thật với khóa `anon` trên Supabase thật, kiểm tra tiêu đề bảo mật, thử giới hạn tần suất.
+Đã có: 279 kiểm thử trên cơ sở dữ liệu (quyền từng vai trò, cô lập dữ liệu, đặt trùng giờ đồng thời, bảng chỉ-thêm, bảo trì, tài khoản khóa, trigger đăng ký, giới hạn tần suất, nhật ký xem hồ sơ, quét RLS và quyền). Phía giao diện đã có bộ kiểm thử trình duyệt thật (Playwright, 130 lượt đạt ở lần chạy gần nhất, xem `docs/kiem-thu-tu-dong.md`), gồm phân quyền từng vai trò, cô lập giữa hai chủ nuôi, hết phiên và khóa tài khoản. Chạy trên Supabase cục bộ tạm thời, **chưa** chạy trên Supabase thật. Còn thiếu: email thật, cấu hình Cloudflare và Redirect URL, thiết bị thật.
 
 ## Nguồn
 
