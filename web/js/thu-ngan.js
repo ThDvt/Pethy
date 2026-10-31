@@ -14,11 +14,11 @@
   const rong = t => el('p',{class:'nho',style:'padding:14px 0'}, t);
   const da = h => (h.thanh_toan || []).reduce((s, t) => s + t.so_tien, 0);
 
-  const CHON_HD = '';
+  const CHON_HD = 'id,lich_hen_id,tong_tien,trang_thai,created_at,thanh_toan(so_tien,phuong_thuc,thoi_gian),ct_hoa_don(mo_ta,so_luong,don_gia,thanh_tien),lich_hen(thu_cung(ten,chu_nuoi(ho_ten,so_dien_thoai)))';
   async function tai(){
     const [rl, rh, rn] = await Promise.all([
       db.from('lich_hen').select('id,thoi_gian,trang_thai,thu_cung(ten,chu_nuoi(ho_ten)),dich_vu(ten)').eq('trang_thai','da_hoan_thanh').gte('thoi_gian', bay).order('thoi_gian',{ascending:false}),
-      db.from('hoa_don').select('id,lich_hen_id,tong_tien,trang_thai,created_at,thanh_toan(so_tien,phuong_thuc,thoi_gian),ct_hoa_don(mo_ta,so_luong,don_gia,thanh_tien),lich_hen(thu_cung(ten,chu_nuoi(ho_ten,so_dien_thoai)))').neq('trang_thai','da_huy').gte('created_at', bay).order('created_at',{ascending:false}),
+      db.from('hoa_don').select(CHON_HD).neq('trang_thai','da_huy').gte('created_at', bay).order('created_at',{ascending:false}),
       db.rpc('doanh_thu_theo_ngay', { p_tu: homNay, p_den: homNay })
     ]);
     if (rl.error || rh.error) { baoLoi('Không tải được dữ liệu. Vui lòng tải lại trang.'); return; }
