@@ -6,13 +6,14 @@
   const loc = el('select',{id:'loc',class:'nho','aria-label':'Lọc theo hành động'}, el('option',{value:''}, 'Mọi hành động'), Object.entries(HD).map(([k, v]) => el('option',{value:k}, v)));
   const ds = el('div',{style:'border-top:2px solid var(--muc);margin-top:12px'});
   async function tai(){
-    let q = db.from('nhat_ky').select('id,hanh_dong,bang_tac_dong,ban_ghi_id,thoi_gian,tai_khoan(ho_ten)').order('thoi_gian',{ascending:false}).limit(100);
+    let q = db.from('nhat_ky').select('id,hanh_dong,bang_tac_dong,ban_ghi_id,thoi_gian,tai_khoan(ho_ten)', { count: 'exact' }).order('thoi_gian',{ascending:false}).limit(100);
     if (loc.value) q = q.eq('hanh_dong', loc.value);
     const r = await q; if (r.error) return A.baoLoi('Không tải được nhật ký.');
     ds.replaceChildren(...((r.data || []).length ? r.data.map(n => el('div',{class:'hang'},
       el('div',{class:'nho so',style:'flex:0 0 150px'}, A.ngay(n.thoi_gian) + ' ' + new Date(n.thoi_gian).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Ho_Chi_Minh'})),
       el('div',{class:'ten',style:'font-weight:500'}, n.tai_khoan?.ho_ten || 'Hệ thống / SQL'),
-      el('span',{class:'tt'}, HD[n.hanh_dong] || n.hanh_dong), el('div',{style:'flex:1 1 140px'}, BANG[n.bang_tac_dong] || n.bang_tac_dong || ''))) : [A.rong('Chưa có bản ghi nào.')]));
+      el('span',{class:'tt'}, HD[n.hanh_dong] || n.hanh_dong), el('div',{style:'flex:1 1 140px'}, BANG[n.bang_tac_dong] || n.bang_tac_dong || ''))) : [A.rong('Chưa có bản ghi nào.')]),
+      ...(r.count > (r.data || []).length ? [el('p',{class:'nho',id:'nk-con',style:'padding:12px 0'},'Đang hiển thị ' + r.data.length + ' bản ghi gần nhất trong tổng số ' + r.count + '. Dùng ô lọc để thu hẹp.')] : []));
   }
   loc.addEventListener('change', tai);
   $('vung').replaceChildren(el('div',{style:'margin-top:20px'}, loc), ds);

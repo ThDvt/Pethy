@@ -50,14 +50,16 @@
 
   async function tai(){
     const [cho, ngay, nhac] = await Promise.all([
-      db.from('lich_hen').select(CHON).eq('trang_thai','cho_xac_nhan').gte('thoi_gian', new Date().toISOString()).order('thoi_gian',{ascending:true}).limit(50),
+      db.from('lich_hen').select(CHON, { count: 'exact' }).eq('trang_thai','cho_xac_nhan').gte('thoi_gian', new Date().toISOString()).order('thoi_gian',{ascending:true}).limit(50),
       db.from('lich_hen').select(CHON).gte('thoi_gian', dau.toISOString()).lt('thoi_gian', cuoi.toISOString()).neq('trang_thai','da_huy').order('thoi_gian',{ascending:true}),
       db.from('lich_can_nhac').select('loai_nhac,lich_hen_id,mui_tiem_id,thoi_diem,ten_thu_cung,ten_chu_nuoi,so_dien_thoai,ten_dich_vu').order('thoi_diem',{ascending:true})
     ]);
     // danh sách chờ xác nhận
     if (cho.error) $('ds-cho').replaceChildren(el('p',{class:'loi'},'Không tải được danh sách chờ xác nhận.'));
-    else { $('h-cho').textContent = 'Cần xác nhận (' + cho.data.length + ')';
-      $('ds-cho').replaceChildren(...(cho.data.length ? cho.data.map(dongCho) : [el('p',{class:'ghi-chu'},'Không có lịch nào chờ xác nhận.')])); }
+    else { const tong = cho.count != null ? cho.count : cho.data.length;
+      $('h-cho').textContent = 'Cần xác nhận (' + tong + ')';
+      $('ds-cho').replaceChildren(...(cho.data.length ? cho.data.map(dongCho) : [el('p',{class:'ghi-chu'},'Không có lịch nào chờ xác nhận.')]),
+        ...(tong > cho.data.length ? [el('p',{class:'ghi-chu',id:'cho-con'},'Đang hiển thị ' + cho.data.length + ' lịch gần nhất. Xác nhận hoặc từ chối bớt để xem tiếp ' + (tong - cho.data.length) + ' lịch còn lại.')] : [])); }
     // bảng hôm nay, chèn dòng "Bây giờ"
     if (ngay.error) $('bang').replaceChildren(el('p',{class:'loi'},'Không tải được lịch hôm nay.'));
     else {

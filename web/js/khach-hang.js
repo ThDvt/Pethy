@@ -10,14 +10,15 @@
 
   async function tim(){
     A.baoLoi('');
-    let q = db.from('chu_nuoi').select('id,ho_ten,so_dien_thoai,dia_chi,tai_khoan_id').order('ho_ten').limit(30);
+    let q = db.from('chu_nuoi').select('id,ho_ten,so_dien_thoai,dia_chi,tai_khoan_id', { count: 'exact' }).order('ho_ten').limit(30);
     const t = loc(o.value);
     if (t) q = q.or('ho_ten.ilike.%' + t + '%,so_dien_thoai.ilike.%' + t + '%');
     const r = await q; if (r.error) return A.baoLoi('Không tìm được khách. Vui lòng thử lại.');
     ds.replaceChildren(...((r.data || []).length ? r.data.map(c => el('div',{class:'hang'},
       el('div',{class:'ten'}, c.ho_ten, el('div',{class:'nho so',style:'font-weight:400'}, sdt(c.so_dien_thoai) + (c.dia_chi ? ', ' + c.dia_chi : ''))),
       c.tai_khoan_id ? el('span',{class:'tt'}, 'Có tài khoản') : el('span',{class:'nho'}, 'Khách trực tiếp'),
-      el('button',{class:'nut',type:'button',onclick:() => moKhach(c)}, 'Mở'))) : [A.rong(t ? 'Không có khách nào khớp.' : 'Chưa có khách nào.')]));
+      el('button',{class:'nut',type:'button',onclick:() => moKhach(c)}, 'Mở'))) : [A.rong(t ? 'Không có khách nào khớp.' : 'Chưa có khách nào.')]),
+      ...(r.count > (r.data || []).length ? [el('p',{class:'ghi-chu',id:'tim-con'},'Đang hiển thị ' + r.data.length + ' khách đầu tiên theo tên, còn ' + (r.count - r.data.length) + ' khách nữa. Gõ tên hoặc số điện thoại để tìm đúng người.')] : []));
   }
 
   async function moKhach(c){
