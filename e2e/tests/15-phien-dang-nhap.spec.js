@@ -5,9 +5,11 @@ import { ok } from '../api.js';
 
 // Phiên đăng nhập: hết phiên khi không thao tác, mất phiên giữa chừng, đăng xuất rồi bấm Back, hai tab, tài khoản bị khóa khi đang dùng.
 const veTrangDangNhap = p => p.waitForURL(u => u.pathname.startsWith('/dang-nhap'), { timeout: 20_000 });
+const veTrangChu = p => p.waitForURL(u => u.pathname === '/' || u.pathname === '/index.html', { timeout: 20_000 });   // đăng xuất xong về trang chủ
 const dangXuat = async p => {
   await p.getByRole('button', { name: 'Đăng xuất' }).first().click();
   await p.locator('dialog.xac-nhan').getByRole('button', { name: 'Đăng xuất' }).click();
+  await veTrangChu(p);
 };
 
 test('hết phiên khi không thao tác (lễ tân 30 phút): có thao tác thì được gia hạn, im lặng quá hạn thì bị đăng xuất', async ({ page }) => {
@@ -54,7 +56,6 @@ test('đăng xuất rồi bấm Back: không quay lại được trang có dữ 
   await page.goto('/le-tan/khach-hang.html');
   await expect(page.locator('#tim')).toBeVisible();
   await dangXuat(page);
-  await veTrangDangNhap(page);
   await page.goBack();
   await page.waitForTimeout(1500);
   await veTrangDangNhap(page);                                        // trang bảo vệ tự đưa về đăng nhập
@@ -73,7 +74,6 @@ test('hai tab cùng tài khoản: đăng xuất ở tab này thì tab kia cũng 
     await b.goto('/thu-ngan/');
     await expect(b.locator('#ds-lap')).toBeVisible();
     await dangXuat(a);
-    await veTrangDangNhap(a);
     await b.reload();
     await veTrangDangNhap(b);
     await expect(b.locator('#ds-lap')).toHaveCount(0);
