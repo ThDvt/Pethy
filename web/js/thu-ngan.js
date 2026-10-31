@@ -14,10 +14,11 @@
   const rong = t => el('p',{class:'nho',style:'padding:14px 0'}, t);
   const da = h => (h.thanh_toan || []).reduce((s, t) => s + t.so_tien, 0);
 
+  const CHON_HD = 'id,lich_hen_id,tong_tien,trang_thai,created_at,thanh_toan(so_tien,phuong_thuc,thoi_gian),ct_hoa_don(mo_ta,so_luong,don_gia,thanh_tien),lich_hen(thu_cung(ten,chu_nuoi(ho_ten,so_dien_thoai)))';
   async function tai(){
     const [rl, rh, rn] = await Promise.all([
       db.from('lich_hen').select('id,thoi_gian,trang_thai,thu_cung(ten,chu_nuoi(ho_ten)),dich_vu(ten)').eq('trang_thai','da_hoan_thanh').gte('thoi_gian', bay).order('thoi_gian',{ascending:false}),
-      db.from('hoa_don').select('id,lich_hen_id,tong_tien,trang_thai,created_at,thanh_toan(so_tien,phuong_thuc,thoi_gian),ct_hoa_don(mo_ta,so_luong,don_gia,thanh_tien),lich_hen(thu_cung(ten,chu_nuoi(ho_ten,so_dien_thoai)))').neq('trang_thai','da_huy').gte('created_at', bay).order('created_at',{ascending:false}),
+      db.from('hoa_don').select(CHON_HD).neq('trang_thai','da_huy').gte('created_at', bay).order('created_at',{ascending:false}),
       db.rpc('doanh_thu_theo_ngay', { p_tu: homNay, p_den: homNay })
     ]);
     if (rl.error || rh.error) { baoLoi('Không tải được dữ liệu. Vui lòng tải lại trang.'); return; }
@@ -34,7 +35,10 @@
         const r = await db.rpc('lap_hoa_don', { p_lich: l.id });
         if (r.error) { baoLoi(loiRpc(r.error)); await tai(); return; }
         await tai();
-        const moi = lastHd.find(x => x.id === r.data); if (moi) moHoaDon(moi);
+        // Danh sách vừa tải có thể chưa kịp có hóa đơn mới (tải chồng nhau): nếu thiếu thì đọc thẳng hóa đơn đó để luôn mở được.
+        let moi = lastHd.find(x => x.id === r.data);
+        if (!moi) { const g = await db.from('hoa_don').select(CHON_HD).eq('id', r.data).limit(1); moi = g.data && g.data[0]; }
+        if (moi) moHoaDon(moi);
       }}, 'Lập hóa đơn'))) : [rong('Không có lịch nào đang chờ lập hóa đơn.')]);
 
     const dongHd = h => el('div',{class:'hang'},
