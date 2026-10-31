@@ -51,9 +51,9 @@ jobs:
             -d "{\"email\":\"$ADMIN_EMAIL\",\"password\":\"$ADMIN_PASS\",\"email_confirm\":true}" > /dev/null
           psql "$DB_URL" -v ON_ERROR_STOP=1 -q -c "UPDATE tai_khoan SET vai_tro = 'admin' WHERE id = (SELECT id FROM auth.users WHERE email = '$ADMIN_EMAIL');"
           { echo "E2E_SUPABASE_URL=$API_URL"; echo "E2E_SUPABASE_ANON_KEY=$ANON_KEY"; echo "E2E_ADMIN_EMAIL=$ADMIN_EMAIL"; echo "E2E_ADMIN_PASSWORD=$ADMIN_PASS"; echo "E2E_MAT_KHAU=$TEST_PASS"; } >> "$GITHUB_ENV"
-      - name: Cài thư viện và trình duyệt
+      - name: Cài thư viện và trình duyệt (Chrome, Firefox, WebKit gần với Safari)
         working-directory: e2e
-        run: npm install --no-audit --no-fund && npx playwright install --with-deps chromium
+        run: npm install --no-audit --no-fund && npx playwright install --with-deps chromium firefox webkit
       - name: Chạy kiểm thử
         working-directory: e2e
         run: npx playwright test

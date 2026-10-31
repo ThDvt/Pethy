@@ -13,6 +13,10 @@ export default defineConfig({
   webServer: { command: 'python3 -m http.server 4173 --directory ../web', url: 'http://localhost:4173/index.html', reuseExistingServer: !process.env.CI },
   projects: [
     { name: 'may-tinh', use: { ...devices['Desktop Chrome'] }, testIgnore: /dien-thoai/ },
-    { name: 'dien-thoai', use: { ...devices['Pixel 7'] }, testMatch: /dien-thoai/ }
+    { name: 'dien-thoai', use: { ...devices['Pixel 7'] }, testMatch: /dien-thoai/ },
+    // Trình duyệt khác Chrome. Chỉ chạy các kịch bản đại diện (đăng nhập, luồng đặt lịch đến thanh toán, giao diện điện thoại) để không kéo dài quá.
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] }, testMatch: /(01-dang-nhap|05-dat-lich)/ },
+    { name: 'safari-may-tinh', use: { ...devices['Desktop Safari'] }, testMatch: /(01-dang-nhap|05-dat-lich)/ },
+    { name: 'safari-iphone', use: { ...devices['iPhone 14'] }, testMatch: /dien-thoai/ }
   ]
 });

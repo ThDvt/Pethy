@@ -28,8 +28,15 @@
 
   async function vaiTro(){
     if (!db) return null;
-    const { data, error } = await db.rpc('vai_tro_hieu_luc');
-    return error ? null : data;   // null: chưa đăng nhập hoặc đang bảo trì
+    // Chưa có phiên đăng nhập thì không cần hỏi máy chủ.
+    try { const { data: { session } } = await db.auth.getSession(); if (!session) return null; } catch (_) { /* không đọc được phiên: cứ hỏi máy chủ */ }
+    // Lỗi mạng chập chờn hoặc làm mới phiên giữa chừng không được đá người đang đăng nhập về trang đăng nhập: thử lại tối đa 3 lần.
+    for (let lan = 0; lan < 3; lan++) {
+      const { data, error } = await db.rpc('vai_tro_hieu_luc');
+      if (!error) return data;   // null: chưa đăng nhập hoặc đang bảo trì
+      if (lan < 2) await new Promise(r => setTimeout(r, 400 * (lan + 1)));
+    }
+    return null;
   }
   async function dangXuat(){ if (!await xacNhan('Đăng xuất?', 'Bạn sẽ cần đăng nhập lại để tiếp tục.', 'Đăng xuất', 'chinh', 'Ở lại')) return; try { sessionStorage.removeItem('pethy.menu'); } catch (e) {} if (db) await db.auth.signOut(); location.href = '/'; }
 

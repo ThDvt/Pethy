@@ -40,7 +40,8 @@ test.describe('Phân quyền: vào khu không phải của mình thì bị đưa
       await dangNhap(page, TK[v], KHU[v]);
       const khuMinh = KHU[v].replace(/\/$/, '');
       for (const d of ds) {
-        await page.goto(d);
+        // WebKit báo lỗi khi trang tự chuyển hướng giữa lúc đang tải; điều cần kiểm tra là địa chỉ cuối cùng.
+        await page.goto(d).catch(e => { if (!/interrupted by another navigation/.test(String(e.message))) throw e; });
         await page.waitForURL(u => u.pathname.startsWith(khuMinh), { timeout: 15_000 });
       }
     });
@@ -62,7 +63,9 @@ test.describe('Phân quyền: vào khu không phải của mình thì bị đưa
       return ra;
     });
     expect(kq.danh_sach_tai_khoan).toBe('bi_chan');
-    for (const b of ['ho_so_kham', 'don_thuoc', 'nhat_ky', 'tin_nhan', 'thanh_toan']) expect(kq[b], b).not.toBeGreaterThan(0);
+    // nhật ký và tin nhắn nội bộ: chủ nuôi không đọc được dòng nào. Hồ sơ khám, đơn thuốc, thanh toán: chỉ phần của chính mình
+    // (số dòng phụ thuộc dữ liệu các test khác đã tạo; việc không thấy dữ liệu người khác được kiểm ở 14-co-lap-giua-chu-nuoi).
+    for (const b of ['nhat_ky', 'tin_nhan']) expect(kq[b], b).not.toBeGreaterThan(0);
     expect(kq.tai_khoan, 'chủ nuôi chỉ thấy chính mình').toBeLessThanOrEqual(1);
   });
 });
