@@ -3,6 +3,26 @@ import { chuanBiDuLieuDatLich, tonKho, DV, THUOC } from '../seed.js';
 
 // Một lượt đầy đủ qua giao diện, mỗi bước do đúng vai trò làm:
 // chủ nuôi thêm thú cưng và đặt lịch → lễ tân xác nhận → bác sĩ khám, kê đơn (trừ kho) → thu ngân lập hóa đơn, thu tiền → chủ nuôi thấy hóa đơn.
+// Bấm "Lập hóa đơn" và chờ hộp hóa đơn mở. Trên WebKit thỉnh thoảng cú bấm không tới được nút: khi đó trang không báo lỗi, nút không bị khóa
+// và không có yêu cầu nào gửi đi (đã ghi nhận từ các lần chẩn đoán). Chỉ trong đúng trường hợp đó mới bấm lại, và có ghi chú vào báo cáo.
+// Các trường hợp khác là lỗi thật nên không thử lại: hóa đơn đã lập mà hộp không mở, hoặc trang báo lỗi.
+async function bamLapHoaDon(tn, cho, hop){
+  const nut = cho.getByRole('button', { name: 'Lập hóa đơn' });
+  for (let lan = 1; lan <= 3; lan++) {
+    await nut.click();
+    try { await expect(hop).toBeVisible({ timeout: 8_000 }); return; }
+    catch (e) {
+      const loi = (await tn.locator('#loi-chung').isVisible()) ? await tn.locator('#loi-chung').textContent() : '';
+      if (loi) throw new Error('Lập hóa đơn báo lỗi: ' + loi);
+      if (await cho.count() === 0) throw new Error('Hóa đơn đã được lập (dòng chờ lập đã biến mất) nhưng hộp hóa đơn không mở');
+      if (await nut.isDisabled().catch(() => false)) throw new Error('Nút Lập hóa đơn đã bị khóa (mã xử lý đã chạy) nhưng hộp hóa đơn không mở');
+      if (lan === 3) throw new Error('Bấm Lập hóa đơn 3 lần, nút vẫn nguyên và không có phản hồi nào');
+      test.info().annotations.push({ type: 'bấm lại', description: `Cú bấm Lập hóa đơn lần ${lan} không tới được nút, bấm lại` });
+      console.log(`[bấm lại] Lập hóa đơn: cú bấm lần ${lan} không tới được nút (${test.info().project.name})`);
+    }
+  }
+}
+
 test('đặt lịch đến thanh toán, qua năm vai trò', async ({ browser }) => {
   test.setTimeout(180_000);
   const { thuocId } = await chuanBiDuLieuDatLich();
@@ -63,9 +83,8 @@ test('đặt lịch đến thanh toán, qua năm vai trò', async ({ browser }) 
     const tn = await mo(TK.thu_ngan, KHU.thu_ngan);
     const cho = tn.locator('#ds-lap .hang', { hasText: ten });
     await expect(cho).toHaveCount(1);
-    await cho.getByRole('button', { name: 'Lập hóa đơn' }).click();
     const hop = tn.locator('#hop');
-    await expect(hop).toBeVisible();
+    await bamLapHoaDon(tn, cho, hop);
     await expect(hop).toContainText(DV.ten);
     await expect(hop).toContainText(THUOC.ten);
     await expect(hop).toContainText(/190[.,]000/);                   // 150.000 dịch vụ + 2 x 20.000 thuốc
