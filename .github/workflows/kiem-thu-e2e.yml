@@ -56,7 +56,7 @@ jobs:
         run: npm install --no-audit --no-fund && npx playwright install --with-deps chromium firefox webkit
       - name: Chạy kiểm thử
         working-directory: e2e
-        run: npx playwright test
+        run: npx playwright test --project=safari-may-tinh -g "đặt lịch đến thanh toán" --repeat-each=12 --retries=0   # CHẨN ĐOÁN TẠM
       - name: Lưu báo cáo và ảnh chụp khi lỗi
         if: failure()
         uses: actions/upload-artifact@v4

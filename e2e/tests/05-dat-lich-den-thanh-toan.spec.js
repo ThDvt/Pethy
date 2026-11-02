@@ -63,9 +63,20 @@ test('đặt lịch đến thanh toán, qua năm vai trò', async ({ browser }) 
     const tn = await mo(TK.thu_ngan, KHU.thu_ngan);
     const cho = tn.locator('#ds-lap .hang', { hasText: ten });
     await expect(cho).toHaveCount(1);
+    const nhatKy = [];   // CHẨN ĐOÁN TẠM
+    tn.on('pageerror', e => nhatKy.push('pageerror: ' + e.message));
+    tn.on('console', m => { if (['error', 'warning'].includes(m.type())) nhatKy.push('console.' + m.type() + ': ' + m.text()); });
+    tn.on('requestfailed', r => nhatKy.push('requestfailed: ' + r.url() + ' ' + (r.failure() && r.failure().errorText)));
+    tn.on('response', async r => { if (/lap_hoa_don/.test(r.url())) nhatKy.push('lap_hoa_don -> ' + r.status() + ' ' + (await r.text().catch(() => '?')).slice(0, 200)); });
     await cho.getByRole('button', { name: 'Lập hóa đơn' }).click();
     const hop = tn.locator('#hop');
-    await expect(hop).toBeVisible();
+    try { await expect(hop).toBeVisible({ timeout: 12_000 }); }
+    catch (e) {
+      const loi = await tn.locator('#loi-chung').textContent().catch(() => '?');
+      const dong = await tn.locator('#ds-lap .hang', { hasText: ten }).count();
+      const nut = await tn.locator('#ds-lap .hang', { hasText: ten }).getByRole('button').first().isDisabled().catch(() => '?');
+      throw new Error('CHẨN ĐOÁN hộp hóa đơn không mở | loi-chung=' + JSON.stringify(loi) + ' | còn dòng chờ lập=' + dong + ' | nút disabled=' + nut + ' | nhật ký: ' + JSON.stringify(nhatKy));
+    }
     await expect(hop).toContainText(DV.ten);
     await expect(hop).toContainText(THUOC.ten);
     await expect(hop).toContainText(/190[.,]000/);                   // 150.000 dịch vụ + 2 x 20.000 thuốc
