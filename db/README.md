@@ -17,6 +17,7 @@ PostgreSQL trên Supabase. Toàn bộ nghiệp vụ và phân quyền nằm ở 
 | `09_chung_chi_bac_si.sql` | Bản vá cho CSDL đã cài trước: thêm `trinh_do`, `kinh_nghiem_nam`, `chung_chi` vào hồ sơ bác sĩ và vào view `bac_si_cong_khai`. |
 | `10_bai_viet.sql` | Bản vá cho CSDL đã cài trước: bảng `bai_viet` (tin tức do admin viết), hàm/trigger `dat_ngay_bai_viet`, chính sách RLS (khách chỉ đọc bài đã đăng, chỉ admin ghi), nhật ký thay đổi. |
 | `11_gioi_han_do_dai.sql` | Bản vá cho CSDL đã cài trước: giới hạn độ dài các cột văn bản do người dùng nhập (tên, loại, địa chỉ, ghi chú, chẩn đoán, lý do, số lô, liều dùng...), để gọi thẳng API cũng không lưu được chuỗi quá dài. Ràng buộc `NOT VALID`, không động đến dữ liệu cũ. |
+| `12_anh_dai_dien_dung_thu_muc.sql` | Bản vá cho CSDL đã cài trước: ảnh đại diện bác sĩ chỉ được trỏ vào thư mục của chính bác sĩ (chặn admin xóa nhầm ảnh bác sĩ khác) |
 | `test/` | Stub Supabase và các script thử cục bộ |
 
 ## Cài lên Supabase
@@ -123,3 +124,4 @@ Lỗi nghiệp vụ có dạng `MA_LOI: mô tả`; mã nằm trong `error.hint` 
 - `09_chung_chi_bac_si.sql`: trình độ, kinh nghiệm, chứng chỉ của bác sĩ (chạy sau 08).
 - `10_bai_viet.sql`: bài viết Góc thú y do admin quản lý (chạy sau 08).
 - `11_gioi_han_do_dai.sql`: giới hạn độ dài cột văn bản (chạy sau 08, có thể chạy bất kỳ lúc nào).
+- `12_anh_dai_dien_dung_thu_muc.sql`: ràng buộc ảnh đại diện bác sĩ (chạy sau 08, có thể chạy bất kỳ lúc nào).

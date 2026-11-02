@@ -16,7 +16,10 @@
     const url = await new Promise(ok => { const f = new FileReader(); f.onload = () => ok(f.result); f.readAsDataURL(b); });
     return { blob: b, xem: url, duoi: b.type === 'image/webp' ? 'webp' : 'jpg' };
   }
-  const duongCu = url => { const k = '/' + KHO_ANH + '/'; const i = url ? url.indexOf(k) : -1; return i < 0 ? null : decodeURIComponent(url.slice(i + k.length).split('?')[0]); };
+  // Chỉ nhận đường dẫn nằm trong thư mục của chính bác sĩ đang sửa. Admin được xóa mọi ảnh trong kho, nên không tin URL do bác sĩ nhập.
+  const duongCu = (url, idBs) => { const k = '/' + KHO_ANH + '/'; const i = url ? url.indexOf(k) : -1; if (i < 0) return null;
+    let d; try { d = decodeURIComponent(url.slice(i + k.length).split('?')[0]); } catch (e) { return null; }
+    return d.startsWith(idBs + '/') && !d.includes('..') ? d : null; };
   const chuCai = ten => (String(ten).trim().split(/\s+/).pop() || '?').charAt(0).toUpperCase();
 
   // Hồ sơ công khai của bác sĩ (hiện ở trang chủ): ảnh, chuyên môn và giới thiệu.
@@ -62,7 +65,7 @@
       } else if (xoaAnh) cot.anh_dai_dien = null;
       const { error } = await db.from('ho_so_bac_si').update(cot).eq('tai_khoan_id', tk.id);
       if (error) { if (duongMoi) await db.storage.from(KHO_ANH).remove([duongMoi]); return 'Không lưu được hồ sơ.'; }
-      const cuDuong = duongCu(cu);
+      const cuDuong = duongCu(cu, tk.id);
       if (cuDuong && (anhMoi || xoaAnh)) { try { await db.storage.from(KHO_ANH).remove([cuDuong]); } catch (e) {} }
       return null; }, lamMoi);
   }
