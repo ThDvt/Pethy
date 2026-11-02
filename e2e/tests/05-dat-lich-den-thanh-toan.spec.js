@@ -68,6 +68,11 @@ test('đặt lịch đến thanh toán, qua năm vai trò', async ({ browser }) 
     tn.on('console', m => { if (['error', 'warning'].includes(m.type())) nhatKy.push('console.' + m.type() + ': ' + m.text()); });
     tn.on('requestfailed', r => nhatKy.push('requestfailed: ' + r.url() + ' ' + (r.failure() && r.failure().errorText)));
     tn.on('response', async r => { if (/lap_hoa_don/.test(r.url())) nhatKy.push('lap_hoa_don -> ' + r.status() + ' ' + (await r.text().catch(() => '?')).slice(0, 200)); });
+    await tn.evaluate(() => {
+      window.__ev = []; const t0 = performance.now(); const gio = () => Math.round(performance.now() - t0);
+      for (const k of ['pointerdown', 'mousedown', 'mouseup', 'click']) document.addEventListener(k, e => window.__ev.push([gio(), k, (e.target && e.target.tagName) + '.' + (e.target && e.target.className), document.contains(e.target)]), true);
+      new MutationObserver(m => window.__ev.push([gio(), 'ds-lap đổi', m.length])).observe(document.getElementById('ds-lap'), { childList: true, subtree: true });
+    });
     await cho.getByRole('button', { name: 'Lập hóa đơn' }).click();
     const hop = tn.locator('#hop');
     try { await expect(hop).toBeVisible({ timeout: 12_000 }); }
@@ -75,7 +80,8 @@ test('đặt lịch đến thanh toán, qua năm vai trò', async ({ browser }) 
       const loi = await tn.locator('#loi-chung').textContent().catch(() => '?');
       const dong = await tn.locator('#ds-lap .hang', { hasText: ten }).count();
       const nut = await tn.locator('#ds-lap .hang', { hasText: ten }).getByRole('button').first().isDisabled().catch(() => '?');
-      throw new Error('CHẨN ĐOÁN hộp hóa đơn không mở | loi-chung=' + JSON.stringify(loi) + ' | còn dòng chờ lập=' + dong + ' | nút disabled=' + nut + ' | nhật ký: ' + JSON.stringify(nhatKy));
+      const sk = await tn.evaluate(() => JSON.stringify(window.__ev)).catch(() => '?');
+      throw new Error('CHẨN ĐOÁN hộp hóa đơn không mở | sự kiện=' + sk + ' | loi-chung=' + JSON.stringify(loi) + ' | còn dòng chờ lập=' + dong + ' | nút disabled=' + nut + ' | nhật ký: ' + JSON.stringify(nhatKy));
     }
     await expect(hop).toContainText(DV.ten);
     await expect(hop).toContainText(THUOC.ten);
