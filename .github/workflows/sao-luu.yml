@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   sao-luu:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # ghim phiên bản: ubuntu-latest đã chuyển sang 26.04, Playwright 1.49 và gói pgdg chưa chạy được ở đó
     timeout-minutes: 15
     steps:
       - name: Cài công cụ PostgreSQL 17

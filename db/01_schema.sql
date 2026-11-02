@@ -379,6 +379,11 @@ BEGIN
   END LOOP;
 END $$;
 
+-- Ảnh đại diện bác sĩ chỉ được trỏ vào thư mục của chính bác sĩ đó (xem db/12_anh_dai_dien_dung_thu_muc.sql).
+ALTER TABLE public.ho_so_bac_si DROP CONSTRAINT IF EXISTS ho_so_bac_si_anh_dai_dien_dung_thu_muc;
+ALTER TABLE public.ho_so_bac_si ADD CONSTRAINT ho_so_bac_si_anh_dai_dien_dung_thu_muc
+  CHECK (anh_dai_dien IS NULL OR (length(anh_dai_dien) <= 500 AND position('/avatar-bac-si/' || tai_khoan_id::text || '/' IN anh_dai_dien) > 0)) NOT VALID;
+
 
 -- ---------------------------------------------------------------------
 -- DỮ LIỆU CẤU HÌNH KHỞI TẠO (bắt buộc để hệ thống chạy)
