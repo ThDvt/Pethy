@@ -3,11 +3,41 @@ import { test, expect, CFG, TK, KHU, dangNhap, ngCanhMoi } from '../helpers.js';
 import { chuanBiDuLieuDatLich, dn } from '../seed.js';
 import { ok } from '../api.js';
 import { pngGia } from '../luong.js';
+import { psql, CO_DB } from '../luong-lon.js';
 
 // Rà soát bảo mật nêu giả thuyết: bác sĩ A đặt URL ảnh đại diện của mình trỏ vào ảnh của bác sĩ B; khi admin gỡ ảnh của A,
 // trang admin xóa nhầm ảnh của B (vì admin được xóa mọi ảnh trong kho). Test này dựng đúng kịch bản đó bằng người dùng thật.
 // Hành vi đúng: ảnh của B phải còn nguyên, dù chính sách lưu trữ có chặn bước đặt URL hay chặn bước xóa.
+const RANG_BUOC = 'ho_so_bac_si_anh_dai_dien_dung_thu_muc';
+
+test('cơ sở dữ liệu từ chối URL ảnh đại diện trỏ ra ngoài thư mục của chính bác sĩ', async () => {
+  await chuanBiDuLieuDatLich();
+  const a = await dn(TK.bac_si);
+  const nguoiLa = `${'00000000-0000-4000-8000-000000000001'}/avatar-x.png`;
+  const r = await a.c.from('ho_so_bac_si').update({ anh_dai_dien: `https://x.example/storage/v1/object/public/avatar-bac-si/${nguoiLa}` }).eq('tai_khoan_id', a.id);
+  expect(r.error, 'đặt URL vào thư mục người khác phải bị từ chối').not.toBeNull();
+  const ok1 = await a.c.from('ho_so_bac_si').update({ anh_dai_dien: `https://x.example/storage/v1/object/public/avatar-bac-si/${a.id}/avatar-1.png` }).eq('tai_khoan_id', a.id);
+  expect(ok1.error, 'URL trong thư mục của chính mình vẫn được').toBeNull();
+  await a.c.from('ho_so_bac_si').update({ anh_dai_dien: null }).eq('tai_khoan_id', a.id);
+});
+
 test('admin gỡ ảnh của bác sĩ A không được xóa ảnh của bác sĩ B dù A đã đặt URL trỏ sang ảnh của B', async ({ browser }) => {
+  await kichBan(browser, false);
+});
+
+// Kiểm tra riêng lớp giao diện: gỡ tạm ràng buộc của cơ sở dữ liệu để dữ liệu "bẩn" lọt vào được, rồi gắn lại.
+test('lớp giao diện một mình cũng không xóa nhầm khi dữ liệu đã bị đặt sai (gỡ tạm ràng buộc CSDL)', async ({ browser }) => {
+  test.skip(!CO_DB, 'Cần E2E_DB_URL');
+  psql(`ALTER TABLE public.ho_so_bac_si DROP CONSTRAINT IF EXISTS ${RANG_BUOC};`);
+  try { await kichBan(browser, true); }
+  finally {
+    psql(`UPDATE public.ho_so_bac_si SET anh_dai_dien = NULL WHERE anh_dai_dien IS NOT NULL AND position('/avatar-bac-si/' || tai_khoan_id::text || '/' IN anh_dai_dien) = 0;
+          ALTER TABLE public.ho_so_bac_si DROP CONSTRAINT IF EXISTS ${RANG_BUOC};
+          ALTER TABLE public.ho_so_bac_si ADD CONSTRAINT ${RANG_BUOC} CHECK (anh_dai_dien IS NULL OR (length(anh_dai_dien) <= 500 AND position('/avatar-bac-si/' || tai_khoan_id::text || '/' IN anh_dai_dien) > 0)) NOT VALID;`);
+  }
+});
+
+async function kichBan(browser, phaiDatDuoc){
   test.setTimeout(150_000);
   await chuanBiDuLieuDatLich();
   const KHO = 'avatar-bac-si';
@@ -29,6 +59,7 @@ test('admin gỡ ảnh của bác sĩ A không được xóa ảnh của bác s�
   const a = await dn(TK.bac_si);
   const dat = await a.c.from('ho_so_bac_si').update({ anh_dai_dien: urlB }).eq('tai_khoan_id', a.id);
   const datDuoc = !dat.error;
+  if (phaiDatDuoc) expect(datDuoc, 'ở ca này dữ liệu bẩn phải lọt vào được để thử lớp giao diện').toBe(true);
 
   // admin mở hồ sơ A rồi gỡ ảnh (nếu bước đặt URL bị chặn thì A có thể không có ảnh nào để gỡ)
   const c = await ngCanhMoi(browser), p = await c.newPage();
@@ -44,4 +75,4 @@ test('admin gỡ ảnh của bác sĩ A không được xóa ảnh của bác s�
   } finally { await c.close(); }
 
   expect(await conTon(), `ảnh của B vẫn phải còn (bước đặt URL của A ${datDuoc ? 'được chấp nhận' : 'đã bị chặn'})`).toBe(true);
-});
+}
