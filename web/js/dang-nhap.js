@@ -49,6 +49,29 @@
   const loi = m => { $('loi').textContent = m; $('loi').hidden = false; $('thong-bao').hidden = true; };
   const tb = m => { $('thong-bao').textContent = m; $('thong-bao').hidden = false; $('loi').hidden = true; };
 
+  // Đăng ký xong mà cần xác nhận email: thay biểu mẫu bằng màn chờ, xóa mật khẩu đã gõ, và tự đi tiếp khi người dùng đã bấm liên kết trong thư
+  // (bấm ở tab khác của cùng trình duyệt thì phiên được chia sẻ nên tab này nhận ra).
+  let choXn = false;
+  function hienChoXacNhan(email){
+    choXn = true;
+    $('mat-khau').value = ''; $('mat-khau-2').value = '';
+    $('form').hidden = true; document.querySelector('.tab').style.display = 'none';
+    $('tieu-de').textContent = 'Kiểm tra email của bạn'; $('cx-email').textContent = email; $('cho-xac-nhan').hidden = false;
+  }
+  function boChoXacNhan(){ choXn = false; $('cho-xac-nhan').hidden = true; $('form').hidden = false; hienChe(); }
+  $('cx-quay').onclick = boChoXacNhan;
+  async function tuDiTiep(){
+    if (!choXn || !db) return;
+    const { data } = await db.auth.getSession();
+    if (!data || !data.session) return;
+    choXn = false;
+    if (await vaoKhu() === false) boChoXacNhan();
+  }
+  if (db && thuc) {
+    db.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_IN') setTimeout(tuDiTiep, 0); });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) tuDiTiep(); });
+  }
+
   let cho2fa = null;   // factorId đang chờ nhập mã
   async function vaoKhu(){
     // Tài khoản có xác thực hai lớp: phải nhập mã trước khi được cấp vai trò.
@@ -126,7 +149,7 @@
         if (!/^(\+84|0)[0-9]{9}$/.test(sdt)) { loi('Số điện thoại chưa hợp lệ (ví dụ 0901234567).'); return; }
         const { data, error } = await db.auth.signUp({ email, password: mk, options: { captchaToken, data: { ho_ten: ten, so_dien_thoai: sdt } } });
         if (error) { loi(loiDangKy(error)); return; }
-        if (data.session) await vaoKhu(); else tb('Đã gửi email xác nhận. Mở email và bấm liên kết, rồi quay lại đăng nhập.');
+        if (data.session) await vaoKhu(); else hienChoXacNhan(email);
       } else {
         const { error } = await db.auth.signInWithPassword({ email, password: mk, options: { captchaToken } });
         if (error) { loi('Email hoặc mật khẩu không đúng.'); return; }   // một thông báo chung, không lộ email nào tồn tại
@@ -140,7 +163,16 @@
     if (!h.get('type') && !h.get('error_code')) return;
     history.replaceState(null, '', location.pathname);
     if (h.get('error_code') || h.get('error')) { che = 'quen'; hienChe(); loi('Liên kết đã hết hạn hoặc đã dùng rồi. Nhập email để nhận liên kết mới.'); return; }
-    if (h.get('type') !== 'recovery' || !thuc) return;
+    if (!thuc) return;
+    // Liên kết xác nhận đăng ký: tạo phiên từ mã trong liên kết rồi vào khu. Tab đã dùng để đăng ký (đang chờ xác nhận) nhận sự kiện đăng nhập và tự vào khu theo.
+    if (h.get('type') === 'signup') {
+      const dn = await db.auth.setSession({ access_token: h.get('access_token'), refresh_token: h.get('refresh_token') });
+      if (dn.error) { loi('Liên kết xác nhận không hợp lệ hoặc đã dùng rồi. Hãy đăng nhập bằng email và mật khẩu bạn đã đăng ký.'); return; }
+      tb('Đã xác nhận email. Đang đưa bạn vào hệ thống…');
+      if (await vaoKhu() === false) return;
+      return;
+    }
+    if (h.get('type') !== 'recovery') return;
     const { error } = await db.auth.setSession({ access_token: h.get('access_token'), refresh_token: h.get('refresh_token') });
     if (error) { che = 'quen'; hienChe(); loi('Liên kết không hợp lệ. Nhập email để nhận liên kết mới.'); return; }
     che = 'dat'; hienChe();
