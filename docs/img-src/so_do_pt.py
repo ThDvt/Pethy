@@ -92,14 +92,14 @@ flow(ax,(6.0,8.02),(6.0,5.75),"mã kiểm tra",at=0.5,off=(-0.75,0)); flow(ax,(7
 flow(ax,(6.5,3.05),(6.5,0.78),"thư xác nhận email,\nthư đặt lại mật khẩu",at=0.5,off=(1.15,0))
 f.savefig(OUT+"hinh-2-5-dfd-ngu-canh.png",dpi=200); plt.close(f)
 # ---- level 1
-W,H=14,11; f,ax=fig(W,H)
+W,H=15,11; f,ax=fig(W,H)
 P={1:(5,9.0,"1.0\nXác thực và\ntài khoản"),2:(3,6.0,"2.0\nKhách hàng và\nthú cưng"),3:(7,6.0,"3.0\nĐặt lịch và\nquản lý lịch hẹn"),4:(11,6.0,"4.0\nKhám, kê đơn,\ntiêm phòng"),
    7:(3,2.6,"7.0\nBáo cáo và\nnhật ký"),6:(7,2.6,"6.0\nHóa đơn và\nthanh toán"),5:(11,2.6,"5.0\nKho thuốc")}
 for k,(x,y,t) in P.items(): proc(ax,x,y,t)
-for (x,y,c,t,w) in [(9,9.0,"D1","Tài khoản, vai trò",2.6),(3,7.6,"D2","Chủ nuôi, thú cưng",2.5),(7,7.6,"D3","Lịch hẹn, dịch vụ",2.5),(11,7.6,"D4","Hồ sơ khám, đơn, mũi tiêm",3.0),
-    (3,0.8,"D7","Nhật ký thao tác",2.5),(7,0.8,"D6","Hóa đơn, thanh toán",2.5),(11,0.8,"D5","Thuốc, lô, biến động kho",3.0)]: store(ax,x,y,c,t,w=w)
-ent(ax,1.1,9.0,"Chủ nuôi",w=1.5); ent(ax,5,10.4,"Quản trị viên",w=1.8); ent(ax,5,4.1,"Lễ tân",w=1.3); ent(ax,13.0,6.9,"Bác sĩ",w=1.3)
-ent(ax,13.0,2.6,"Thủ kho",w=1.3); ent(ax,9.3,1.5,"Thu ngân",w=1.4); ent(ax,1.0,4.3,"Quản trị viên",w=1.6)
+for (x,y,c,t,w) in [(9,9.0,"D1","Tài khoản, vai trò",2.6),(3.5,7.6,"D2","Chủ nuôi, thú cưng",2.4),(7,7.6,"D3","Lịch hẹn, dịch vụ",2.5),(11,7.6,"D4","Hồ sơ khám, đơn, mũi tiêm",3.0),
+    (3,0.8,"D7","Nhật ký thao tác",2.5),(7,0.8,"D6","Hóa đơn, thanh toán",2.5),(11.3,0.8,"D5","Thuốc, lô, biến động kho",2.8)]: store(ax,x,y,c,t,w=w)
+ent(ax,1.1,9.0,"Chủ nuôi",w=1.5); ent(ax,5,10.4,"Quản trị viên",w=1.8); ent(ax,5,4.1,"Lễ tân",w=1.3); ent(ax,13.9,6.9,"Bác sĩ",w=1.3)
+ent(ax,13.9,2.6,"Thủ kho",w=1.3); ent(ax,9.0,0.8,"Thu ngân",w=1.3); ent(ax,1.0,4.3,"Quản trị viên",w=1.6)
 # 1.0
 flow(ax,(1.85,9.0),(3.75,9.0),"đăng ký,\nđăng nhập",off=(0,0.42))
 flow(ax,(5,10.12),(5,9.85),both=False); lab(ax,(6.2,10.0),"phân quyền, khóa",ha="left")
@@ -108,21 +108,22 @@ flow(ax,(6.25,9.0),(7.7,9.0),both=True)
 flow(ax,(1.1,8.72),(2.2,6.78),"thông tin\nthú cưng",at=0.4,off=(-0.7,0))
 for x in (3,7,11): flow(ax,(x,7.35),(x,6.85),both=True)
 flow(ax,(4.4,4.3),(3.4,5.25),both=True); lab(ax,(2.6,4.5),"khách trực tiếp,\ngộp hồ sơ")
-flow(ax,(5.6,4.3),(6.4,5.25),both=True); lab(ax,(7.3,4.5),"đặt hộ, xác nhận /\nlịch chờ, việc nhắc")
+flow(ax,(5.6,4.3),(6.4,5.25),both=True); lab(ax,(5.0,3.55),"đặt hộ, xác nhận /\nlịch chờ, việc nhắc")
 flow(ax,(4.25,6.0),(5.75,6.0),"thú cưng\ncủa chủ",off=(0,0.42))
 flow(ax,(8.25,6.0),(9.75,6.0),"lịch đã xác nhận /\nhoàn thành",both=True,off=(0,0.45))
-flow(ax,(12.35,6.8),(12.0,6.45),both=True); lab(ax,(12.9,5.9),"hồ sơ khám, đơn,\nmũi tiêm / lịch khám")
+flow(ax,(13.25,6.7),(11.95,6.5),both=True); lab(ax,(13.5,5.9),"hồ sơ khám, đơn,\nmũi tiêm / lịch khám")
 # 4.0 -> 5.0, 3.0 -> 6.0, 4.0 -> 6.0
 flow(ax,(11,5.15),(11,3.45),"xuất kho\ntheo đơn",off=(0.8,0))
 flow(ax,(7,5.15),(7,3.45),"lịch hoàn\nthành",off=(0.75,0))
 flow(ax,(10.1,5.4),(8.1,3.3)); lab(ax,(9.45,4.35),"thuốc,\nmũi tiêm")
 # 5.0
 flow(ax,(11,1.75),(11,1.05),both=True)
-flow(ax,(12.3,2.6),(12.0,2.6),both=True); lab(ax,(12.9,3.5),"nhập kho, kiểm kê /\ntồn, cảnh báo")
+flow(ax,(13.25,2.6),(12.25,2.6),both=True); lab(ax,(12.9,3.5),"nhập kho, kiểm kê /\ntồn, cảnh báo")
 # 6.0
 flow(ax,(7,1.75),(7,1.05),both=True)
 # 7.0
 flow(ax,(5.75,2.6),(4.25,2.6),"thanh toán\n(từ D6)",off=(0,0.42))
 flow(ax,(3,1.75),(3,1.05),both=True)
 flow(ax,(1.2,4.0),(2.3,3.3),both=True); lab(ax,(0.9,3.5),"xem báo cáo /\ndoanh thu, nhật ký")
+flow(ax,(9.0,1.08),(8.0,2.0),both=True); lab(ax,(9.2,1.75),"lập hóa đơn,\nthu tiền / hóa đơn",)
 f.savefig(OUT+"hinh-2-6-dfd-muc-1.png",dpi=200); plt.close(f)
