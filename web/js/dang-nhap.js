@@ -166,14 +166,15 @@
     if (!thuc) return;
     // Liên kết xác nhận đăng ký: tạo phiên từ mã trong liên kết rồi vào khu. Tab đã dùng để đăng ký (đang chờ xác nhận) nhận sự kiện đăng nhập và tự vào khu theo.
     if (h.get('type') === 'signup') {
-      const dn = await db.auth.setSession({ access_token: h.get('access_token'), refresh_token: h.get('refresh_token') });
+      // setSession ném ngoại lệ (không trả lỗi) khi mã trong liên kết không phải JWT, ví dụ thư bị cắt cụt, nên phải bắt cả hai trường hợp.
+      const dn = await db.auth.setSession({ access_token: h.get('access_token'), refresh_token: h.get('refresh_token') }).catch(e => ({ error: e }));
       if (dn.error) { loi('Liên kết xác nhận không hợp lệ hoặc đã dùng rồi. Hãy đăng nhập bằng email và mật khẩu bạn đã đăng ký.'); return; }
       tb('Đã xác nhận email. Đang đưa bạn vào hệ thống…');
       if (await vaoKhu() === false) return;
       return;
     }
     if (h.get('type') !== 'recovery') return;
-    const { error } = await db.auth.setSession({ access_token: h.get('access_token'), refresh_token: h.get('refresh_token') });
+    const { error } = await db.auth.setSession({ access_token: h.get('access_token'), refresh_token: h.get('refresh_token') }).catch(e => ({ error: e }));
     if (error) { che = 'quen'; hienChe(); loi('Liên kết không hợp lệ. Nhập email để nhận liên kết mới.'); return; }
     che = 'dat'; hienChe();
   })();
