@@ -57,13 +57,28 @@
     $('mat-khau').value = ''; $('mat-khau-2').value = '';
     $('form').hidden = true; document.querySelector('.tab').style.display = 'none';
     $('tieu-de').textContent = 'Kiểm tra email của bạn'; $('cx-email').textContent = email; $('cho-xac-nhan').hidden = false;
+    $('ma-xn').value = ''; $('loi-ma').hidden = true; $('ma-xn').focus();
   }
   function boChoXacNhan(){ choXn = false; $('cho-xac-nhan').hidden = true; $('form').hidden = false; hienChe(); }
   $('cx-quay').onclick = boChoXacNhan;
+  // Nhập mã xác nhận từ thư: xác minh ngay tại tab này, không cần mở liên kết.
+  $('form-ma').addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const ma = $('ma-xn').value.replace(/\s/g, ''), loiMa = m => { $('loi-ma').textContent = m; $('loi-ma').hidden = false; };
+    if (!/^[0-9]{6,10}$/.test(ma)) { loiMa('Mã gồm 6 đến 10 chữ số, xem trong thư.'); return; }
+    $('gui-ma').disabled = true; $('loi-ma').hidden = true;
+    try {
+      const { error } = await db.auth.verifyOtp({ email: $('cx-email').textContent, token: ma, type: 'signup' }).catch(e => ({ error: e }));
+      if (error) { loiMa('Mã không đúng hoặc đã hết hạn. Kiểm tra lại mã trong thư mới nhất.'); return; }
+      if (!choXn) return;
+      choXn = false;
+      if (await vaoKhu() === false) boChoXacNhan();
+    } finally { $('gui-ma').disabled = false; }
+  });
   async function tuDiTiep(){
     if (!choXn || !db) return;
     const { data } = await db.auth.getSession();
-    if (!data || !data.session) return;
+    if (!data || !data.session || !choXn) return;
     choXn = false;
     if (await vaoKhu() === false) boChoXacNhan();
   }
