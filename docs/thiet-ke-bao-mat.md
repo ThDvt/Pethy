@@ -67,7 +67,8 @@ Tác nhân: người lạ trên internet (quét, spam, dò mật khẩu), chủ 
 - Không tự dựng máy chủ lọc lưu lượng riêng; chấp nhận giới hạn của gói miễn phí.
 - Không chống được hoàn toàn một cuộc DDoS lớn nhắm thẳng vào API Supabase; đã có công tắc bảo trì và theo dõi để phản ứng.
 - Chưa có xác thực hai lớp bắt buộc cho mọi nhân viên, chỉ bắt buộc với admin.
-- Dữ liệu cá nhân: cần trang chính sách quyền riêng tư và xin đồng ý khi đăng ký; nên đối chiếu với quy định hiện hành về bảo vệ dữ liệu cá nhân của Việt Nam.
+- Dữ liệu cá nhân: đã có trang `/chinh-sach-rieng-tu.html` và ô đồng ý (không tích sẵn, bắt buộc) khi đăng ký; thời điểm đồng ý và bản chính sách được lưu trong siêu dữ liệu tài khoản (`dong_y_chinh_sach`, `ban_chinh_sach`). Yêu cầu xem, sửa, xóa dữ liệu hiện xử lý thủ công qua liên hệ phòng khám, chưa có chức năng tự phục vụ.
+- Điểm cần xác nhận pháp lý (chưa kết luận được): dữ liệu lưu trên Supabase đặt tại Sydney (Úc), tức ngoài Việt Nam. Luật Bảo vệ dữ liệu cá nhân 2025 (Luật 91/2025/QH15, hiệu lực 01/01/2026) có quy định về chuyển dữ liệu ra nước ngoài và miễn trừ cho hộ kinh doanh, doanh nghiệp siêu nhỏ. Dự án chưa đối chiếu với văn bản luật gốc và chưa có ý kiến của luật sư, nên chưa xác định được nghĩa vụ cụ thể.
 
 ## 5. Danh sách cần làm trước khi chạy thật (theo thứ tự ưu tiên)
 

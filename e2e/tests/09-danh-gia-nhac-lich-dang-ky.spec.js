@@ -1,4 +1,5 @@
-import { test, expect, TK, KHU, dangNhap, ngCanhMoi } from '../helpers.js';
+import { createClient } from '@supabase/supabase-js';
+import { test, expect, CFG, TK, KHU, dangNhap, ngCanhMoi } from '../helpers.js';
 import { chuanBiDuLieuTiem, dn, DV, DV_TIEM, VACCINE } from '../seed.js';
 import { ngayVN } from './../luong.js';
 
@@ -124,8 +125,20 @@ test('đăng ký tài khoản chủ nuôi: kiểm tra đầu vào, tạo đượ
     await p.locator('#gui').click();
     await expect(p.locator('#loi')).toContainText('Số điện thoại');
     await p.locator('#sdt').fill('0912345678');
+    // chưa đồng ý chính sách quyền riêng tư thì không tạo được tài khoản
+    await expect(p.locator('#dong-y')).not.toBeChecked();
+    await p.locator('#gui').click();
+    await expect(p.locator('#loi')).toContainText('đồng ý với Chính sách quyền riêng tư');
+    expect(new URL(p.url()).pathname.startsWith('/chu-nuoi')).toBe(false);
+    await p.locator('#dong-y').check();
     await p.locator('#gui').click();
     await p.waitForURL(u => u.pathname.startsWith('/chu-nuoi'), { timeout: 20_000 });
+    // thời điểm đồng ý được lưu cùng tài khoản
+    const api = createClient(CFG.url, CFG.anon, { auth: { persistSession: false, autoRefreshToken: false } });
+    const dnApi = await api.auth.signInWithPassword({ email, password: mk });
+    expect(dnApi.error).toBeNull();
+    expect(new Date(dnApi.data.user.user_metadata.dong_y_chinh_sach).getTime(), 'có thời điểm đồng ý hợp lệ').toBeGreaterThan(Date.now() - 120_000);
+    expect(dnApi.data.user.user_metadata.ban_chinh_sach).toBe('2026-11-03');
   } finally { await c.close(); }
 
   // email đã có tài khoản
@@ -134,6 +147,7 @@ test('đăng ký tài khoản chủ nuôi: kiểm tra đầu vào, tạo đượ
     await q.goto('/dang-nhap.html?dang-ky');
     await q.locator('#ho-ten').fill('Người trùng'); await q.locator('#sdt').fill('0912345679');
     await q.locator('#email').fill(email); await q.locator('#mat-khau').fill(mk); await q.locator('#mat-khau-2').fill(mk);
+    await q.locator('#dong-y').check();
     await q.locator('#gui').click();
     await expect(q.locator('#loi')).toBeVisible();
     expect(new URL(q.url()).pathname.startsWith('/chu-nuoi')).toBe(false);

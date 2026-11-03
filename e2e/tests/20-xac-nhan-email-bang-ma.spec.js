@@ -17,6 +17,7 @@ async function dangKyDenManChoMa(c, email, mk, sdt) {
   await tab.locator('#email').fill(email);
   await tab.locator('#mat-khau').fill(mk);
   await tab.locator('#mat-khau-2').fill(mk);
+  await tab.locator('#dong-y').check();
   await tab.locator('#gui').click();
   await expect(tab.locator('#tieu-de')).toHaveText('Kiểm tra email của bạn');
   await expect(tab.locator('#ma-xn')).toBeVisible();
