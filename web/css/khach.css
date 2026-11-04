@@ -242,3 +242,4 @@ dialog.xac-nhan{border:2px solid var(--muc);border-radius:24px}
 #bv-them[hidden]{display:none}
 img.bv-anh{display:block;width:calc(100% + 48px);max-width:none;height:auto;aspect-ratio:16/9;margin:-24px -24px 6px;border-bottom:2px solid var(--muc);border-radius:22px 22px 0 0;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
 img.bv-bia{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border:2px solid var(--muc);border-radius:24px;margin:0 0 28px}
+.khach .o-tich{display:flex;gap:12px;align-items:center;font-weight:400;cursor:pointer;line-height:1.4;margin:0}.khach .o-tich input{flex:none;width:22px;height:22px;min-height:0;padding:0;margin:0;border-radius:6px;accent-color:var(--muc);cursor:pointer}
