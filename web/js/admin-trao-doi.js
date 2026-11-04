@@ -2,19 +2,21 @@
   const { db, el } = Pethy, A = Pethy.admin, { loiRpc } = Pethy.khu, $ = A.$, H = Pethy.hopTin;
   if (!await A.boot('/admin/trao-doi.html')) return;
   const me = (await db.auth.getUser()).data?.user?.id;
-  let chon = null, pane = null, dem = -1, luong = null;
+  let chon = null, pane = null, dem = -1, luong = null, anhBs = {};
   const goc = el('div', { class: 'tn' }), dsLuong = el('div', { class: 'tn-ds', role: 'list', 'aria-label': 'Danh sách nhân viên' }),
     vungChat = el('div', { class: 'tn-chat', hidden: true }), chuaChon = el('div', { class: 'tn-rong' }, 'Chọn một nhân viên để xem trao đổi.');
   goc.append(dsLuong, vungChat, chuaChon);
 
   async function taiLuong(){
-    const r = await db.from('hop_thu_noi_bo').select('nhan_vien_id,ho_ten,vai_tro,tin_cuoi,thoi_diem_cuoi,chua_doc');
+    const [r, a] = await Promise.all([db.from('hop_thu_noi_bo').select('nhan_vien_id,ho_ten,vai_tro,tin_cuoi,thoi_diem_cuoi,chua_doc'),
+      db.from('ho_so_bac_si').select('tai_khoan_id,anh_dai_dien').not('anh_dai_dien', 'is', null)]);
     if (r.error) return A.baoLoi('Không tải được hộp thư.');
+    if (!a.error) anhBs = Object.fromEntries((a.data || []).map(z => [z.tai_khoan_id, z.anh_dai_dien])); // lỗi thì giữ chữ cái, không chặn hộp thư
     const d = (r.data || []).slice().sort((a, b) => String(b.thoi_diem_cuoi || '').localeCompare(String(a.thoi_diem_cuoi || '')));
     dsLuong.replaceChildren(...(d.length ? d.map(x => {
       const dangChon = chon && chon.nhan_vien_id === x.nhan_vien_id, coMoi = x.chua_doc > 0;
       return el('button', { type: 'button', class: 'tn-muc' + (coMoi ? ' chua-doc' : ''), 'aria-current': dangChon ? 'true' : null, onclick: () => mo(x) },
-        H.avatar(x.ho_ten),
+        H.avatar(x.ho_ten, anhBs[x.nhan_vien_id]),
         el('div', { class: 'tn-thong' },
           el('div', { class: 'tn-hang1' }, el('span', { class: 'tn-ten' }, x.ho_ten), el('span', { class: 'tn-t' }, H.nhanGon(x.thoi_diem_cuoi))),
           el('div', { class: 'tn-vai' }, A.VAI[x.vai_tro]),
@@ -33,7 +35,7 @@
     });
     const lui = el('button', { type: 'button', class: 'tn-lui', 'aria-label': 'Quay lại danh sách', onclick: () => { goc.classList.remove('dang-chat'); chon = null; taiLuong(); } });
     lui.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></svg>';
-    vungChat.replaceChildren(el('div', { class: 'tn-dau' }, lui, H.avatar(x.ho_ten), el('div', {}, el('div', { class: 'tn-ten' }, x.ho_ten), el('div', { class: 'tn-vai' }, A.VAI[x.vai_tro]))), tin, soan.khung);
+    vungChat.replaceChildren(el('div', { class: 'tn-dau' }, lui, H.avatar(x.ho_ten, anhBs[x.nhan_vien_id]), el('div', {}, el('div', { class: 'tn-ten' }, x.ho_ten), el('div', { class: 'tn-vai' }, A.VAI[x.vai_tro]))), tin, soan.khung);
     return { tin, soan };
   }
   async function mo(x){
