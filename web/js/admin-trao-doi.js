@@ -1,38 +1,62 @@
 (async function(){
-  const { db, el } = Pethy, A = Pethy.admin, { loiRpc } = Pethy.khu, $ = A.$;
+  const { db, el } = Pethy, A = Pethy.admin, { loiRpc } = Pethy.khu, $ = A.$, H = Pethy.hopTin;
   if (!await A.boot('/admin/trao-doi.html')) return;
   const me = (await db.auth.getUser()).data?.user?.id;
-  let chon = null;
-  const dsLuong = el('div',{style:'flex:0 0 260px;border-top:2px solid var(--muc)'}), khung = el('div',{style:'flex:1 1 320px;min-width:0'});
-  const gio = iso => new Date(iso).toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Ho_Chi_Minh'});
+  let chon = null, pane = null, dem = -1, luong = null;
+  const goc = el('div', { class: 'tn' }), dsLuong = el('div', { class: 'tn-ds', role: 'list', 'aria-label': 'Danh sách nhân viên' }),
+    vungChat = el('div', { class: 'tn-chat', hidden: true }), chuaChon = el('div', { class: 'tn-rong' }, 'Chọn một nhân viên để xem trao đổi.');
+  goc.append(dsLuong, vungChat, chuaChon);
+
   async function taiLuong(){
     const r = await db.from('hop_thu_noi_bo').select('nhan_vien_id,ho_ten,vai_tro,tin_cuoi,thoi_diem_cuoi,chua_doc');
     if (r.error) return A.baoLoi('Không tải được hộp thư.');
     const d = (r.data || []).slice().sort((a, b) => String(b.thoi_diem_cuoi || '').localeCompare(String(a.thoi_diem_cuoi || '')));
-    dsLuong.replaceChildren(...(d.length ? d.map(x => el('button',{type:'button',class:'hang',style:'width:100%;text-align:left;background:' + (chon && chon.nhan_vien_id === x.nhan_vien_id ? 'var(--nen-nhat)' : 'none') + ';border-left:0;border-right:0;border-top:0;cursor:pointer;display:block',onclick:() => { chon = x; taiLuong(); taiTin(); }},
-      el('div',{style:'font-weight:700;display:flex;justify-content:space-between'}, el('span',{}, x.ho_ten), x.chua_doc > 0 ? el('span',{class:'tt do'}, String(x.chua_doc)) : ''),
-      el('div',{class:'nho'}, A.VAI[x.vai_tro]), el('div',{class:'nho',style:'overflow:hidden;text-overflow:ellipsis;white-space:nowrap'}, x.tin_cuoi || 'Chưa có tin nhắn'))) : [A.rong('Chưa có tài khoản nhân viên nào.')]));
+    dsLuong.replaceChildren(...(d.length ? d.map(x => {
+      const dangChon = chon && chon.nhan_vien_id === x.nhan_vien_id, coMoi = x.chua_doc > 0;
+      return el('button', { type: 'button', class: 'tn-muc' + (coMoi ? ' chua-doc' : ''), 'aria-current': dangChon ? 'true' : null, onclick: () => mo(x) },
+        H.avatar(x.ho_ten),
+        el('div', { class: 'tn-thong' },
+          el('div', { class: 'tn-hang1' }, el('span', { class: 'tn-ten' }, x.ho_ten), el('span', { class: 'tn-t' }, H.nhanGon(x.thoi_diem_cuoi))),
+          el('div', { class: 'tn-vai' }, A.VAI[x.vai_tro]),
+          el('div', { class: 'tn-hang2' }, el('span', { class: 'tn-xem' }, x.tin_cuoi || 'Chưa có tin nhắn'), coMoi ? el('span', { class: 'tn-so', 'aria-label': x.chua_doc + ' tin chưa đọc' }, String(x.chua_doc)) : null)));
+    }) : [A.rong('Chưa có tài khoản nhân viên nào.')]));
   }
-  let dem = -1, luong = null;
-  async function taiTin(tuDong){
-    if (!chon) return khung.replaceChildren(A.rong('Chọn một nhân viên để xem trao đổi.'));
-    const id = chon.nhan_vien_id;
+
+  // Khung chat dựng một lần cho mỗi nhân viên được chọn; làm mới tự động chỉ thay danh sách tin, nên không mất chữ đang gõ.
+  function dungKhung(x){
+    const tin = el('div', { class: 'tn-tin', 'aria-live': 'polite' });
+    const soan = H.soanTin(async nd => {
+      A.baoLoi('');
+      const { error } = await db.rpc('gui_tin_nhan', { p_nhan_vien: x.nhan_vien_id, p_noi_dung: nd });
+      if (error) { A.baoLoi(loiRpc(error)); return false; }
+      await taiTin(false, true); await taiLuong();
+    });
+    const lui = el('button', { type: 'button', class: 'tn-lui', 'aria-label': 'Quay lại danh sách', onclick: () => { goc.classList.remove('dang-chat'); chon = null; taiLuong(); } });
+    lui.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></svg>';
+    vungChat.replaceChildren(el('div', { class: 'tn-dau' }, lui, H.avatar(x.ho_ten), el('div', {}, el('div', { class: 'tn-ten' }, x.ho_ten), el('div', { class: 'tn-vai' }, A.VAI[x.vai_tro]))), tin, soan.khung);
+    return { tin, soan };
+  }
+  async function mo(x){
+    chon = x; goc.classList.add('dang-chat'); vungChat.hidden = false; chuaChon.hidden = true;
+    pane = dungKhung(x); luong = null; dem = -1;
+    await taiTin(false, true); await taiLuong();
+    if (matchMedia('(pointer:fine)').matches) pane.soan.o.focus();
+  }
+  async function taiTin(tuDong, cuonXuong){
+    if (!chon || !pane) return;
+    const id = chon.nhan_vien_id, p = pane;
     const r = await db.from('tin_nhan').select('id,nguoi_gui_id,noi_dung,created_at').eq('nhan_vien_id', id).order('created_at');
     if (r.error) return A.baoLoi('Không tải được tin nhắn.');
-    if (tuDong === true && luong === id && dem === (r.data || []).length) return;
-    luong = id; dem = (r.data || []).length;
-    const o = el('textarea',{rows:'2',placeholder:'Nhập tin nhắn rồi bấm Gửi',maxlength:'1000','aria-label':'Nội dung tin nhắn',style:'width:100%'});
-    const gui = async ev => { const nd = o.value.trim(); if (!nd) return; const nutBam = ev.currentTarget; nutBam.disabled = true; A.baoLoi('');
-      const { error } = await db.rpc('gui_tin_nhan', { p_nhan_vien: id, p_noi_dung: nd }); if (error) A.baoLoi(loiRpc(error)); await taiTin(); await taiLuong(); };
-    const hop = el('div',{style:'max-height:50vh;overflow:auto;padding:12px 0'}, ...((r.data || []).length ? r.data.map(t => el('div',{style:'margin:8px 0;display:flex;flex-direction:column;align-items:' + (t.nguoi_gui_id === me ? 'flex-end' : 'flex-start')},
-      el('div',{style:'max-width:80%;padding:8px 12px;border:1px solid var(--muc);border-radius:2px;white-space:pre-wrap;word-break:break-word;' + (t.nguoi_gui_id === me ? 'background:var(--nen-nhat)' : '')}, t.noi_dung),
-      el('div',{class:'nho'}, gio(t.created_at)))) : [A.rong('Chưa có tin nhắn. Hãy nhắn trước.')]));
-    khung.replaceChildren(el('div',{style:'font-weight:800;font-size:18px;border-bottom:2px solid var(--muc);padding-bottom:8px'}, chon.ho_ten), hop,
-      el('div',{class:'soan-tin'}, el('div',{style:'flex:1'}, o), el('button',{class:'nut chinh',type:'button',onclick:gui}, 'Gửi')));
-    hop.scrollTop = hop.scrollHeight;
+    if (p !== pane) return; // đã chuyển sang nhân viên khác
+    const d = r.data || [];
+    if (tuDong === true && luong === id && dem === d.length) return;
+    const dauTien = luong !== id, cuoi = H.gancCuoi(p.tin);
+    luong = id; dem = d.length;
+    p.tin.replaceChildren(...(d.length ? H.dungTin(d, me) : [el('div', { class: 'tn-trong' }, 'Chưa có tin nhắn. Hãy nhắn trước.')]));
+    if (dauTien || cuonXuong || cuoi) p.tin.scrollTop = p.tin.scrollHeight;
     await db.rpc('danh_dau_da_doc', { p_nhan_vien: id }); Pethy.khu.lamMoiSo();
   }
-  $('vung').replaceChildren(el('div',{style:'display:flex;flex-wrap:wrap;gap:24px;margin-top:20px'}, dsLuong, khung));
-  await taiLuong(); await taiTin();
+  $('vung').replaceChildren(goc);
+  await taiLuong();
   setInterval(() => { if (!document.hidden) { taiLuong(); if (chon) taiTin(true); } }, 15000);
 })();
