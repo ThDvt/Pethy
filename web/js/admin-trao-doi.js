@@ -56,7 +56,7 @@
     if (dauTien || cuonXuong || cuoi) p.tin.scrollTop = p.tin.scrollHeight;
     await db.rpc('danh_dau_da_doc', { p_nhan_vien: id }); Pethy.khu.lamMoiSo();
   }
-  $('vung').replaceChildren(goc);
+  $('vung').replaceChildren(goc); H.phuManHinh(goc);
   await taiLuong();
   setInterval(() => { if (!document.hidden) { taiLuong(); if (chon) taiTin(true); } }, 15000);
 })();

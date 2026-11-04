@@ -24,8 +24,9 @@
     if (error) { A.baoLoi(loiRpc(error)); return false; }
     await tai(false, true);
   });
-  $('vung').replaceChildren(el('div', { class: 'tn mot-cot dang-chat' }, el('div', { class: 'tn-chat' },
-    el('div', { class: 'tn-dau' }, H.avatar('Quản trị'), el('div', {}, el('div', { class: 'tn-ten' }, 'Quản trị phòng khám'), el('div', { class: 'tn-vai' }, 'Chỉ bạn và quản trị đọc được'))), tin, soan.khung)));
+  const goc = el('div', { class: 'tn mot-cot dang-chat' }, el('div', { class: 'tn-chat' },
+    el('div', { class: 'tn-dau' }, H.avatar('Quản trị'), el('div', {}, el('div', { class: 'tn-ten' }, 'Quản trị phòng khám'), el('div', { class: 'tn-vai' }, 'Chỉ bạn và quản trị đọc được'))), tin, soan.khung));
+  $('vung').replaceChildren(goc); H.phuManHinh(goc);
   await tai();
   setInterval(() => { if (!document.hidden) tai(true); }, 15000);
 })();
