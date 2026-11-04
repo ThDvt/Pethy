@@ -20,11 +20,18 @@
     if (k === ngayKhoa(Date.now() - 864e5)) return 'Hôm qua';
     return new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', timeZone: TZ });
   }
-  function avatar(ten){
+  // Ảnh đại diện: có ảnh thật (bác sĩ đã tải ảnh) thì phủ lên chữ cái; ảnh lỗi hoặc không tải được thì còn lại chữ cái.
+  function avatar(ten, anh){
     const t = String(ten || '?').trim().split(/\s+/).filter(Boolean);
     const cc = ((t[0] || '?')[0] + (t.length > 1 ? t[t.length - 1][0] : '')).toUpperCase();
     let h = 0; for (const c of String(ten)) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-    return el('span', { class: 'tn-av', 'aria-hidden': 'true', style: 'background:' + MAU[h % MAU.length] }, cc);
+    const goc = el('span', { class: 'tn-av', 'aria-hidden': 'true', style: 'background:' + MAU[h % MAU.length] }, cc);
+    if (anh) {
+      const img = el('img', { class: 'tn-av-anh', src: anh, alt: '', decoding: 'async', referrerpolicy: 'no-referrer' });
+      img.addEventListener('error', () => img.remove());
+      goc.append(img);
+    }
+    return goc;
   }
   // Danh sách tin -> các nút DOM: vạch ngày, nhóm tin liền nhau cùng người gửi (trong 5 phút), giờ ở cuối nhóm.
   function dungTin(ds, me){

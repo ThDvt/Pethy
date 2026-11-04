@@ -5,7 +5,8 @@
 .tn-muc:hover{background:var(--nen-nhat)}
 .tn-muc[aria-current=true]{background:var(--nen-nhat);box-shadow:inset 3px 0 0 var(--nhan)}
 .tn-muc:focus-visible,.tn-gui:focus-visible,.tn-lui:focus-visible{outline:2px solid var(--nhan);outline-offset:-2px}
-.tn-av{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px;letter-spacing:.02em}
+.tn-av-anh{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tn-av{position:relative;overflow:hidden;flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px;letter-spacing:.02em}
 .tn-thong{flex:1;min-width:0}
 .tn-hang1{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
 .tn-ten{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
