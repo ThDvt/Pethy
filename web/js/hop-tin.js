@@ -57,6 +57,7 @@
     const vua = () => {
       const v = khung.previousElementSibling, cuoi = v && v.classList.contains('tn-tin') && gancCuoi(v);
       o.style.height = 'auto'; o.style.height = Math.min(o.scrollHeight, 140) + 'px';
+      o.style.overflowY = o.scrollHeight > 140 ? 'auto' : 'hidden'; // chỉ hiện thanh cuộn khi nội dung vượt chiều cao tối đa
       if (cuoi) v.scrollTop = v.scrollHeight; // ô soạn cao lên thì giữ tin cuối trong tầm nhìn
     };
     const gui = async () => {
