@@ -43,3 +43,21 @@ test('ô soạn tin: Enter, Shift+Enter, tin rỗng, tin nhiều dòng giữ ngu
     }
   } finally { await c.close(); }
 });
+
+// Tin vừa gửi trồi lên có hiệu ứng, tin cũ đã có sẵn thì không chạy lại hiệu ứng (tránh nháy cả khung mỗi lần làm mới).
+test('tin mới có hiệu ứng, tin cũ không bị chạy lại', async ({ browser }) => {
+  test.setTimeout(90_000);
+  const c = await browser.newContext(); await cauHinh(c);
+  try {
+    const nv = await c.newPage();
+    await dangNhap(nv, TK.le_tan, KHU.le_tan);
+    await nv.goto('/trao-doi.html');
+    const o = nv.getByLabel('Nội dung tin nhắn'), gui = nv.getByRole('button', { name: 'Gửi', exact: true });
+    await expect(o).toBeVisible();
+    await expect(nv.locator('.tn-dong.den')).toHaveCount(0); // lần mở đầu: không hiệu ứng
+    const nd = 'Hiệu ứng ' + Date.now();
+    await o.fill(nd); await gui.click();
+    await expect(nv.locator('.tn-dong.den .tn-bong', { hasText: nd })).toHaveCount(1, { timeout: 10_000 });
+    expect(await nv.locator('.tn-dong.den').count()).toBe(1); // chỉ tin vừa gửi
+  } finally { await c.close(); }
+});

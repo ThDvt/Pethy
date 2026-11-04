@@ -12,10 +12,10 @@
     if (r.error) return A.baoLoi('Không tải được tin nhắn.');
     const d = r.data || [];
     if (tuDong === true && d.length === dem) return;
-    const dauTien = dem === -1, cuoi = H.gancCuoi(tin);
+    const dauTien = dem === -1, cuoi = H.gancCuoi(tin), cu = dem;
     dem = d.length;
-    tin.replaceChildren(...(d.length ? H.dungTin(d, me) : [el('div', { class: 'tn-trong' }, 'Chưa có tin nhắn. Hãy nhắn cho quản trị khi cần.')]));
-    if (dauTien || cuonXuong || cuoi) tin.scrollTop = tin.scrollHeight;
+    tin.replaceChildren(...(d.length ? H.dungTin(d, me, dauTien ? null : cu) : [el('div', { class: 'tn-trong' }, 'Chưa có tin nhắn. Hãy nhắn cho quản trị khi cần.')]));
+    if (dauTien || cuonXuong || cuoi) H.cuonCuoi(tin, !dauTien);
     await db.rpc('danh_dau_da_doc', { p_nhan_vien: me }); Pethy.khu.lamMoiSo();
   }
   const soan = H.soanTin(async nd => {
