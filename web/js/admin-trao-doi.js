@@ -15,7 +15,7 @@
     const d = (r.data || []).slice().sort((a, b) => String(b.thoi_diem_cuoi || '').localeCompare(String(a.thoi_diem_cuoi || '')));
     dsLuong.replaceChildren(...(d.length ? d.map(x => {
       const dangChon = chon && chon.nhan_vien_id === x.nhan_vien_id, coMoi = x.chua_doc > 0;
-      return el('button', { type: 'button', class: 'tn-muc' + (coMoi ? ' chua-doc' : ''), 'aria-current': dangChon ? 'true' : null, onclick: () => mo(x) },
+      return el('button', { type: 'button', class: 'tn-muc' + (coMoi ? ' chua-doc' : ''), 'data-id': x.nhan_vien_id, 'aria-current': dangChon ? 'true' : null, onclick: () => mo(x) },
         H.avatar(x.ho_ten, anhBs[x.nhan_vien_id]),
         el('div', { class: 'tn-thong' },
           el('div', { class: 'tn-hang1' }, el('span', { class: 'tn-ten' }, x.ho_ten), el('span', { class: 'tn-t' }, H.nhanGon(x.thoi_diem_cuoi))),
@@ -39,7 +39,9 @@
     return { tin, soan };
   }
   async function mo(x){
-    chon = x; goc.classList.add('dang-chat'); vungChat.hidden = false; chuaChon.hidden = true;
+    chon = x; goc.classList.add('dang-chat');
+    // đổi viền cam ngay khi bấm, không chờ tải tin nhắn xong
+    dsLuong.querySelectorAll('.tn-muc').forEach(n => { if (n.dataset.id === String(x.nhan_vien_id)) n.setAttribute('aria-current', 'true'); else n.removeAttribute('aria-current'); }); vungChat.hidden = false; chuaChon.hidden = true;
     pane = dungKhung(x); luong = null; dem = -1;
     await taiTin(false, true); await taiLuong();
     if (matchMedia('(pointer:fine)').matches) pane.soan.o.focus();
