@@ -2,6 +2,13 @@
 // Dựng ngay khi trình duyệt đọc tới đây (trước khi các script khác tải xong) bằng thực đơn đã lưu ở trang trước,
 // để thanh bên không nhấp nháy. khu.js gọi lại PethyThanhBen.dung() với dữ liệu chính thức sau khi kiểm tra vai trò.
 (function(){
+  // Trình duyệt chưa có phiên đăng nhập nào: ẩn khung khu làm việc ngay, để khách gõ thẳng /admin/ không thấy bố cục.
+  // Người đã đăng nhập (có token) vẫn thấy khung hiện sẵn như cũ.
+  try {
+    var co = false;
+    for (var i = 0; i < localStorage.length; i++) { if (/^sb-.+-auth-token$/.test(localStorage.key(i))) { co = true; break; } }
+    if (!co) document.documentElement.classList.add('khong-phien');
+  } catch (e) {}
   var NS = 'http://www.w3.org/2000/svg';
   // Biểu tượng nét 24x24. Mỗi phần tử: [thẻ, thuộc tính].
   var BT = {

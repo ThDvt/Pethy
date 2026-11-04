@@ -20,18 +20,24 @@ for (const trang of ['/admin/', '/admin/tai-khoan.html', '/le-tan/', '/chu-nuoi/
       await expect(p.locator('.bo-khu, .khach-khu').first()).toBeHidden();
       await expect(p.locator('.thanh-ben')).toBeHidden(); // nếu đã dựng từ thực đơn lưu sẵn thì cũng không được nhìn thấy
       await p.waitForURL(u => u.pathname.startsWith('/dang-nhap'), { timeout: 20_000 });
-      await expect(p.locator('html')).not.toHaveClass(/da-xac-thuc/);
     } finally { await c.close(); }
   });
 }
 
-test('đăng nhập đúng vai trò: khu làm việc hiện ra sau khi kiểm tra xong', async ({ browser }) => {
+test('đã đăng nhập: khung hiện sẵn như cũ, không bị ẩn lúc chờ kiểm tra vai trò', async ({ browser }) => {
   const c = await browser.newContext(); await cauHinh(c);
   try {
     const p = await c.newPage();
     await dangNhap(p, TK.admin, KHU.admin);
-    await p.goto('/admin/');
-    await expect(p.locator('html')).toHaveClass(/da-xac-thuc/, { timeout: 15_000 });
-    await expect(p.locator('.bo-khu')).toBeVisible();
+    // ghi lại mọi lần html bị gắn lớp ẩn trong lúc tải trang
+    await p.addInitScript(() => { window.__an = false;
+      new MutationObserver(() => { if (document.documentElement.classList.contains('khong-phien')) window.__an = true; })
+        .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] }); });
+    await p.route('**/js/khu.js', async r => { await new Promise(s => setTimeout(s, 1500)); await r.continue(); });
+    await p.goto('/admin/', { waitUntil: 'commit' });
+    await p.locator('.bo-khu').waitFor({ state: 'attached' });
+    await expect(p.locator('.bo-khu')).toBeVisible(); // thấy ngay cả khi khu.js còn chưa chạy
+    await p.waitForLoadState('load');
+    expect(await p.evaluate(() => window.__an)).toBe(false);
   } finally { await c.close(); }
 });

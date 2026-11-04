@@ -44,7 +44,7 @@
     const vt = await vaiTro();
     if (!vt) { location.replace('/dang-nhap.html'); return null; }
     if (vt !== vaiCan && vt !== 'admin') { location.replace(KHU[vt] || '/'); return null; }
-    document.documentElement.classList.add('da-xac-thuc'); // chỉ lúc này khu làm việc mới được hiện (xem pethy.css)
+    document.documentElement.classList.remove('khong-phien'); // khách chưa đăng nhập bị ẩn khung từ đầu (xem thanh-ben-som.js)
     hienTenNguoi(); batDauDemSo(vaiCan);
     if (Pethy.thuc) giamSatNhanRoi(vt === 'chu_nuoi' ? 60 : 30);
     return vt;
