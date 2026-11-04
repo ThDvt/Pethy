@@ -52,10 +52,10 @@
     if (p !== pane) return; // đã chuyển sang nhân viên khác
     const d = r.data || [];
     if (tuDong === true && luong === id && dem === d.length) return;
-    const dauTien = luong !== id, cuoi = H.gancCuoi(p.tin);
+    const dauTien = luong !== id, cuoi = H.gancCuoi(p.tin), cu = dem;
     luong = id; dem = d.length;
-    p.tin.replaceChildren(...(d.length ? H.dungTin(d, me) : [el('div', { class: 'tn-trong' }, 'Chưa có tin nhắn. Hãy nhắn trước.')]));
-    if (dauTien || cuonXuong || cuoi) p.tin.scrollTop = p.tin.scrollHeight;
+    p.tin.replaceChildren(...(d.length ? H.dungTin(d, me, dauTien ? null : cu) : [el('div', { class: 'tn-trong' }, 'Chưa có tin nhắn. Hãy nhắn trước.')]));
+    if (dauTien || cuonXuong || cuoi) H.cuonCuoi(p.tin, !dauTien);
     await db.rpc('danh_dau_da_doc', { p_nhan_vien: id }); Pethy.khu.lamMoiSo();
   }
   $('vung').replaceChildren(goc); H.phuManHinh(goc);

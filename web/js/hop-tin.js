@@ -34,19 +34,24 @@
     return goc;
   }
   // Danh sách tin -> các nút DOM: vạch ngày, nhóm tin liền nhau cùng người gửi (trong 5 phút), giờ ở cuối nhóm.
-  function dungTin(ds, me){
+  function dungTin(ds, me, soCu){
     const out = []; let ngayCu = '', truoc = null;
     ds.forEach((t, i) => {
       const k = ngayKhoa(t.created_at), toi = t.nguoi_gui_id === me, sau = ds[i + 1];
       const gan = (a, b) => ngayKhoa(a.created_at) === ngayKhoa(b.created_at) && a.nguoi_gui_id === b.nguoi_gui_id && Math.abs(new Date(b.created_at) - new Date(a.created_at)) < 5 * 60e3;
       if (k !== ngayCu) { out.push(el('div', { class: 'tn-ngay' }, nhanNgay(t.created_at))); ngayCu = k; truoc = null; }
       const dauNhom = !(truoc && gan(truoc, t)), cuoiNhom = !(sau && gan(t, sau));
-      out.push(el('div', { class: 'tn-dong ' + (toi ? 'toi' : 'ho') + (dauNhom ? ' moi' : '') },
+      out.push(el('div', { class: 'tn-dong ' + (toi ? 'toi' : 'ho') + (dauNhom ? ' moi' : '') + (soCu != null && i >= soCu ? ' den' : '') },
         el('div', { class: 'tn-bong' + (cuoiNhom ? ' cuoi' : '') }, t.noi_dung),
         cuoiNhom ? el('div', { class: 'tn-gio' }, gio(t.created_at)) : null));
       truoc = t;
     });
     return out;
+  }
+  // Cuộn xuống tin cuối: lần mở đầu tiên nhảy thẳng, tin mới tới thì trượt êm (trừ khi người dùng tắt chuyển động).
+  function cuonCuoi(v, em){
+    const etm = em && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (etm && v.scrollTo) v.scrollTo({ top: v.scrollHeight, behavior: 'smooth' }); else v.scrollTop = v.scrollHeight;
   }
   const BIEU_TUONG = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg>';
   // Ô soạn tin: tự cao lên theo nội dung; Enter gửi (máy có chuột), Shift+Enter xuống dòng; trên điện thoại Enter xuống dòng.
@@ -84,5 +89,5 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(f);
     return f;
   }
-  Pethy.hopTin = { gio, nhanGon, avatar, dungTin, soanTin, gancCuoi, phuManHinh };
+  Pethy.hopTin = { gio, nhanGon, avatar, dungTin, soanTin, gancCuoi, cuonCuoi, phuManHinh };
 })();
