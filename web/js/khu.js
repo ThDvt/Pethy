@@ -1,6 +1,8 @@
 // Khung chung cho khu vực sau đăng nhập: kiểm tra vai trò, thanh bên, thông báo lỗi.
 (function(){
   const { db, thuc, el, KHU, vaiTro, dangXuat } = Pethy;
+  // Nếu việc kiểm tra đăng nhập quá lâu, đổi dòng chờ thành lời nhắc (không bao giờ hiện khu làm việc khi chưa xác nhận).
+  setTimeout(() => document.documentElement.classList.add('xac-thuc-cham'), 10000);
 
   // Lỗi từ hàm nghiệp vụ có dạng "MA_LOI: nội dung tiếng Việt". Chỉ hiện phần nội dung.
   function loiRpc(err){
@@ -42,6 +44,7 @@
     const vt = await vaiTro();
     if (!vt) { location.replace('/dang-nhap.html'); return null; }
     if (vt !== vaiCan && vt !== 'admin') { location.replace(KHU[vt] || '/'); return null; }
+    document.documentElement.classList.add('da-xac-thuc'); // chỉ lúc này khu làm việc mới được hiện (xem pethy.css)
     hienTenNguoi(); batDauDemSo(vaiCan);
     if (Pethy.thuc) giamSatNhanRoi(vt === 'chu_nuoi' ? 60 : 30);
     return vt;

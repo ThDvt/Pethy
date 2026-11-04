@@ -190,3 +190,9 @@ dialog.hop-dg::backdrop{background:rgba(20,22,26,.5)}
 
 /* Tên hoặc ghi chú dài không có dấu cách (do người dùng nhập) phải xuống dòng, không làm tràn trang. */
 .hang, .dong, .ten, label.chon, .tomtat, .ct, .ghi-chu { overflow-wrap: anywhere; }
+
+/* Khu làm việc (nhân viên, quản trị, chủ nuôi) ẩn cho tới khi khu.js xác nhận đã đăng nhập đúng vai trò,
+   để người chưa đăng nhập không thoáng thấy khung trang và thực đơn rồi mới bị chuyển sang trang đăng nhập. */
+html:not(.da-xac-thuc) :is(.bo-khu,.khach-khu){visibility:hidden}
+html:not(.da-xac-thuc) body:has(.bo-khu,.khach-khu)::before{content:"Đang kiểm tra phiên đăng nhập…";position:fixed;inset:0;display:grid;place-items:center;color:var(--xam);font:500 15px var(--chu)}
+html.xac-thuc-cham:not(.da-xac-thuc) body:has(.bo-khu,.khach-khu)::before{content:"Việc kiểm tra đăng nhập đang chậm. Hãy kiểm tra kết nối mạng rồi tải lại trang."}
