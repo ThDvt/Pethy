@@ -1,5 +1,5 @@
 /* Giao diện nhắn tin: danh sách hội thoại bên trái, khung chat bên phải */
-.tn{display:flex;height:clamp(440px,calc(100dvh - 240px),720px);border:1px solid var(--vach);border-radius:16px;overflow:hidden;background:#fff;margin-top:20px}
+.tn{display:flex;height:calc(100dvh - 160px);min-height:360px;border:1px solid var(--vach);border-radius:16px;overflow:hidden;background:#fff;margin-top:20px}
 .tn-ds{flex:0 0 300px;border-right:1px solid var(--vach);overflow:auto}
 .tn-muc{display:flex;gap:12px;align-items:center;width:100%;padding:12px 14px;border:0;border-bottom:1px solid var(--anh);background:none;text-align:left;cursor:pointer;font:inherit;color:inherit}
 .tn-muc:hover{background:var(--nen-nhat)}
@@ -38,7 +38,7 @@
 .tn-rong{flex:1;display:grid;place-items:center;color:var(--xam);padding:24px;text-align:center}
 .tn.mot-cot .tn-ds{flex:1 1 auto;border-right:0}
 @media (max-width:760px){
-  .tn{height:clamp(420px,calc(100dvh - 220px),720px);border-radius:12px}
+  .tn{border-radius:12px}
   .tn-ds{flex:1 1 auto;border-right:0}
   .tn:not(.dang-chat) .tn-chat,.tn:not(.dang-chat) .tn-rong{display:none}
   .tn.dang-chat:not(.mot-cot) .tn-ds{display:none}

@@ -64,5 +64,17 @@
     const khung = el('div', { class: 'tn-soan' }, o, nut);
     return { khung, o, nut };
   }
-  Pethy.hopTin = { gio, nhanGon, avatar, dungTin, soanTin, gancCuoi };
+  // Cho khung chat chiếm hết phần còn lại của màn hình (trừ phần đệm dưới của trang và thanh điều hướng dưới trên điện thoại).
+  function phuManHinh(g){
+    const f = () => {
+      const dem = e => e ? parseFloat(getComputedStyle(e).paddingBottom) || 0 : 0;
+      const tren = g.getBoundingClientRect().top + scrollY;
+      const h = innerHeight - tren - dem(g.closest('.cot-chinh')) - dem(g.closest('.bo-khu'));
+      g.style.height = Math.max(360, Math.floor(h)) + 'px';
+    };
+    f(); addEventListener('resize', f); addEventListener('orientationchange', f);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(f);
+    return f;
+  }
+  Pethy.hopTin = { gio, nhanGon, avatar, dungTin, soanTin, gancCuoi, phuManHinh };
 })();
