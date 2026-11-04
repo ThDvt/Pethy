@@ -1,18 +1,18 @@
 import { test, expect, ngCanhMoi } from '../helpers.js';
 
 // Trang chính sách quyền riêng tư phải mở được và được dẫn tới từ chân trang, biểu mẫu đăng ký.
-test('chính sách quyền riêng tư: mở được, nêu nơi lưu dữ liệu, chỉ trang đăng ký có liên kết', async ({ browser }) => {
+test('chính sách quyền riêng tư: mở được, nêu nơi lưu dữ liệu, chỉ trang chủ và trang đăng ký có liên kết', async ({ browser }) => {
   const c = await ngCanhMoi(browser), p = await c.newPage();
   try {
     const r = await p.goto('/chinh-sach-rieng-tu.html');
     expect(r.status()).toBe(200);
     await expect(p.locator('h1')).toHaveText('Chính sách quyền riêng tư');
     await expect(p.locator('main')).toContainText('Sydney');
-    // chỉ trang đăng ký dẫn tới chính sách, đúng một liên kết
-    for (const u of ['/', '/tin-tuc.html']) {
-      await p.goto(u);
-      await expect(p.locator('a[href="/chinh-sach-rieng-tu.html"]'), u).toHaveCount(0);
-    }
+    // chỉ trang chủ (chân trang) và trang đăng ký dẫn tới chính sách
+    await p.goto('/');
+    await expect(p.locator('footer a[href="/chinh-sach-rieng-tu.html"]')).toHaveCount(1);
+    await p.goto('/tin-tuc.html');
+    await expect(p.locator('a[href="/chinh-sach-rieng-tu.html"]')).toHaveCount(0);
     await p.goto('/dang-nhap.html?dang-ky');
     await expect(p.locator('#dong-y')).toBeVisible();
     await expect(p.locator('a[href="/chinh-sach-rieng-tu.html"]')).toHaveCount(1);
