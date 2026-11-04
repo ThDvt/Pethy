@@ -243,3 +243,24 @@ dialog.xac-nhan{border:2px solid var(--muc);border-radius:24px}
 img.bv-anh{display:block;width:calc(100% + 48px);max-width:none;height:auto;aspect-ratio:16/9;margin:-24px -24px 6px;border-bottom:2px solid var(--muc);border-radius:22px 22px 0 0;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
 img.bv-bia{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border:2px solid var(--muc);border-radius:24px;margin:0 0 28px}
 .khach .o-tich{display:flex;gap:12px;align-items:center;font-weight:400;cursor:pointer;line-height:1.4;margin:0}.khach .o-tich input{flex:none;width:22px;height:22px;min-height:0;padding:0;margin:0;border-radius:6px;accent-color:var(--muc);cursor:pointer}
+/* trang chính sách quyền riêng tư */
+.cs{max-width:760px;margin:0 auto;padding:0 20px 72px}
+.cs-dau{padding:20px 0 8px}
+.cs h1{font-size:clamp(28px,5vw,38px);line-height:1.2;margin:28px 0 6px}
+.cs h2{font-size:20px;line-height:1.35;margin:0 0 10px}
+.cs main>.ghi-chu{margin:0 0 24px}
+.cs section{padding:24px 0;border-top:1px solid rgba(0,0,0,.1)}
+.cs p{line-height:1.7;margin:0 0 12px}.cs p:last-child{margin-bottom:0}
+.cs .cs-tomtat{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0;border:0;margin-bottom:8px}
+.cs-tomtat div{background:rgba(255,255,255,.75);border:1px solid rgba(0,0,0,.1);border-radius:14px;padding:16px 18px}
+.cs-tomtat b{display:block;font-size:13px;letter-spacing:.04em;text-transform:uppercase;opacity:.65;margin-bottom:6px}
+.cs-tomtat span{line-height:1.55}
+.cs-ds{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.cs-ds li{line-height:1.65}.cs-ds b{display:block;margin-bottom:2px}
+.cs-ben{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:0;margin:0 0 14px;border:1px solid rgba(0,0,0,.1);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.75)}
+.cs-ben dt,.cs-ben dd{margin:0;padding:12px 16px;line-height:1.6;border-top:1px solid rgba(0,0,0,.08)}
+.cs-ben dt:first-of-type,.cs-ben dt:first-of-type+dd{border-top:0}
+.cs-ben dt{font-weight:700}
+.cs-chan{margin-top:12px;padding-top:24px;border-top:1px solid rgba(0,0,0,.1)}
+.cs-chan a{display:inline-block;text-decoration:none}
+@media (max-width:600px){.cs{padding:0 16px 56px}.cs .cs-tomtat{grid-template-columns:1fr}.cs-ben{grid-template-columns:1fr}.cs-ben dt{padding-bottom:0;border-top:1px solid rgba(0,0,0,.08)}.cs-ben dd{border-top:0;padding-top:2px}.cs-ben dt:first-of-type{border-top:0}}
