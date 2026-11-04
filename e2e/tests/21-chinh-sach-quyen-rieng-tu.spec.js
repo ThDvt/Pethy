@@ -18,6 +18,19 @@ test('chính sách quyền riêng tư: mở được, nêu nơi lưu dữ liệu
     await expect(p.locator('a[href="/chinh-sach-rieng-tu.html"]')).toHaveCount(1);
     await expect(p.locator('label[for="dong-y"] a[href="/chinh-sach-rieng-tu.html"]')).toBeVisible();
     await expect(p.locator('body')).not.toContainText('do quản trị viên cấp');
+    // bấm liên kết: mở ngay trong tab này, "Quay lại" trả về đúng trang đăng ký
+    await p.goto('/dang-nhap.html?dang-ky');
+    const soTab = c.pages().length;
+    await p.locator('label[for="dong-y"] a').click();
+    await p.waitForURL(u => u.pathname === '/chinh-sach-rieng-tu.html');
+    expect(c.pages().length, 'không mở thêm tab').toBe(soTab);
+    await p.locator('#quay-lai').click();
+    await p.waitForURL(u => u.pathname === '/dang-nhap.html');
+    await expect(p.locator('#dong-y')).toBeVisible();
+    // mở thẳng trang chính sách: "Quay lại" về trang chủ
+    await p.goto('/chinh-sach-rieng-tu.html');
+    await p.locator('#quay-lai').click();
+    await p.waitForURL(u => u.pathname === '/');
     // màn đăng nhập thường không hiện ô đồng ý hay liên kết chính sách
     await p.goto('/dang-nhap.html');
     await expect(p.locator('#dong-y')).toBeHidden();
