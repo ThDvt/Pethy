@@ -20,6 +20,7 @@ test('bấm liên kết xác nhận email ở tab khác: tab mới vào được
     await tabDangKy.locator('#email').fill(email);
     await tabDangKy.locator('#mat-khau').fill(mk);
     await tabDangKy.locator('#mat-khau-2').fill(mk);
+    await tabDangKy.locator('#dong-y').check();
     await tabDangKy.locator('#gui').click();
     await expect(tabDangKy.locator('#tieu-de')).toHaveText('Kiểm tra email của bạn');
     await expect(tabDangKy.locator('#cx-email')).toHaveText(email);

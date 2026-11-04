@@ -162,7 +162,8 @@
         if (!ten) { loi('Vui lòng nhập họ tên.'); return; }
         if ($('mat-khau-2').value !== mk) { loi('Hai mật khẩu chưa giống nhau. Nhập lại cho khớp.'); $('mat-khau-2').focus(); return; }
         if (!/^(\+84|0)[0-9]{9}$/.test(sdt)) { loi('Số điện thoại chưa hợp lệ (ví dụ 0901234567).'); return; }
-        const { data, error } = await db.auth.signUp({ email, password: mk, options: { captchaToken, data: { ho_ten: ten, so_dien_thoai: sdt } } });
+        if (!$('dong-y').checked) { loi('Vui lòng đồng ý với Chính sách quyền riêng tư để tạo tài khoản.'); $('dong-y').focus(); return; }
+        const { data, error } = await db.auth.signUp({ email, password: mk, options: { captchaToken, data: { ho_ten: ten, so_dien_thoai: sdt, dong_y_chinh_sach: new Date().toISOString(), ban_chinh_sach: '2026-11-03' } } });
         if (error) { loi(loiDangKy(error)); return; }
         if (data.session) await vaoKhu(); else hienChoXacNhan(email);
       } else {
