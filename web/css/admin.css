@@ -95,3 +95,12 @@ select.nho,input.nho{font-size:14px;padding:6px 8px}
 
 .db-cap{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:13px;color:var(--xam)}
 .db-cap .lien-ket{font-size:13px;font-weight:600}
+
+/* Chọn nhiều thứ làm việc cùng lúc */
+.thu-chon{display:flex;flex-wrap:wrap;gap:8px}
+.thu-chon label{margin:0;position:relative;cursor:pointer}
+.thu-chon input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.thu-chon span{display:inline-flex;align-items:center;justify-content:center;min-width:48px;min-height:44px;padding:0 12px;border:1.5px solid var(--vach);border-radius:10px;background:#fff;font-weight:700;font-size:14px;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+.thu-chon input:checked+span{background:var(--muc);border-color:var(--muc);color:#fff}
+.thu-chon input:focus-visible+span{outline:2px solid var(--nhan);outline-offset:2px}
+.thu-nhanh{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:10px}
