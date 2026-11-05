@@ -196,3 +196,11 @@ dialog.hop-dg::backdrop{background:rgba(20,22,26,.5)}
 html.khong-phien :is(.bo-khu,.khach-khu){visibility:hidden}
 html.khong-phien body:has(.bo-khu,.khach-khu)::before{content:"Đang kiểm tra phiên đăng nhập…";position:fixed;inset:0;display:grid;place-items:center;color:var(--xam);font:500 15px var(--chu)}
 html.xac-thuc-cham.khong-phien body:has(.bo-khu,.khach-khu)::before{content:"Việc kiểm tra đăng nhập đang chậm. Hãy kiểm tra kết nối mạng rồi tải lại trang."}
+
+/* Mã QR chuyển khoản trên hóa đơn */
+.ck-vung{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin:12px 0;padding:14px;border:1px solid var(--vach);border-radius:12px;background:#fff}
+.ck-vung[hidden]{display:none}
+.ck-vung svg{flex:none;max-width:100%;height:auto;border:1px solid var(--vach);border-radius:8px}
+.ck-ct{flex:1 1 200px;min-width:0}
+.ck-dong{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--anh);font-size:14px}
+.ck-dong span{color:var(--xam)}.ck-dong b{text-align:right;overflow-wrap:anywhere}

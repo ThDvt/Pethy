@@ -59,6 +59,18 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public, pg_temp AS $$
     FROM (SELECT vai_tro_hien_tai() AS vt) s
 $$;
 
+-- Thông tin tài khoản nhận chuyển khoản (admin nhập ở trang Tham số). Chỉ thu ngân, chủ nuôi và admin gọi được;
+-- trả về null nếu chưa nhập đủ hoặc sai định dạng, khi đó giao diện không hiện mã QR.
+CREATE FUNCTION thong_tin_chuyen_khoan() RETURNS jsonb
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public, pg_temp AS $$
+  SELECT CASE WHEN x.b ~ '^[0-9]{6}$' AND x.s ~ '^[0-9]{6,19}$' AND x.t <> ''
+              THEN jsonb_build_object('bin', x.b, 'so_tai_khoan', x.s, 'ten', x.t) END
+    FROM (SELECT coalesce((SELECT btrim(gia_tri) FROM cau_hinh WHERE khoa = 'ck_ma_ngan_hang'), '') AS b,
+                 coalesce((SELECT btrim(gia_tri) FROM cau_hinh WHERE khoa = 'ck_so_tai_khoan'), '') AS s,
+                 coalesce((SELECT btrim(gia_tri) FROM cau_hinh WHERE khoa = 'ck_ten_tai_khoan'), '') AS t) x
+   WHERE vai_tro_hieu_luc() IN ('thu_ngan', 'chu_nuoi', 'admin')
+$$;
+
 -- Kiểm tra quyền sở hữu (chủ nuôi chỉ thấy dữ liệu của chính mình).
 CREATE FUNCTION la_chu_nuoi_cua(p_chu_nuoi uuid) RETURNS boolean
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public, pg_temp AS $$
@@ -1494,6 +1506,7 @@ GRANT EXECUTE ON FUNCTION la_chu_nuoi_cua(uuid), la_chu_thu_cung(uuid), la_chu_l
   TO authenticated;
 -- Hàm cấu hình và giờ dùng trong view/chính sách.
 GRANT EXECUTE ON FUNCTION hom_nay(), cau_hinh_so(text, integer) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION thong_tin_chuyen_khoan() TO authenticated;
 
 -- Hàm nghiệp vụ gọi qua supabase.rpc (mỗi hàm tự kiểm tra vai trò bên trong).
 GRANT EXECUTE ON FUNCTION
