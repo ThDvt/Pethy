@@ -1,5 +1,6 @@
 import { test, expect, CFG, TK, KHU, dangNhap, ngCanhMoi } from '../helpers.js';
 import { chuanBiDuLieuDatLich, dn } from '../seed.js';
+import { ok } from '../api.js';
 
 const hop = p => p.locator('#hop');
 const xn = p => p.locator('dialog.xac-nhan');
@@ -165,7 +166,8 @@ test('admin thêm và xóa ca làm việc; giờ sai bị chặn', async ({ brow
     await expect(muc).toHaveCount(1);
     const truoc = await muc.locator('.hang').count();
     await muc.getByRole('button', { name: 'Thêm ca' }).click();
-    await p.locator('#c-t').selectOption('7');
+    await hop(p).getByRole('button', { name: 'Bỏ chọn' }).click();
+    await hop(p).getByRole('checkbox', { name: 'Chủ nhật' }).check();
     await p.locator('#c-a').fill('19:00'); await p.locator('#c-b').fill('18:00');
     await hop(p).getByRole('button', { name: 'Thêm', exact: true }).click();
     await expect(hop(p).locator('.loi')).toContainText('sau giờ bắt đầu');
@@ -178,6 +180,57 @@ test('admin thêm và xóa ca làm việc; giờ sai bị chặn', async ({ brow
     await xn(p).getByRole('button', { name: 'Xóa ca' }).click();
     await expect(muc.locator('.hang')).toHaveCount(truoc);
   } finally { await ad.c.close(); }
+});
+
+test('admin thêm ca cho nhiều thứ cùng lúc, trùng giờ bị chặn, sửa giờ một ca', async ({ browser }) => {
+  test.setTimeout(90_000);
+  await chuanBiDuLieuDatLich();
+  const ad = await mo(browser, TK.admin, KHU.admin);
+  const dnAd = (await dn(TK.admin)).c;
+  const bsId = (await dn(TK.bac_si)).id;
+  const don = async () => {
+    ok(await dnAd.from('lich_lam_viec').delete().eq('bac_si_id', bsId).in('gio_bat_dau', ['00:30:00', '01:00:00']), 'dọn ca thử'); };
+  try {
+    await don();
+    const p = ad.p;
+    await p.goto('/admin/lich-lam-viec.html');
+    const muc = p.locator('section.muc', { hasText: TK.bac_si.ten });
+    const truoc = ok(await dnAd.from('lich_lam_viec').select('id').eq('bac_si_id', bsId), 'đếm ca hiện có').length; // lấy từ cơ sở dữ liệu, không đếm giao diện khi danh sách chưa tải xong
+    await muc.getByRole('button', { name: 'Thêm ca' }).click();
+    // mặc định tích sẵn thứ hai đến thứ sáu; thêm thứ bảy bằng tay
+    for (const t of ['Thứ hai', 'Thứ sáu']) await expect(hop(p).getByRole('checkbox', { name: t })).toBeChecked();
+    await expect(hop(p).getByRole('checkbox', { name: 'Chủ nhật' })).not.toBeChecked();
+    await hop(p).getByRole('checkbox', { name: 'Thứ bảy' }).check();
+    await p.locator('#c-a').fill('00:30'); await p.locator('#c-b').fill('01:30');
+    await hop(p).getByRole('button', { name: 'Thêm', exact: true }).click();
+    await expect(hop(p)).not.toBeVisible();
+    await expect(muc.locator('.hang', { hasText: '00:30 đến 01:30' })).toHaveCount(6); // một lần bấm, sáu thứ
+    await expect(muc.locator('.hang')).toHaveCount(truoc + 6);
+
+    // thêm lại cùng giờ bắt đầu cho thứ hai: bị chặn, nói rõ thứ nào
+    await muc.getByRole('button', { name: 'Thêm ca' }).click();
+    await hop(p).getByRole('button', { name: 'Bỏ chọn' }).click();
+    await hop(p).getByRole('checkbox', { name: 'Thứ hai' }).check();
+    await p.locator('#c-a').fill('00:30'); await p.locator('#c-b').fill('02:00');
+    await hop(p).getByRole('button', { name: 'Thêm', exact: true }).click();
+    await expect(hop(p).locator('.loi')).toContainText('Thứ hai');
+    await hop(p).getByRole('button', { name: 'Đóng' }).click();
+
+    // không tích thứ nào thì báo lỗi
+    await muc.getByRole('button', { name: 'Thêm ca' }).click();
+    await hop(p).getByRole('button', { name: 'Bỏ chọn' }).click();
+    await hop(p).getByRole('button', { name: 'Thêm', exact: true }).click();
+    await expect(hop(p).locator('.loi')).toContainText('ít nhất một thứ');
+    await hop(p).getByRole('button', { name: 'Đóng' }).click();
+
+    // sửa giờ một ca
+    await muc.locator('.hang', { hasText: 'Thứ hai' }).filter({ hasText: '00:30 đến 01:30' }).getByRole('button', { name: 'Sửa' }).click();
+    await p.locator('#c-a').fill('01:00'); await p.locator('#c-b').fill('02:00');
+    await hop(p).getByRole('button', { name: 'Lưu', exact: true }).click();
+    await expect(hop(p)).not.toBeVisible();
+    await expect(muc.locator('.hang', { hasText: 'Thứ hai' }).filter({ hasText: '01:00 đến 02:00' })).toHaveCount(1);
+    await expect(muc.locator('.hang', { hasText: '00:30 đến 01:30' })).toHaveCount(5);
+  } finally { await don(); await ad.c.close(); }
 });
 
 test('các trang quản trị tải được, không lỗi JavaScript, nhật ký ghi lại thao tác của admin', async ({ page }) => {
