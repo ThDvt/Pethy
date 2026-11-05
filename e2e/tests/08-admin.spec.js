@@ -195,7 +195,7 @@ test('admin thêm ca cho nhiều thứ cùng lúc, trùng giờ bị chặn, s�
     const p = ad.p;
     await p.goto('/admin/lich-lam-viec.html');
     const muc = p.locator('section.muc', { hasText: TK.bac_si.ten });
-    const truoc = await muc.locator('.hang').count();
+    const truoc = ok(await dnAd.from('lich_lam_viec').select('id').eq('bac_si_id', bsId), 'đếm ca hiện có').length; // lấy từ cơ sở dữ liệu, không đếm giao diện khi danh sách chưa tải xong
     await muc.getByRole('button', { name: 'Thêm ca' }).click();
     // mặc định tích sẵn thứ hai đến thứ sáu; thêm thứ bảy bằng tay
     for (const t of ['Thứ hai', 'Thứ sáu']) await expect(hop(p).getByRole('checkbox', { name: t })).toBeChecked();
@@ -205,7 +205,7 @@ test('admin thêm ca cho nhiều thứ cùng lúc, trùng giờ bị chặn, s�
     await hop(p).getByRole('button', { name: 'Thêm', exact: true }).click();
     await expect(hop(p)).not.toBeVisible();
     await expect(muc.locator('.hang', { hasText: '00:30 đến 01:30' })).toHaveCount(6); // một lần bấm, sáu thứ
-    expect(await muc.locator('.hang').count()).toBe(truoc + 6);
+    await expect(muc.locator('.hang')).toHaveCount(truoc + 6);
 
     // thêm lại cùng giờ bắt đầu cho thứ hai: bị chặn, nói rõ thứ nào
     await muc.getByRole('button', { name: 'Thêm ca' }).click();
