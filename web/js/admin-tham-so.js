@@ -13,8 +13,8 @@
           bat ? el('span',{class:'tt do'}, 'Đang bật') : el('span',{class:'tt'}, 'Đang tắt'),
           el('button',{class:bat ? 'nut' : 'nut chinh',type:'button',onclick:async () => { if (!bat && !await Pethy.xacNhan('Bật chế độ bảo trì?', 'Mọi người dùng, trừ quản trị, sẽ bị chặn cho đến khi bạn tắt.', 'Bật bảo trì')) return; luu(c.khoa, bat ? 'false' : 'true'); }}, bat ? 'Tắt bảo trì' : 'Bật bảo trì'));
       }
-      const la = SO.includes(c.khoa), v = el(la ? 'input' : 'input',{class:'nho' + (la ? ' so' : ''),value:c.gia_tri,style:la ? 'width:90px;text-align:right' : 'width:260px','aria-label':c.khoa,maxlength:la ? '4' : '200'});
-      return el('div',{class:'hang'}, el('div',{class:'ten'}, c.khoa === 'thong_bao_bao_tri' ? 'Nội dung thông báo bảo trì' : c.mo_ta, el('div',{class:'nho so',style:'font-weight:400'}, c.khoa)), v,
+      const la = SO.includes(c.khoa), v = el(la ? 'input' : 'input',{class:'nho' + (la ? ' so' : ''),value:c.gia_tri,style:la ? 'width:90px;text-align:right' : 'width:260px','aria-label':c.mo_ta || c.khoa,maxlength:la ? '4' : '200'});
+      return el('div',{class:'hang'}, el('div',{class:'ten'}, c.khoa === 'thong_bao_bao_tri' ? 'Nội dung thông báo bảo trì' : c.mo_ta), v,
         el('button',{class:'lien-ket',type:'button',onclick:() => {
           const s = v.value.trim(); if (la && !/^[1-9][0-9]{0,3}$/.test(s)) return A.baoLoi('Giá trị phải là số nguyên dương.'); if (!s) return A.baoLoi('Giá trị không được để trống.'); luu(c.khoa, s); }}, 'Lưu'));
     })));

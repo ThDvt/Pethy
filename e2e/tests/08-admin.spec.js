@@ -194,6 +194,10 @@ test('các trang quản trị tải được, không lỗi JavaScript, nhật k�
     dangChuyen = false;
     await expect(page.locator('#loi-chung')).toBeHidden({ timeout: 10_000 });
     await page.waitForLoadState('networkidle');
+    // chữ "null" hay "undefined" lọt ra màn hình là lỗi hiển thị (nhật ký có thể chứa dữ liệu thô nên bỏ qua trang đó)
+    if (t !== 'nhat-ky') expect(await page.locator('body').innerText(), 'chữ null/undefined trên trang ' + (t || 'tổng quan')).not.toMatch(/\b(null|undefined)\b/);
+    // trang Tham số chỉ hiện mô tả dễ hiểu, không lộ tên biến trong cơ sở dữ liệu
+    if (t === 'tham-so') expect(await page.locator('body').innerText()).not.toMatch(/\b(do_dai_khung_gio_phut|dat_truoc_toi_da_ngay|huy_doi_truoc_gio|ck_so_tai_khoan|che_do_bao_tri)\b/);
   }
   await page.goto('/admin/nhat-ky.html');
   await expect(page.locator('.hang').first()).toBeVisible();
