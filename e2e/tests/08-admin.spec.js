@@ -187,7 +187,7 @@ test('các trang quản trị tải được, không lỗi JavaScript, nhật k�
   page.on('console', m => { if (m.type() === 'error' && !dangChuyen && !/favicon/.test(m.text())) loi.push(m.text()); });
   await dangNhap(page, TK.admin, KHU.admin);
   await page.waitForLoadState('networkidle');
-  for (const t of ['', 'doanh-thu', 'danh-gia', 'bao-mat', 'nhat-ky', 'bai-viet', 'tham-so', 'tai-khoan', 'dich-vu', 'lich-lam-viec', 'trao-doi']) {
+  for (const t of ['', 'doanh-thu', 'danh-gia', 'bao-mat', 'nhat-ky', 'bai-viet', 'tham-so', 'tai-khoan', 'dich-vu', 'lich-lam-viec', 'lich-hen', 'trao-doi']) {
     dangChuyen = true;
     await page.goto('/admin/' + (t ? t + '.html' : ''));
     await page.waitForLoadState('networkidle');
@@ -213,4 +213,40 @@ test('không phải admin thì không ghi được dịch vụ, tham số, lịc
     expect((await c.rpc('danh_sach_tai_khoan')).error, 'danh_sach_tai_khoan ' + t).toBeTruthy();
     expect((await c.rpc('xoa_tai_khoan', { p_tai_khoan: id })).error, 'xoa_tai_khoan ' + t).toBeTruthy();
   }
+});
+
+test('admin xem mọi lịch hẹn, xác nhận và hủy có lý do; vào được các khu làm việc và quay về', async ({ browser }) => {
+  test.setTimeout(120_000);
+  await chuanBiDuLieuDatLich();
+  const ten = 'LichAdmin' + Date.now().toString().slice(-6);
+  const s = await taoLichDaXacNhan({ ngay: ngayVN(22), tenThuCung: ten, xacNhan: false }); // chủ nuôi đặt, đang chờ xác nhận
+  const ad = await mo(browser, TK.admin, KHU.admin);
+  try {
+    const p = ad.p;
+    await p.goto('/admin/lich-hen.html');
+    await p.getByLabel('Khoảng thời gian').selectOption('thang-toi');
+    const dong = p.locator('.hang', { hasText: ten });
+    await expect(dong).toHaveCount(1);
+    await expect(dong).toContainText('Chờ xác nhận');
+    await dong.getByRole('button', { name: 'Xác nhận' }).click();
+    await expect(dong).toContainText('Đã xác nhận');
+    await p.getByLabel('Trạng thái').selectOption('da_xac_nhan');
+    await expect(p.locator('.hang', { hasText: ten })).toHaveCount(1);
+    await p.getByLabel('Trạng thái').selectOption('cho_xac_nhan');
+    await expect(p.locator('.hang', { hasText: ten })).toHaveCount(0); // bộ lọc theo trạng thái hoạt động
+    await p.getByLabel('Trạng thái').selectOption('');
+    await dong.getByRole('button', { name: 'Hủy', exact: true }).click();
+    await hop(p).locator('#ly-do').fill('Khách báo bận');
+    await hop(p).getByRole('button', { name: 'Hủy lịch' }).click();
+    await expect(hop(p)).not.toBeVisible();
+    await expect(dong).toContainText('Đã hủy');
+    await expect(dong.getByRole('button', { name: 'Xác nhận' })).toHaveCount(0);
+
+    // admin vào được khu lễ tân qua thanh bên, có lối quay về quản trị
+    for (const href of ['/le-tan/', '/bac-si/', '/thu-ngan/', '/kho/']) await expect(p.locator('a[href="' + href + '"]').first()).toBeAttached(); // có trên thanh bên (trên điện thoại nằm trong menu thu gọn)
+    await p.goto('/le-tan/');
+    await expect(p.getByRole('link', { name: /Về trang quản trị/ })).toBeVisible();
+    await p.getByRole('link', { name: /Về trang quản trị/ }).click();
+    await p.waitForURL(u => u.pathname === '/admin/' || u.pathname === '/admin/index.html');
+  } finally { await ad.c.close(); }
 });

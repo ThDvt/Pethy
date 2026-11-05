@@ -45,6 +45,11 @@
     if (!vt) { location.replace('/dang-nhap.html'); return null; }
     if (vt !== vaiCan && vt !== 'admin') { location.replace(KHU[vt] || '/'); return null; }
     document.documentElement.classList.remove('khong-phien'); // khách chưa đăng nhập bị ẩn khung từ đầu (xem thanh-ben-som.js)
+    // Quản trị viên vào khu của vai khác (lễ tân, bác sĩ...) thì có lối về lại trang quản trị
+    if (vt === 'admin' && vaiCan !== 'admin') {
+      const cot = document.querySelector('#khung-khu main');
+      if (cot && !cot.querySelector('.ve-quan-tri')) cot.prepend(el('a', { href: '/admin/', class: 'lien-ket ve-quan-tri', style: 'display:inline-block;margin-bottom:12px' }, '← Về trang quản trị'));
+    }
     hienTenNguoi(); batDauDemSo(vaiCan);
     if (Pethy.thuc) giamSatNhanRoi(vt === 'chu_nuoi' ? 60 : 30);
     return vt;
