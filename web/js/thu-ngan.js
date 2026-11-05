@@ -68,6 +68,7 @@
     const dong = () => hop.close();
     const sotien = el('input',{id:'st',placeholder:'Số tiền khách trả, ví dụ: 150000',inputmode:'numeric',value:con,class:'so'});
     const pt = el('select',{id:'pt'}, Object.entries(PT).map(([k, v]) => el('option',{value:k}, v)));
+    const ckCho = el('div');
     const thu = h.trang_thai === 'chua_thanh_toan' || h.trang_thai === 'thanh_toan_mot_phan';
     $('hop-nd').replaceChildren(...[
       el('h2',{style:'margin:0;font-size:22px'}, 'Hóa đơn của ' + (h.lich_hen?.thu_cung?.ten || '')),
@@ -82,7 +83,7 @@
         el('div',{style:'display:flex;flex-wrap:wrap;gap:12px 16px'},
           el('div',{class:'truong',style:'flex:1 1 160px;margin:0'}, el('label',{for:'st'}, 'Số tiền thu (đ)'), sotien),
           el('div',{class:'truong',style:'flex:1 1 160px;margin:0'}, el('label',{for:'pt'}, 'Phương thức'), pt)),
-        loi) : null,
+        ckCho, loi) : null,
       el('div',{style:'display:flex;flex-wrap:wrap;gap:12px 20px;justify-content:space-between;align-items:center;margin-top:20px'},
         thu && h.trang_thai === 'chua_thanh_toan' ? el('button',{class:'lien-ket',type:'button',onclick:async ev => {
           const nutHuy = ev.currentTarget;
@@ -102,6 +103,8 @@
             if (error) { nutBam.disabled = false; return ml(loiRpc(error)); }
             dong(); await tai(); }}, 'Ghi nhận thu tiền') : null))].filter(Boolean));
     hop.showModal();
+    // mã QR chuyển khoản theo số tiền đang nhập; chỉ hiện khi admin đã nhập tài khoản nhận tiền
+    if (thu) Pethy.chuyenKhoan.khung(h.id, () => Number(String(sotien.value).replace(/[.\s]/g, '')), sotien).then(k => { if (k) ckCho.replaceChildren(k.nut, k.vung); });
   }
 
   await tai();

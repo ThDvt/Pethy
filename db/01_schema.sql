@@ -396,4 +396,7 @@ INSERT INTO cau_hinh (khoa, gia_tri, mo_ta, cong_khai) VALUES
   ('dat_truoc_toi_thieu_gio','2',     'Chủ nuôi phải đặt cách hiện tại tối thiểu số giờ này', true),
   ('huy_doi_truoc_gio',      '2',     'Chủ nuôi chỉ được đổi hoặc hủy lịch trước giờ hẹn tối thiểu số giờ này', true),
   ('gioi_han_lich_cho',      '5',     'Số lịch chưa diễn ra tối đa của mỗi chủ nuôi', true),
-  ('canh_bao_han_dung_ngay', '30',    'Cảnh báo lô thuốc còn hạn dùng ít hơn số ngày này', false);
+  ('canh_bao_han_dung_ngay', '30',    'Cảnh báo lô thuốc còn hạn dùng ít hơn số ngày này', false),
+  ('ck_ma_ngan_hang',        '',      'Mã BIN 6 số của ngân hàng nhận chuyển khoản (ví dụ 970436 là Vietcombank, 970422 là MB, 970415 là VietinBank, 970418 là BIDV, 970407 là Techcombank)', false),
+  ('ck_so_tai_khoan',        '',      'Số tài khoản ngân hàng nhận chuyển khoản (chỉ gồm chữ số)', false),
+  ('ck_ten_tai_khoan',       '',      'Tên chủ tài khoản nhận chuyển khoản, viết hoa không dấu', false);
