@@ -68,18 +68,18 @@ test('admin chỉnh tham số: giá trị sai bị chặn; bật bảo trì thì
   try {
     const p = ad.p;
     await p.goto('/admin/tham-so.html');
-    const o = p.getByLabel('dat_truoc_toi_da_ngay');
+    const o = p.locator('[data-khoa="dat_truoc_toi_da_ngay"]');
     await o.fill('abc'); await o.locator('xpath=following::button[1]').click();
     await expect(p.locator('#loi-chung')).toContainText('số nguyên dương');
     await o.fill('0'); await o.locator('xpath=following::button[1]').click();
     await expect(p.locator('#loi-chung')).toContainText('số nguyên dương');
     await o.fill('45'); await o.locator('xpath=following::button[1]').click();
     await p.reload();
-    await expect(p.getByLabel('dat_truoc_toi_da_ngay')).toHaveValue('45');
-    await p.getByLabel('dat_truoc_toi_da_ngay').fill('30');
-    await p.getByLabel('dat_truoc_toi_da_ngay').locator('xpath=following::button[1]').click();
+    await expect(p.locator('[data-khoa="dat_truoc_toi_da_ngay"]')).toHaveValue('45');
+    await p.locator('[data-khoa="dat_truoc_toi_da_ngay"]').fill('30');
+    await p.locator('[data-khoa="dat_truoc_toi_da_ngay"]').locator('xpath=following::button[1]').click();
     await p.reload();
-    await expect(p.getByLabel('dat_truoc_toi_da_ngay')).toHaveValue('30');
+    await expect(p.locator('[data-khoa="dat_truoc_toi_da_ngay"]')).toHaveValue('30');
 
     // chế độ bảo trì
     try {
