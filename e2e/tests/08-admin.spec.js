@@ -1,6 +1,7 @@
 import { test, expect, CFG, TK, KHU, dangNhap, ngCanhMoi } from '../helpers.js';
 import { chuanBiDuLieuDatLich, dn } from '../seed.js';
-import { ok } from '../api.js';
+import { ok, taoLichDaXacNhan } from '../api.js';
+import { ngayVN } from '../luong.js';
 
 const hop = p => p.locator('#hop');
 const xn = p => p.locator('dialog.xac-nhan');
