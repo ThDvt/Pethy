@@ -1,5 +1,6 @@
 import { test, expect, TK, KHU, dangNhap, ngCanhMoi } from '../helpers.js';
-import { chuanBiDuLieuTiem, tonKho, DV, DV_TIEM, VACCINE } from '../seed.js';
+import { chuanBiDuLieuTiem, chuanBiDuLieuDatLich, tonKho, DV, DV_TIEM, VACCINE } from '../seed.js';
+import { taoLichDaXacNhan } from '../api.js';
 import { ngayVN, themThuCung, dienDatLich } from '../luong.js';
 
 const mo = async (browser, tk, khu) => { const c = await ngCanhMoi(browser); const p = await c.newPage(); await dangNhap(p, tk, khu); return { c, p }; };
@@ -127,4 +128,31 @@ test('tiêm vaccine: đặt lịch, lễ tân xác nhận, bác sĩ ghi mũi ti�
     await cn.p.goto('/chu-nuoi/');
     await expect(cn.p.locator('#ds-tiem')).toContainText(`Tiêm ${VACCINE.ten} cho ${pet}`);
   } finally { for (const x of [cn, lt, bs, tn]) await x.c.close(); }
+});
+
+// Chủ nuôi tự đặt thì bị giới hạn số ngày đặt trước; lễ tân đặt hộ thì không (máy chủ cũng không áp cho họ), nên ô chọn ngày không được chặn ở 30 ngày.
+test('ô chọn ngày: chủ nuôi giới hạn 30 ngày, lễ tân đặt hộ không bị giới hạn 30 ngày', async ({ browser }) => {
+  test.setTimeout(120_000);
+  await chuanBiDuLieuDatLich();
+  const tenThuCung = 'Ngay' + Date.now().toString().slice(-6);
+  const s = await taoLichDaXacNhan({ ngay: ngayVN(23), tenThuCung });
+  const buocSangNgay = async (p, pet) => {
+    if (pet) await p.locator('label.chon', { hasText: pet }).click();
+    await p.locator('label.chon').filter({ hasText: DV.ten }).first().click();
+    await p.locator('label.chon').filter({ hasText: TK.bac_si.ten }).first().click();
+    await p.getByRole('button', { name: 'Tiếp tục: chọn giờ' }).click();
+    await expect(p.locator('#ngay')).toBeVisible();
+  };
+  const cn = await ngCanhMoi(browser); const lt = await ngCanhMoi(browser);
+  try {
+    const pc = await cn.newPage(); await dangNhap(pc, TK.chu_nuoi, KHU.chu_nuoi);
+    await pc.goto('/chu-nuoi/dat-lich.html'); await buocSangNgay(pc, tenThuCung);
+    await expect(pc.locator('#ngay')).toHaveAttribute('max', ngayVN(30));
+    await expect(pc.getByText(/trong 30 ngày tới/)).toBeVisible();
+
+    const pl = await lt.newPage(); await dangNhap(pl, TK.le_tan, KHU.le_tan);
+    await pl.goto('/le-tan/dat-lich.html?thu_cung=' + s.petId); await buocSangNgay(pl, null);
+    await expect(pl.locator('#ngay')).toHaveAttribute('max', ngayVN(365));
+    await expect(pl.getByText(/trong 30 ngày tới/)).toHaveCount(0);
+  } finally { await cn.close(); await lt.close(); }
 });

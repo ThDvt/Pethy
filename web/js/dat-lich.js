@@ -87,7 +87,7 @@
     const bs = ds.bss.find(b => b.id === S.bs);
     const gioBox = el('div',{id:'gio-box',style:'margin-top:20px'}, el('p',{class:'ghi-chu'},'Chọn ngày để xem giờ còn trống.'));
     const nut = el('button',{class:'nut chinh',type:'button',disabled:true,onclick:() => doiId ? xacNhanDoi() : b3()}, doiId ? 'Đổi sang giờ này' : 'Tiếp tục: xác nhận');
-    const o = el('input',{type:'date',id:'ngay',min:homNay(),max:cong(homNay(), soNgay),value:S.ngay || ''});
+    const o = el('input',{type:'date',id:'ngay',min:homNay(),max:cong(homNay(), DAT_HO ? 365 : soNgay),value:S.ngay || ''}); // lễ tân và admin đặt hộ không bị giới hạn số ngày đặt trước (máy chủ cũng không áp cho họ); chặn ở 1 năm cho khỏi nhập nhầm
     async function taiGio(){
       S.gio = null; nut.disabled = true;
       if (!o.value) return;
@@ -107,7 +107,7 @@
     o.addEventListener('change', taiGio);
     vung.replaceChildren(
       el('p',{class:'ghi-chu',style:'margin:0 0 20px'}, 'Bs. ' + (bs ? bs.ho_ten : '')),
-      el('div',{class:'truong'}, el('label',{for:'ngay'},'Ngày khám (trong ' + soNgay + ' ngày tới)'), o),
+      el('div',{class:'truong'}, el('label',{for:'ngay'},DAT_HO ? 'Ngày khám' : 'Ngày khám (trong ' + soNgay + ' ngày tới)'), o),
       gioBox, el('div',{style:'display:flex;gap:20px;align-items:center;margin-top:24px'}, nut,
         doiId ? el('a',{href:VE},'Quay lại') : el('button',{class:'lien-ket',type:'button',onclick:b1},'Quay lại')),
       loiBox());
