@@ -31,7 +31,7 @@ test('tin nhắn và số chưa đọc cập nhật tức thời giữa hai tài
 
     const tin1 = 'Tức thời 1 ' + Date.now();
     await gui(tin1);
-    await expect(so).toHaveCount(1, { timeout: 8000 }); // số chưa đọc hiện ở thanh bên của lễ tân mà không ai tải lại
+    await expect(so.first()).toBeAttached({ timeout: 8000 }); // số chưa đọc hiện ở thanh bên của lễ tân mà không ai tải lại (thanh bên có hai bản: màn hình rộng và menu điện thoại)
 
     // lễ tân mở trao đổi: thấy tin, số tắt; tin tiếp theo hiện ngay trong khung đang mở
     await lt.goto(NHAN);
