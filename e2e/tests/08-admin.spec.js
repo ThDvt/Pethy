@@ -202,17 +202,17 @@ test('admin thêm ca cho nhiều thứ cùng lúc, trùng giờ bị chặn, s�
     for (const t of ['Thứ hai', 'Thứ sáu']) await expect(hop(p).getByRole('checkbox', { name: t })).toBeChecked();
     await expect(hop(p).getByRole('checkbox', { name: 'Chủ nhật' })).not.toBeChecked();
     await hop(p).getByRole('checkbox', { name: 'Thứ bảy' }).check();
-    await p.locator('#c-a').fill('00:30'); await p.locator('#c-b').fill('01:30');
+    await p.locator('#c-a').fill('00:30'); await p.locator('#c-b').fill('00:50'); // ca 20 phút ngắn hơn một khung giờ: không sinh khung giờ nào, nên không ảnh hưởng các test đặt lịch chạy song song
     await hop(p).getByRole('button', { name: 'Thêm', exact: true }).click();
     await expect(hop(p)).not.toBeVisible();
-    await expect(muc.locator('.hang', { hasText: '00:30 đến 01:30' })).toHaveCount(6); // một lần bấm, sáu thứ
+    await expect(muc.locator('.hang', { hasText: '00:30 đến 00:50' })).toHaveCount(6); // một lần bấm, sáu thứ
     await expect(muc.locator('.hang')).toHaveCount(truoc + 6);
 
     // thêm lại cùng giờ bắt đầu cho thứ hai: bị chặn, nói rõ thứ nào
     await muc.getByRole('button', { name: 'Thêm ca' }).click();
     await hop(p).getByRole('button', { name: 'Bỏ chọn' }).click();
     await hop(p).getByRole('checkbox', { name: 'Thứ hai' }).check();
-    await p.locator('#c-a').fill('00:30'); await p.locator('#c-b').fill('02:00');
+    await p.locator('#c-a').fill('00:30'); await p.locator('#c-b').fill('00:55');
     await hop(p).getByRole('button', { name: 'Thêm', exact: true }).click();
     await expect(hop(p).locator('.loi')).toContainText('Thứ hai');
     await hop(p).getByRole('button', { name: 'Đóng' }).click();
@@ -225,12 +225,12 @@ test('admin thêm ca cho nhiều thứ cùng lúc, trùng giờ bị chặn, s�
     await hop(p).getByRole('button', { name: 'Đóng' }).click();
 
     // sửa giờ một ca
-    await muc.locator('.hang', { hasText: 'Thứ hai' }).filter({ hasText: '00:30 đến 01:30' }).getByRole('button', { name: 'Sửa' }).click();
-    await p.locator('#c-a').fill('01:00'); await p.locator('#c-b').fill('02:00');
+    await muc.locator('.hang', { hasText: 'Thứ hai' }).filter({ hasText: '00:30 đến 00:50' }).getByRole('button', { name: 'Sửa' }).click();
+    await p.locator('#c-a').fill('01:00'); await p.locator('#c-b').fill('01:20');
     await hop(p).getByRole('button', { name: 'Lưu', exact: true }).click();
     await expect(hop(p)).not.toBeVisible();
-    await expect(muc.locator('.hang', { hasText: 'Thứ hai' }).filter({ hasText: '01:00 đến 02:00' })).toHaveCount(1);
-    await expect(muc.locator('.hang', { hasText: '00:30 đến 01:30' })).toHaveCount(5);
+    await expect(muc.locator('.hang', { hasText: 'Thứ hai' }).filter({ hasText: '01:00 đến 01:20' })).toHaveCount(1);
+    await expect(muc.locator('.hang', { hasText: '00:30 đến 00:50' })).toHaveCount(5);
   } finally { await don(); await ad.c.close(); }
 });
 
