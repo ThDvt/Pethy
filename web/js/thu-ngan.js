@@ -108,4 +108,5 @@
   }
 
   await tai();
+  document.addEventListener('pethy:doi', e => { if (e.detail.bang === 'hoa_don') tai(); }); // hóa đơn mới lập hiện ngay
 })();

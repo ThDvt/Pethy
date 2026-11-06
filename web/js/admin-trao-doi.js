@@ -62,5 +62,6 @@
   }
   $('vung').replaceChildren(goc); H.phuManHinh(goc);
   await taiLuong();
-  setInterval(() => { if (!document.hidden) { taiLuong(); if (chon) taiTin(true); } }, 15000);
+  setInterval(() => { if (!document.hidden) { taiLuong(); if (chon) taiTin(true); } }, 15000); // dự phòng
+  document.addEventListener('pethy:doi', e => { if (e.detail.bang === 'tin_nhan') { taiLuong(); if (chon) taiTin(true); } }); // tin mới tới là hiện ngay
 })();
