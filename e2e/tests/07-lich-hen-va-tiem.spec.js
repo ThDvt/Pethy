@@ -154,5 +154,9 @@ test('ô chọn ngày: chủ nuôi giới hạn 30 ngày, lễ tân đặt hộ 
     await pl.goto('/le-tan/dat-lich.html?thu_cung=' + s.petId); await buocSangNgay(pl, null);
     await expect(pl.locator('#ngay')).toHaveAttribute('max', ngayVN(365));
     await expect(pl.getByText(/trong 30 ngày tới/)).toHaveCount(0);
-  } finally { await cn.close(); await lt.close(); }
+  } finally {
+    await cn.close(); await lt.close();
+    // hủy lịch đã tạo để không làm tài khoản chủ nuôi chung chạm giới hạn số lịch chưa diễn ra của các bài khác
+    await s.lt.rpc('huy_lich', { p_lich: s.lichId, p_ly_do: 'Dọn sau thử nghiệm' });
+  }
 });
