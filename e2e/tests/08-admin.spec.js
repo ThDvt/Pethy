@@ -69,18 +69,18 @@ test('admin chỉnh tham số: giá trị sai bị chặn; bật bảo trì thì
   try {
     const p = ad.p;
     await p.goto('/admin/tham-so.html');
-    const o = p.getByLabel('dat_truoc_toi_da_ngay');
+    const o = p.locator('[data-khoa="dat_truoc_toi_da_ngay"]');
     await o.fill('abc'); await o.locator('xpath=following::button[1]').click();
     await expect(p.locator('#loi-chung')).toContainText('số nguyên dương');
     await o.fill('0'); await o.locator('xpath=following::button[1]').click();
     await expect(p.locator('#loi-chung')).toContainText('số nguyên dương');
     await o.fill('45'); await o.locator('xpath=following::button[1]').click();
     await p.reload();
-    await expect(p.getByLabel('dat_truoc_toi_da_ngay')).toHaveValue('45');
-    await p.getByLabel('dat_truoc_toi_da_ngay').fill('30');
-    await p.getByLabel('dat_truoc_toi_da_ngay').locator('xpath=following::button[1]').click();
+    await expect(p.locator('[data-khoa="dat_truoc_toi_da_ngay"]')).toHaveValue('45');
+    await p.locator('[data-khoa="dat_truoc_toi_da_ngay"]').fill('30');
+    await p.locator('[data-khoa="dat_truoc_toi_da_ngay"]').locator('xpath=following::button[1]').click();
     await p.reload();
-    await expect(p.getByLabel('dat_truoc_toi_da_ngay')).toHaveValue('30');
+    await expect(p.locator('[data-khoa="dat_truoc_toi_da_ngay"]')).toHaveValue('30');
 
     // chế độ bảo trì
     try {
@@ -248,6 +248,10 @@ test('các trang quản trị tải được, không lỗi JavaScript, nhật k�
     dangChuyen = false;
     await expect(page.locator('#loi-chung')).toBeHidden({ timeout: 10_000 });
     await page.waitForLoadState('networkidle');
+    // chữ "null" hay "undefined" lọt ra màn hình là lỗi hiển thị (nhật ký có thể chứa dữ liệu thô nên bỏ qua trang đó)
+    if (t !== 'nhat-ky') expect(await page.locator('body').innerText(), 'chữ null/undefined trên trang ' + (t || 'tổng quan')).not.toMatch(/\b(null|undefined)\b/);
+    // trang Tham số chỉ hiện mô tả dễ hiểu, không lộ tên biến trong cơ sở dữ liệu
+    if (t === 'tham-so') expect(await page.locator('body').innerText()).not.toMatch(/\b(do_dai_khung_gio_phut|dat_truoc_toi_da_ngay|huy_doi_truoc_gio|ck_so_tai_khoan|che_do_bao_tri)\b/);
   }
   await page.goto('/admin/nhat-ky.html');
   await expect(page.locator('.hang').first()).toBeVisible();

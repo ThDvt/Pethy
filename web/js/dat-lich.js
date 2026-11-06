@@ -101,7 +101,8 @@
           gioBox.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed','false'));
           ev.currentTarget.setAttribute('aria-pressed','true'); S.gio = g.thoi_gian; nut.disabled = false; }}, gio(g.thoi_gian))))) : null;
       const gioVN = g => Number(new Date(g.thoi_gian).toLocaleString('en-GB',{hour:'2-digit',hour12:false,timeZone:'Asia/Ho_Chi_Minh'}));
-      gioBox.replaceChildren(nhom('Buổi sáng', r.data.filter(g => gioVN(g) < 12)), nhom('Buổi chiều', r.data.filter(g => gioVN(g) >= 12)));
+      // replaceChildren(null) sẽ in chữ "null" ra trang, nên bỏ nhóm rỗng trước khi chèn
+      gioBox.replaceChildren(...[nhom('Buổi sáng', r.data.filter(g => gioVN(g) < 12)), nhom('Buổi chiều', r.data.filter(g => gioVN(g) >= 12))].filter(Boolean));
     }
     o.addEventListener('change', taiGio);
     vung.replaceChildren(
