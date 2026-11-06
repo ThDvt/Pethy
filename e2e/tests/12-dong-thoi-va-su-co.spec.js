@@ -109,6 +109,14 @@ test('bấm đúp nút Đặt lịch chỉ tạo một lịch; mất mạng thì
     // có mạng lại: bấm đúp liên tiếp
     await c.setOffline(false);
     await nutDat.dblclick();
+    // Tài khoản chủ nuôi thử dùng chung cho nhiều bài chạy song song nên có thể chạm giới hạn 10 lần đặt mỗi phút của chính hệ thống;
+    // trang báo "thao tác quá nhanh" thì chờ hết phút rồi bấm lại, đúng như người dùng sẽ làm.
+    for (let lan = 0; lan < 3; lan++) {
+      const quaNhanh = await p.locator('#loi').filter({ hasText: 'quá nhanh' }).waitFor({ timeout: 6_000 }).then(() => true, () => false);
+      if (!quaNhanh) break;
+      await p.waitForTimeout(61_000);
+      await nutDat.dblclick();
+    }
     try { await expect(p.locator('#tieu-de')).toHaveText('Đã gửi yêu cầu đặt lịch', { timeout: 20_000 }); }
     catch (e) { // kèm thông báo lỗi đang hiện trên trang để biết vì sao đặt lịch không thành công
       const loi = await p.locator('#loi').innerText().catch(() => '(không có)');
