@@ -19,6 +19,8 @@ export async function chuanBiDuLieuDatLich(){
   kiemTraKhongPhaiHeThongThat();
   const ad = (await dn(TK.admin)).c, bs = await dn(TK.bac_si), kho = (await dn(TK.kho)).c;
 
+  // Các bài chạy song song cùng dùng một tài khoản chủ nuôi và để lại lịch chưa diễn ra, nên nới giới hạn 5 lịch cho riêng môi trường thử (giới hạn này đã có bài kiểm tra riêng ở db/test).
+  ok(await ad.from('cau_hinh').update({ gia_tri: '100' }).eq('khoa', 'gioi_han_lich_cho'), 'nới giới hạn lịch chờ');
   if (!ok(await ad.from('dich_vu').select('id').eq('ten', DV.ten), 'đọc dịch vụ').length) ok(await ad.from('dich_vu').insert(DV), 'thêm dịch vụ');
   let t = ok(await ad.from('thuoc').select('id').eq('ten', THUOC.ten).eq('don_vi', THUOC.don_vi), 'đọc thuốc')[0];
   if (!t) t = ok(await ad.from('thuoc').insert(THUOC).select('id'), 'thêm thuốc')[0];
