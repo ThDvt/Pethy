@@ -109,7 +109,11 @@ test('bấm đúp nút Đặt lịch chỉ tạo một lịch; mất mạng thì
     // có mạng lại: bấm đúp liên tiếp
     await c.setOffline(false);
     await nutDat.dblclick();
-    await expect(p.locator('#tieu-de')).toHaveText('Đã gửi yêu cầu đặt lịch', { timeout: 20_000 });
+    try { await expect(p.locator('#tieu-de')).toHaveText('Đã gửi yêu cầu đặt lịch', { timeout: 20_000 }); }
+    catch (e) { // kèm thông báo lỗi đang hiện trên trang để biết vì sao đặt lịch không thành công
+      const loi = await p.locator('#loi').innerText().catch(() => '(không có)');
+      throw new Error('Đặt lịch không thành công, trang báo: ' + loi + '\n' + e.message);
+    }
     const sau = ok(await cn.c.from('lich_hen').select('id,thu_cung!inner(ten)').eq('thu_cung.ten', ten).neq('trang_thai', 'da_huy'), 'đếm lịch');
     expect(sau, 'bấm đúp chỉ tạo một lịch').toHaveLength(1);
     expect(bs).toBeTruthy();
