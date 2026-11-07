@@ -204,3 +204,60 @@ html.xac-thuc-cham.khong-phien body:has(.bo-khu,.khach-khu)::before{content:"Vi�
 .ck-ct{flex:1 1 200px;min-width:0}
 .ck-dong{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--anh);font-size:14px}
 .ck-dong span{color:var(--xam)}.ck-dong b{text-align:right;overflow-wrap:anywhere}
+
+/* ===== Khu nhân viên: chia khối rõ ràng, nền xám nhạt, mỗi phần là một thẻ trắng ===== */
+body:not(.khach){--nen-khu:#F0F1ED;--vien-khoi:#DDDED8;--k-xanh:#1D5FB8;--k-xanh-nhat:#E8F0FB;--k-luc:#0F7B5A;--k-luc-nhat:#E4F5EE;--k-vang:#8A5A00;--k-vang-nhat:#FFF3D1;--k-cam-nhat:#FFF1E7}
+body:not(.khach) .bo-khu{background:var(--nen-khu)}
+body:not(.khach) .bo-khu h1{font-size:30px;letter-spacing:-.025em}
+/* thẻ nội dung */
+body:not(.khach) .bo-khu main>section,body:not(.khach) .bo-khu .muc,body:not(.khach) .bo-khu .cho,body:not(.khach) .bo-khu #ds,body:not(.khach) .bo-khu .db-hero{
+  background:#fff;border:1px solid var(--vien-khoi);border-radius:14px;padding:20px 24px;margin-top:20px;box-shadow:0 1px 2px rgba(20,22,26,.05),0 6px 18px rgba(20,22,26,.04)}
+body:not(.khach) .bo-khu .muc:first-of-type{margin-top:20px}
+body:not(.khach) .bo-khu .muc .muc{border:0;box-shadow:none;padding:0;border-radius:0}   /* thẻ lồng nhau thì không lồng khung */
+/* tiêu đề thẻ: thanh màu bên trái, chữ đậm */
+body:not(.khach) .bo-khu main>section>h2,body:not(.khach) .bo-khu .muc>h2,body:not(.khach) .bo-khu .muc-dau h2,body:not(.khach) .bo-khu .cho h2,body:not(.khach) .bo-khu .cot-phu h2{
+  font-size:16px;font-weight:800;color:var(--muc);margin:0;padding:0 0 0 12px;border:0;position:relative;line-height:1.3}
+body:not(.khach) .bo-khu main>section>h2::before,body:not(.khach) .bo-khu .muc>h2::before,body:not(.khach) .bo-khu .muc-dau h2::before,body:not(.khach) .bo-khu .cho h2::before,body:not(.khach) .bo-khu .cot-phu h2::before{
+  content:"";position:absolute;left:0;top:2px;bottom:2px;width:4px;border-radius:2px;background:var(--nhan)}
+body:not(.khach) .bo-khu .muc-dau{border-bottom:1px solid var(--vach);padding-bottom:12px;margin-bottom:4px}
+body:not(.khach) .bo-khu .muc>h2{padding-bottom:0;margin-bottom:8px}
+/* việc cần làm ngay: nền cam nhạt, viền cam */
+body:not(.khach) .bo-khu .cho{background:var(--k-cam-nhat);border:1px solid #F2C6A8;border-left:5px solid var(--nhan);padding-top:18px}
+body:not(.khach) .bo-khu .cho h2,body:not(.khach) .bo-khu .cho h2::before{color:var(--nhan-dam)}
+body:not(.khach) .bo-khu .cho h2::before{display:none}
+body:not(.khach) .bo-khu .cho h2{padding-left:0}
+/* cột phụ (nhắc việc, cảnh báo): thẻ trắng ngăn cách bằng đường viền */
+body:not(.khach) .bo-khu .cot-phu{background:#fff;border-left:1px solid var(--vien-khoi)}
+/* ô số liệu: mỗi ô một thẻ, vạch màu phía trên */
+body:not(.khach) .bo-khu .the{border-top:0;gap:14px;margin-top:20px}
+body:not(.khach) .bo-khu .the>div{background:#fff;border:1px solid var(--vien-khoi);border-top:4px solid var(--nhan);border-radius:12px;padding:16px 20px;box-shadow:0 1px 2px rgba(20,22,26,.05)}
+body:not(.khach) .bo-khu .the>div:nth-child(2){border-top-color:var(--k-xanh)}
+body:not(.khach) .bo-khu .the>div:nth-child(3){border-top-color:var(--k-luc)}
+body:not(.khach) .bo-khu .the>div:nth-child(4){border-top-color:#B8860B}
+body:not(.khach) .bo-khu .the .n{font-weight:600}
+body:not(.khach) .bo-khu .the .v{font-size:28px;font-weight:700;letter-spacing:-.02em}
+body:not(.khach) .bo-khu .db-kpi{border-top:0;gap:14px;margin-top:20px}
+body:not(.khach) .bo-khu .db-kpi-o,body:not(.khach) .bo-khu .db-kpi-o:first-child{background:#fff;border:1px solid var(--vien-khoi);border-top:4px solid var(--k-xanh);border-radius:12px;padding:16px 20px;box-shadow:0 1px 2px rgba(20,22,26,.05)}
+body:not(.khach) .bo-khu .db-kpi-o:nth-child(3){border-top-color:var(--k-luc)}
+body:not(.khach) .bo-khu .db-kpi-o:nth-child(4){border-top-color:#B8860B}
+body:not(.khach) .bo-khu .db-kpi-o.lon{background:var(--muc);border-color:var(--muc);border-top-color:#FFC83D;color:#fff}
+body:not(.khach) .bo-khu .db-kpi-o.lon .n,body:not(.khach) .bo-khu .db-kpi-o.lon .p,body:not(.khach) .bo-khu .db-kpi-o.lon .nho,body:not(.khach) .bo-khu .db-kpi-o.lon .db-delta{color:#C9CBC5}
+body:not(.khach) .bo-khu .db-kpi-o.lon .db-delta.tang b{color:#7BE0B0}body:not(.khach) .bo-khu .db-kpi-o.lon .db-delta.giam b{color:#FFA89B}
+body:not(.khach) .bo-khu .db-kpi-o.canh{background:#FDECEA;border-color:#F3C2BC;border-top-color:var(--loi)}
+body:not(.khach) .bo-khu .db-kpi-o.canh .v{color:var(--loi)}
+@media(max-width:1100px){body:not(.khach) .bo-khu .db-kpi-o:nth-child(odd),body:not(.khach) .bo-khu .db-kpi-o:nth-child(n+3){border-left:1px solid var(--vien-khoi);padding-left:20px}}
+body:not(.khach) .bo-khu .db-kpi-o.lon:nth-child(1){border-left-color:var(--muc)}
+/* dòng trong thẻ: rê chuột thì nổi nền nhẹ; đầu mỗi ngày của bác sĩ là một dải nhãn */
+body:not(.khach) .bo-khu .hang:hover{background:#F7F7F4}
+body:not(.khach) .bo-khu .ngay-tieu{background:var(--nen-khu);border:0!important;border-radius:8px;padding:8px 12px!important;margin-top:20px!important;font-size:14px;text-transform:capitalize}
+body:not(.khach) .bo-khu #ds{padding-top:8px}
+body:not(.khach) .bo-khu .bang .tieu{background:var(--nen-khu);border-top:0;border-radius:6px;padding-left:10px;padding-right:10px}
+/* nhãn trạng thái: viên thuốc có nền, dễ lướt mắt */
+body:not(.khach) .bo-khu .tt{border:0;border-radius:999px;padding:3px 10px;background:#ECEDE8;color:var(--muc)}
+body:not(.khach) .bo-khu .tt.do{background:#FDECEA;color:var(--loi)}
+body:not(.khach) .bo-khu .tt.vang{background:var(--k-vang-nhat);color:var(--k-vang)}
+body:not(.khach) .bo-khu .tt.xanh{background:var(--k-luc-nhat);color:var(--k-luc)}
+@media(max-width:640px){body:not(.khach) .bo-khu main>section,body:not(.khach) .bo-khu .muc,body:not(.khach) .bo-khu .cho,body:not(.khach) .bo-khu #ds,body:not(.khach) .bo-khu .db-hero{padding:16px;border-radius:12px}}
+body:not(.khach) .bo-khu .db-kpi-o .v{font-size:20px;overflow-wrap:anywhere}
+body:not(.khach) .bo-khu .db-kpi-o.lon .v{font-size:clamp(22px,2.3vw,28px)}
+body:not(.khach) .bo-khu .cho .hang:first-of-type,body:not(.khach) .bo-khu .muc>h2+.hang{border-top:0}
