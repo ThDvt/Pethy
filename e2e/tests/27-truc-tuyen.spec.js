@@ -75,3 +75,28 @@ test('trang dịch vụ của admin và trang thú cưng của chủ nuôi cập
     await expect(cn.locator('#ds')).toContainText(tenTc, { timeout: 8000 });
   } finally { await ca.close(); await cc.close(); }
 });
+
+// Admin theo dõi mọi thay đổi của web: luồng "Hoạt động gần đây" ở Tổng quan hiện ngay một câu dễ đọc, không tải lại trang.
+test('admin thấy ngay mọi thay đổi trong luồng hoạt động gần đây, viết dễ đọc và không lộ nội dung nhạy cảm', async ({ browser }) => {
+  test.setTimeout(120_000);
+  await chuanBiDuLieuDatLich();
+  const ca = await browser.newContext(); await cauHinh(ca);
+  try {
+    const ad = await ca.newPage();
+    await dangNhap(ad, TK.admin, KHU.admin);
+    await expect(ad.getByRole('heading', { name: 'Hoạt động gần đây' })).toBeVisible();
+    await ad.waitForTimeout(1500);
+    const ten = 'Hoạt động ' + Date.now();
+    const admin = (await dn(TK.admin)).c;
+    ok(await admin.from('dich_vu').insert({ ten, loai: 'kham', gia: 123456 }), 'thêm dịch vụ');
+    const dong = ad.locator('.hd-luong .hd-dong', { hasText: ten });
+    await expect(dong).toBeVisible({ timeout: 8000 });
+    await expect(dong).toContainText('Thêm dịch vụ');
+    await expect(dong).toContainText('Admin');
+    ok(await admin.from('dich_vu').update({ gia: 654321 }).eq('ten', ten), 'đổi giá');
+    await expect(ad.locator('.hd-luong .hd-dong', { hasText: 'Đổi giá dịch vụ ' + ten })).toContainText('654.321', { timeout: 8000 });
+    // người không phải admin không gọi được luồng này
+    const lt = (await dn(TK.le_tan)).c;
+    expect((await lt.rpc('hoat_dong_gan_day', { p_gioi_han: 5 })).error, 'lễ tân gọi hoat_dong_gan_day').toBeTruthy();
+  } finally { await ca.close(); }
+});

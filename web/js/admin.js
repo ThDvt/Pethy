@@ -35,5 +35,29 @@ Pethy.admin = (function(){
     d.showModal();
   }
   const o = (id, nhan, ...c) => el('div',{class:'truong'}, el('label',{for:id}, nhan), ...c);
-  return { MUC, $, ngay, homNay, VAI, baoLoi, rong, the, boot, hop, o };
+  // Luồng "Hoạt động gần đây": mỗi thay đổi dữ liệu của web là một câu dễ đọc (do hàm hoat_dong_gan_day viết, không có nội dung nhạy cảm).
+  // Tự làm mới khi bảng nhat_ky đổi (thời gian thực); dòng mới hiện có nền nổi bật vài giây.
+  const MUC_HD = { lich:'Lịch hẹn', tien:'Tiền', kho:'Kho', kham:'Khám bệnh', nguoi:'Người dùng', noi_dung:'Nội dung', he_thong:'Hệ thống' };
+  const VAI_HD = { admin:'Admin', le_tan:'Lễ tân', bac_si:'Bác sĩ', thu_ngan:'Thu ngân', kho:'Thủ kho', chu_nuoi:'Chủ nuôi' };
+  function luongHoatDong(gioiHan, loc){
+    const ds = el('div',{class:'hd-luong',role:'log','aria-live':'off'});
+    const thoiGian = iso => { const d = new Date(iso), s = (Date.now() - d) / 1000;
+      if (s < 60) return 'vừa xong'; if (s < 3600) return Math.floor(s / 60) + ' phút trước';
+      return d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Ho_Chi_Minh'}) + ' ' + ngay(iso).slice(0, 5); };
+    let daThay = null;
+    async function tai(){
+      const r = await Pethy.db.rpc('hoat_dong_gan_day', { p_gioi_han: gioiHan, p_hanh_dong: loc ? (loc.value || null) : null });
+      if (r.error) { ds.replaceChildren(el('p',{class:'loi'}, 'Không tải được hoạt động. Nếu mới cập nhật web, hãy chạy db/15_hoat_dong.sql trong Supabase.')); return; }
+      const moi = new Set((r.data || []).map(x => x.id));
+      ds.replaceChildren(...((r.data || []).length ? r.data.map(x => el('div',{class:'hang hd-dong' + (daThay && !daThay.has(x.id) ? ' hd-moi' : '')},
+        el('div',{class:'hd-gio nho'}, thoiGian(x.thoi_gian)),
+        el('div',{class:'hd-noi'}, el('div',{class:'hd-nd'}, x.noi_dung), el('div',{class:'nho'}, x.nguoi + (x.vai_tro ? ' (' + VAI_HD[x.vai_tro] + ')' : ''))),
+        el('span',{class:'tt xam'}, MUC_HD[x.muc] || ''))) : [rong('Chưa có hoạt động nào.')]));
+      daThay = moi;
+    }
+    Pethy.khiDoi(['nhat_ky'], tai);
+    setInterval(() => { if (!document.hidden) tai(); }, 60_000); // để nhãn "vừa xong" và "n phút trước" không bị cũ
+    return { ds, tai };
+  }
+  return { MUC, $, ngay, homNay, VAI, baoLoi, rong, the, boot, hop, o, luongHoatDong };
 })();

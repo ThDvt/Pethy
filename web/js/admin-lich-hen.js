@@ -50,4 +50,5 @@
   [chonKhoang, chonTT, chonBs].forEach(s => s.addEventListener('change', tai));
   $('vung').replaceChildren(el('div', { style: 'display:flex;flex-wrap:wrap;gap:12px;margin-top:20px' }, chonKhoang, chonTT, chonBs), dem, ds);
   await tai();
+  Pethy.khiDoi(['lich_hen', 'thu_cung', 'dich_vu'], tai);
 })();
