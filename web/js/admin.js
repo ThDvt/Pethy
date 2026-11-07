@@ -5,7 +5,6 @@ Pethy.admin = (function(){
     {ten:'Tổng quan',href:'/admin/',nhom:'CHÍNH'},{ten:'Lịch hẹn',href:'/admin/lich-hen.html',nhom:'CHÍNH'},{ten:'Doanh thu',href:'/admin/doanh-thu.html',nhom:'CHÍNH'},
     {ten:'Tài khoản',href:'/admin/tai-khoan.html',nhom:'QUẢN LÝ'},{ten:'Dịch vụ',href:'/admin/dich-vu.html',nhom:'QUẢN LÝ'},{ten:'Lịch làm',href:'/admin/lich-lam-viec.html',nhom:'QUẢN LÝ'},{ten:'Tham số',href:'/admin/tham-so.html',nhom:'QUẢN LÝ'},
     {ten:'Đánh giá',href:'/admin/danh-gia.html',nhom:'QUẢN LÝ'},{ten:'Bài viết',href:'/admin/bai-viet.html',nhom:'QUẢN LÝ'},
-    {ten:'Lễ tân',href:'/le-tan/',nhom:'KHU LÀM VIỆC'},{ten:'Bác sĩ',href:'/bac-si/',nhom:'KHU LÀM VIỆC'},{ten:'Thu ngân',href:'/thu-ngan/',nhom:'KHU LÀM VIỆC'},{ten:'Thủ kho',href:'/kho/',nhom:'KHU LÀM VIỆC'},
     {ten:'Nhật ký',href:'/admin/nhat-ky.html',nhom:'HỆ THỐNG'},{ten:'Tin nhắn',href:'/admin/trao-doi.html',nhom:'HỆ THỐNG'},{ten:'Bảo mật',href:'/admin/bao-mat.html',nhom:'HỆ THỐNG'}];
   const $ = id => document.getElementById(id);
   const ngay = iso => new Date(iso).toLocaleDateString('en-GB',{timeZone:'Asia/Ho_Chi_Minh'});

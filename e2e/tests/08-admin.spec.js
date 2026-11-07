@@ -302,11 +302,11 @@ test('admin xem mọi lịch hẹn, xác nhận và hủy có lý do; vào đư�
     await expect(dong).toContainText('Đã hủy');
     await expect(dong.getByRole('button', { name: 'Xác nhận' })).toHaveCount(0);
 
-    // admin vào được khu lễ tân qua thanh bên, có lối quay về quản trị
-    for (const href of ['/le-tan/', '/bac-si/', '/thu-ngan/', '/kho/']) await expect(p.locator('a[href="' + href + '"]').first()).toBeAttached(); // có trên thanh bên (trên điện thoại nằm trong menu thu gọn)
-    await p.goto('/le-tan/');
-    await expect(p.getByRole('link', { name: /Về trang quản trị/ })).toBeVisible();
-    await p.getByRole('link', { name: /Về trang quản trị/ }).click();
-    await p.waitForURL(u => u.pathname === '/admin/' || u.pathname === '/admin/index.html');
+    // admin chỉ theo dõi, không vào khu làm việc của nhân viên: không có lối vào trên thanh bên và gõ địa chỉ cũng bị đưa về trang quản trị
+    for (const href of ['/le-tan/', '/bac-si/', '/thu-ngan/', '/kho/']) await expect(p.locator('a[href="' + href + '"]')).toHaveCount(0);
+    for (const href of ['/le-tan/', '/bac-si/', '/thu-ngan/', '/kho/']) {
+      await p.goto(href);
+      await p.waitForURL(u => u.pathname === '/admin/' || u.pathname === '/admin/index.html');
+    }
   } finally { await ad.c.close(); }
 });
