@@ -28,5 +28,6 @@
     el('div', { class: 'tn-dau' }, H.avatar('Quản trị'), el('div', {}, el('div', { class: 'tn-ten' }, 'Quản trị phòng khám'), el('div', { class: 'tn-vai' }, 'Chỉ bạn và quản trị đọc được'))), tin, soan.khung));
   $('vung').replaceChildren(goc); H.phuManHinh(goc);
   await tai();
-  setInterval(() => { if (!document.hidden) tai(true); }, 15000);
+  setInterval(() => { if (!document.hidden) tai(true); }, 15000); // dự phòng
+  document.addEventListener('pethy:doi', e => { if (e.detail.bang === 'tin_nhan') tai(true); }); // tin mới tới là hiện ngay
 })();

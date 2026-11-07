@@ -66,4 +66,5 @@
         return null; }, tai);
   }
   await tai();
+  Pethy.khiDoi(['bai_viet'], tai);
 })();

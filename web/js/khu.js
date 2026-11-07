@@ -45,6 +45,11 @@
     if (!vt) { location.replace('/dang-nhap.html'); return null; }
     if (vt !== vaiCan && vt !== 'admin') { location.replace(KHU[vt] || '/'); return null; }
     document.documentElement.classList.remove('khong-phien'); // khách chưa đăng nhập bị ẩn khung từ đầu (xem thanh-ben-som.js)
+    // Quản trị viên vào khu của vai khác (lễ tân, bác sĩ...) thì có lối về lại trang quản trị
+    if (vt === 'admin' && vaiCan !== 'admin') {
+      const cot = document.querySelector('#khung-khu main');
+      if (cot && !cot.querySelector('.ve-quan-tri')) cot.prepend(el('a', { href: '/admin/', class: 'lien-ket ve-quan-tri', style: 'display:inline-block;margin-bottom:12px' }, '← Về trang quản trị'));
+    }
     hienTenNguoi(); batDauDemSo(vaiCan);
     if (Pethy.thuc) giamSatNhanRoi(vt === 'chu_nuoi' ? 60 : 30);
     return vt;
@@ -65,7 +70,7 @@
   const NGAY_VN = () => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
   const dem = r => (r && !r.error) ? (typeof r.count === 'number' ? r.count : (r.data || []).length) : 0;
   const DEM_HEAD = { count: 'exact', head: true };
-  let vaiHienTai = null, dangDem = false;
+  let vaiHienTai = null, dangDem = false, canDemLai = false;
   async function demSo(vai){
     const me = (await db.auth.getUser()).data?.user?.id; if (!me) return [];
     const kq = [];
@@ -88,12 +93,42 @@
     return kq;
   }
   async function lamMoiSo(){
-    if (!vaiHienTai || dangDem || !window.PethyThanhBen) return;
+    if (!vaiHienTai || !window.PethyThanhBen) return;
+    if (dangDem) { canDemLai = true; return; } // có thay đổi mới lúc đang đếm: đếm lại ngay sau đó, không bỏ sót
     dangDem = true;
-    try { (await demSo(vaiHienTai)).forEach(([href, n]) => window.PethyThanhBen.datSo(href, n)); } catch (e) {} finally { dangDem = false; }
+    try { (await demSo(vaiHienTai)).forEach(([href, n]) => window.PethyThanhBen.datSo(href, n)); } catch (e) {} finally { dangDem = false; if (canDemLai) { canDemLai = false; lamMoiSo(); } }
+  }
+  // Nhận thay đổi tức thời từ máy chủ (Supabase Realtime, vẫn theo RLS): làm mới số ở thanh bên và báo cho trang đang mở
+  // qua sự kiện 'pethy:doi'. Vẫn giữ đếm định kỳ làm đường dự phòng khi kết nối thời gian thực bị chặn hoặc đứt.
+  const BANG_THEO_VAI = {
+    admin: ['tin_nhan', 'lich_hen', 'hoa_don', 'thanh_toan', 'lich_lam_viec', 'thu_cung', 'chu_nuoi', 'dich_vu', 'thuoc', 'lo_thuoc', 'bien_dong_kho', 'tai_khoan', 'ho_so_bac_si', 'danh_gia', 'bai_viet', 'cau_hinh', 'nhat_ky', 'mui_tiem', 'nhac_lich'],
+    le_tan: ['tin_nhan', 'lich_hen', 'thu_cung', 'chu_nuoi', 'nhac_lich', 'lich_lam_viec', 'ho_so_bac_si'],
+    bac_si: ['tin_nhan', 'lich_hen', 'lich_lam_viec', 'ho_so_bac_si', 'thu_cung', 'mui_tiem'],
+    thu_ngan: ['tin_nhan', 'hoa_don', 'thanh_toan', 'lich_hen'],
+    kho: ['tin_nhan', 'thuoc', 'lo_thuoc', 'bien_dong_kho'],
+    chu_nuoi: ['hoa_don', 'thanh_toan', 'lich_hen', 'thu_cung', 'mui_tiem', 'danh_gia']
+  };
+  // số trên thanh bên (tin chưa đọc, lịch chờ, hóa đơn, cảnh báo kho) chỉ đổi khi các bảng này đổi
+  const BANG_DEM_SO = ['tin_nhan', 'lich_hen', 'hoa_don', 'thuoc', 'lo_thuoc', 'bien_dong_kho'];
+  function theoDoiTrucTuyen(vai){
+    const bang = BANG_THEO_VAI[vai] || [];
+    if (!bang.length || typeof db.channel !== 'function') return;
+    const cho = {};
+    try {
+      const kenh = db.channel('pethy-' + Math.random().toString(36).slice(2));
+      bang.forEach(b => kenh.on('postgres_changes', { event: '*', schema: 'public', table: b }, () => {
+        clearTimeout(cho[b]);
+        cho[b] = setTimeout(() => {
+          document.dispatchEvent(new CustomEvent('pethy:doi', { detail: { bang: b } }));
+          // trên trang trao đổi, để trang kịp đánh dấu "đã đọc" trước khi đếm, tránh số nháy lên rồi tắt
+          if (BANG_DEM_SO.includes(b)) setTimeout(lamMoiSo, b === 'tin_nhan' && /trao-doi\.html$/.test(location.pathname) ? 900 : 0);
+        }, 250);
+      }));
+      kenh.subscribe();
+    } catch (e) { /* không có thời gian thực thì dùng đếm định kỳ */ }
   }
   function batDauDemSo(vai){
-    vaiHienTai = vai; lamMoiSo();
+    vaiHienTai = vai; lamMoiSo(); theoDoiTrucTuyen(vai);
     setInterval(() => { if (!document.hidden) lamMoiSo(); }, 60000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) lamMoiSo(); });
   }

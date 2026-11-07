@@ -107,5 +107,13 @@
   // Nhãn trạng thái có màu theo ý nghĩa: vàng = đang chờ, xanh dương = đã xác nhận, xanh lá = hoàn tất, cam = làm dở, đỏ = có vấn đề, xám = đã hủy hoặc ngừng.
   const MAU_TT = {cho_xac_nhan:'vang',da_xac_nhan:'xd',da_hoan_thanh:'xanh',da_huy:'xam',khong_den:'do',chua_thanh_toan:'vang',thanh_toan_mot_phan:'cam',da_thanh_toan:'xanh'};
   const tt = (ma, nhan) => el('span',{class:'tt ' + (MAU_TT[ma] || '')}, nhan);
-  window.Pethy = { db, thuc, el, tt, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan, matKhau };
+  // Khi có thay đổi ở một trong các bảng đã nêu (qua thời gian thực, xem khu.js) thì chạy lại hàm tải của trang.
+  // Hoãn lại nếu người dùng đang gõ vào ô nhập hoặc đang mở hộp thoại, để không làm mất chữ đang gõ.
+  const khiDoi = (bang, fn) => {
+    const ds = [].concat(bang); let cho = false;
+    const dangGo = () => { const a = document.activeElement; return !!document.querySelector('dialog[open]') || (a && (a.tagName === 'TEXTAREA' || a.tagName === 'SELECT' || (a.tagName === 'INPUT' && !/^(checkbox|radio|button|submit)$/.test(a.type)))); };
+    const chay = lan => { if (dangGo() && lan < 40) { setTimeout(() => chay(lan + 1), 1500); return; } cho = false; Promise.resolve().then(fn).catch(() => {}); };
+    document.addEventListener('pethy:doi', e => { if (!ds.includes(e.detail.bang) || cho) return; cho = true; chay(0); });
+  };
+  window.Pethy = { khiDoi, db, thuc, el, tt, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan, matKhau };
 })();

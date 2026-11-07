@@ -116,4 +116,5 @@
   $('them-thuoc').addEventListener('click', moThemThuoc);
 
   await tai();
+  Pethy.khiDoi(['thuoc', 'lo_thuoc', 'bien_dong_kho'], tai);
 })();

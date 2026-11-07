@@ -1483,12 +1483,17 @@ CREATE TRIGGER trg_bat_bien BEFORE UPDATE OR DELETE ON tin_nhan
 CREATE TRIGGER trg_bat_bien_cat BEFORE TRUNCATE ON tin_nhan
   FOR EACH STATEMENT EXECUTE FUNCTION chi_cho_them();
 
--- Supabase Realtime: cho trình duyệt nhận tin mới tức thời (vẫn chịu chính sách RLS).
+-- Supabase Realtime: cho trình duyệt nhận tin nhắn, lịch hẹn, hóa đơn mới tức thời (vẫn chịu chính sách RLS).
 -- Trên PostgreSQL thường (không có publication này) thì bỏ qua.
 DO $$
+DECLARE b text;
 BEGIN
   IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
-    ALTER PUBLICATION supabase_realtime ADD TABLE tin_nhan;
+    FOREACH b IN ARRAY ARRAY['tin_nhan', 'lich_hen', 'hoa_don', 'thanh_toan', 'lich_lam_viec', 'thu_cung', 'chu_nuoi', 'dich_vu', 'thuoc', 'lo_thuoc', 'bien_dong_kho', 'tai_khoan', 'ho_so_bac_si', 'danh_gia', 'bai_viet', 'cau_hinh', 'nhat_ky', 'mui_tiem', 'nhac_lich'] LOOP
+      IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = b) THEN
+        EXECUTE format('ALTER PUBLICATION supabase_realtime ADD TABLE %I', b);
+      END IF;
+    END LOOP;
   END IF;
 END
 $$;

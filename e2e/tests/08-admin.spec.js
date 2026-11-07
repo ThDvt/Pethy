@@ -1,6 +1,7 @@
 import { test, expect, CFG, TK, KHU, dangNhap, ngCanhMoi } from '../helpers.js';
 import { chuanBiDuLieuDatLich, dn } from '../seed.js';
-import { ok } from '../api.js';
+import { ok, taoLichDaXacNhan } from '../api.js';
+import { ngayVN } from '../luong.js';
 
 const hop = p => p.locator('#hop');
 const xn = p => p.locator('dialog.xac-nhan');
@@ -197,21 +198,23 @@ test('admin thêm ca cho nhiều thứ cùng lúc, trùng giờ bị chặn, s�
     const muc = p.locator('section.muc', { hasText: TK.bac_si.ten });
     const truoc = ok(await dnAd.from('lich_lam_viec').select('id').eq('bac_si_id', bsId), 'đếm ca hiện có').length; // lấy từ cơ sở dữ liệu, không đếm giao diện khi danh sách chưa tải xong
     await muc.getByRole('button', { name: 'Thêm ca' }).click();
-    // mặc định tích sẵn thứ hai đến thứ sáu; thêm thứ bảy bằng tay
+    // không tích sẵn thứ nào: admin tự chọn (nút chọn nhanh thứ hai đến thứ sáu, rồi thêm thứ bảy bằng tay)
+    await expect(hop(p).locator('.thu-chon input:checked')).toHaveCount(0);
+    await hop(p).getByRole('button', { name: 'Thứ hai đến thứ sáu' }).click();
     for (const t of ['Thứ hai', 'Thứ sáu']) await expect(hop(p).getByRole('checkbox', { name: t })).toBeChecked();
     await expect(hop(p).getByRole('checkbox', { name: 'Chủ nhật' })).not.toBeChecked();
     await hop(p).getByRole('checkbox', { name: 'Thứ bảy' }).check();
-    await p.locator('#c-a').fill('00:30'); await p.locator('#c-b').fill('01:30');
+    await p.locator('#c-a').fill('00:30'); await p.locator('#c-b').fill('00:50'); // ca 20 phút ngắn hơn một khung giờ: không sinh khung giờ nào, nên không ảnh hưởng các test đặt lịch chạy song song
     await hop(p).getByRole('button', { name: 'Thêm', exact: true }).click();
     await expect(hop(p)).not.toBeVisible();
-    await expect(muc.locator('.hang', { hasText: '00:30 đến 01:30' })).toHaveCount(6); // một lần bấm, sáu thứ
+    await expect(muc.locator('.hang', { hasText: '00:30 đến 00:50' })).toHaveCount(6); // một lần bấm, sáu thứ
     await expect(muc.locator('.hang')).toHaveCount(truoc + 6);
 
     // thêm lại cùng giờ bắt đầu cho thứ hai: bị chặn, nói rõ thứ nào
     await muc.getByRole('button', { name: 'Thêm ca' }).click();
     await hop(p).getByRole('button', { name: 'Bỏ chọn' }).click();
     await hop(p).getByRole('checkbox', { name: 'Thứ hai' }).check();
-    await p.locator('#c-a').fill('00:30'); await p.locator('#c-b').fill('02:00');
+    await p.locator('#c-a').fill('00:30'); await p.locator('#c-b').fill('00:55');
     await hop(p).getByRole('button', { name: 'Thêm', exact: true }).click();
     await expect(hop(p).locator('.loi')).toContainText('Thứ hai');
     await hop(p).getByRole('button', { name: 'Đóng' }).click();
@@ -224,12 +227,12 @@ test('admin thêm ca cho nhiều thứ cùng lúc, trùng giờ bị chặn, s�
     await hop(p).getByRole('button', { name: 'Đóng' }).click();
 
     // sửa giờ một ca
-    await muc.locator('.hang', { hasText: 'Thứ hai' }).filter({ hasText: '00:30 đến 01:30' }).getByRole('button', { name: 'Sửa' }).click();
-    await p.locator('#c-a').fill('01:00'); await p.locator('#c-b').fill('02:00');
+    await muc.locator('.hang', { hasText: 'Thứ hai' }).filter({ hasText: '00:30 đến 00:50' }).getByRole('button', { name: 'Sửa' }).click();
+    await p.locator('#c-a').fill('01:00'); await p.locator('#c-b').fill('01:20');
     await hop(p).getByRole('button', { name: 'Lưu', exact: true }).click();
     await expect(hop(p)).not.toBeVisible();
-    await expect(muc.locator('.hang', { hasText: 'Thứ hai' }).filter({ hasText: '01:00 đến 02:00' })).toHaveCount(1);
-    await expect(muc.locator('.hang', { hasText: '00:30 đến 01:30' })).toHaveCount(5);
+    await expect(muc.locator('.hang', { hasText: 'Thứ hai' }).filter({ hasText: '01:00 đến 01:20' })).toHaveCount(1);
+    await expect(muc.locator('.hang', { hasText: '00:30 đến 00:50' })).toHaveCount(5);
   } finally { await don(); await ad.c.close(); }
 });
 
@@ -240,7 +243,7 @@ test('các trang quản trị tải được, không lỗi JavaScript, nhật k�
   page.on('console', m => { if (m.type() === 'error' && !dangChuyen && !/favicon/.test(m.text())) loi.push(m.text()); });
   await dangNhap(page, TK.admin, KHU.admin);
   await page.waitForLoadState('networkidle');
-  for (const t of ['', 'doanh-thu', 'danh-gia', 'bao-mat', 'nhat-ky', 'bai-viet', 'tham-so', 'tai-khoan', 'dich-vu', 'lich-lam-viec', 'trao-doi']) {
+  for (const t of ['', 'doanh-thu', 'danh-gia', 'bao-mat', 'nhat-ky', 'bai-viet', 'tham-so', 'tai-khoan', 'dich-vu', 'lich-lam-viec', 'lich-hen', 'trao-doi']) {
     dangChuyen = true;
     await page.goto('/admin/' + (t ? t + '.html' : ''));
     await page.waitForLoadState('networkidle');
@@ -270,4 +273,40 @@ test('không phải admin thì không ghi được dịch vụ, tham số, lịc
     expect((await c.rpc('danh_sach_tai_khoan')).error, 'danh_sach_tai_khoan ' + t).toBeTruthy();
     expect((await c.rpc('xoa_tai_khoan', { p_tai_khoan: id })).error, 'xoa_tai_khoan ' + t).toBeTruthy();
   }
+});
+
+test('admin xem mọi lịch hẹn, xác nhận và hủy có lý do; vào được các khu làm việc và quay về', async ({ browser }) => {
+  test.setTimeout(120_000);
+  await chuanBiDuLieuDatLich();
+  const ten = 'LichAdmin' + Date.now().toString().slice(-6);
+  const s = await taoLichDaXacNhan({ ngay: ngayVN(22), tenThuCung: ten, xacNhan: false }); // chủ nuôi đặt, đang chờ xác nhận
+  const ad = await mo(browser, TK.admin, KHU.admin);
+  try {
+    const p = ad.p;
+    await p.goto('/admin/lich-hen.html');
+    await p.getByLabel('Khoảng thời gian').selectOption('thang-toi');
+    const dong = p.locator('.hang', { hasText: ten });
+    await expect(dong).toHaveCount(1);
+    await expect(dong).toContainText('Chờ xác nhận');
+    await dong.getByRole('button', { name: 'Xác nhận' }).click();
+    await expect(dong).toContainText('Đã xác nhận');
+    await p.getByLabel('Trạng thái').selectOption('da_xac_nhan');
+    await expect(p.locator('.hang', { hasText: ten })).toHaveCount(1);
+    await p.getByLabel('Trạng thái').selectOption('cho_xac_nhan');
+    await expect(p.locator('.hang', { hasText: ten })).toHaveCount(0); // bộ lọc theo trạng thái hoạt động
+    await p.getByLabel('Trạng thái').selectOption('');
+    await dong.getByRole('button', { name: 'Hủy', exact: true }).click();
+    await hop(p).locator('#ly-do').fill('Khách báo bận');
+    await hop(p).getByRole('button', { name: 'Hủy lịch' }).click();
+    await expect(hop(p)).not.toBeVisible();
+    await expect(dong).toContainText('Đã hủy');
+    await expect(dong.getByRole('button', { name: 'Xác nhận' })).toHaveCount(0);
+
+    // admin vào được khu lễ tân qua thanh bên, có lối quay về quản trị
+    for (const href of ['/le-tan/', '/bac-si/', '/thu-ngan/', '/kho/']) await expect(p.locator('a[href="' + href + '"]').first()).toBeAttached(); // có trên thanh bên (trên điện thoại nằm trong menu thu gọn)
+    await p.goto('/le-tan/');
+    await expect(p.getByRole('link', { name: /Về trang quản trị/ })).toBeVisible();
+    await p.getByRole('link', { name: /Về trang quản trị/ }).click();
+    await p.waitForURL(u => u.pathname === '/admin/' || u.pathname === '/admin/index.html');
+  } finally { await ad.c.close(); }
 });

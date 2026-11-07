@@ -35,7 +35,7 @@
     cham:[['circle',{cx:12,cy:12,r:3}]]
   };
   // Chọn biểu tượng theo đường dẫn, để không phải sửa từng thực đơn.
-  var THEO_TRANG = [['doanh-thu','bieudo'],['danh-gia','sao'],['bai-viet','baiViet'],['tai-khoan','nguoi'],['dich-vu','nhan'],['lich-lam-viec','lich'],['tham-so','thamSo'],['nhat-ky','nhatKy'],
+  var THEO_TRANG = [['doanh-thu','bieudo'],['danh-gia','sao'],['bai-viet','baiViet'],['tai-khoan','nguoi'],['dich-vu','nhan'],['lich-lam-viec','lich'],['lich-hen','lichDuyet'],['tham-so','thamSo'],['nhat-ky','nhatKy'],
     ['trao-doi','tinNhan'],['bao-mat','khien'],['khach-hang','nguoi'],['ho-so','nguoi'],['dat-lich','lichThem'],['thu-cung','chan'],['hoa-don','hoaDon']];
   var THEO_KHU = {'/admin':'nha','/le-tan':'lichDuyet','/bac-si':'lichDuyet','/thu-ngan':'the','/kho':'hop','/chu-nuoi':'nha'};
   var chuan = function(s){ return s.replace(/index\.html$/, '').replace(/\.html$/, '').replace(/\/$/, '') || '/'; };

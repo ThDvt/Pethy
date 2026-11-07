@@ -22,7 +22,7 @@
   // Thêm ca cho nhiều thứ cùng lúc: tích các thứ cần làm, chọn giờ, một lần bấm là xong cả tuần.
   function them(b){
     const ds = el('div',{class:'thu-chon',role:'group','aria-label':'Các thứ làm việc'},
-      Object.keys(THU).map(k => el('label',{}, el('input',{type:'checkbox',value:k,checked:Number(k) <= 5,'aria-label':THU[k]}), el('span',{'aria-hidden':'true'}, NGAN[k]))));
+      Object.keys(THU).map(k => el('label',{}, el('input',{type:'checkbox',value:k,'aria-label':THU[k]}), el('span',{'aria-hidden':'true'}, NGAN[k]))));
     const dat = f => () => ds.querySelectorAll('input').forEach(i => { i.checked = f(Number(i.value)); });
     const nhanh = el('div',{class:'thu-nhanh'},
       el('button',{class:'lien-ket',type:'button',onclick:dat(t => t <= 5)}, 'Thứ hai đến thứ sáu'),
@@ -48,4 +48,5 @@
       return error ? (error.code === '23505' ? 'Đã có ca khác bắt đầu giờ này trong ngày.' : 'Không lưu được ca.') : null; }, tai);
   }
   await tai();
+  Pethy.khiDoi(['lich_lam_viec', 'tai_khoan'], tai);
 })();

@@ -176,4 +176,5 @@
         el('section',{class:'muc'}, dau('Bán chạy nhất'), top.length ? xepHang(top.slice(0, 5)) : A.rong('Chưa có hóa đơn trong kỳ này.'))));
   }
   await ve();
+  Pethy.khiDoi(['lich_hen', 'hoa_don', 'thanh_toan', 'thuoc', 'lo_thuoc', 'bien_dong_kho', 'dich_vu'], ve);
 })();

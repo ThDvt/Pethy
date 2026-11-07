@@ -61,4 +61,5 @@
     el('div',{class:'truong',style:'margin:0;flex:1 1 300px'}, el('label',{for:'tim'},'Tìm khách'), o),
     el('button',{class:'nut chinh',type:'button',onclick:themKhach}, 'Thêm khách mới')), ds);
   await tim();
+  Pethy.khiDoi(['chu_nuoi', 'thu_cung'], tim);
 })();

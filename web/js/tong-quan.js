@@ -80,4 +80,5 @@
   });
 
   await Promise.all([taiLich(), taiTiem(), taiDaKham()]);
+  Pethy.khiDoi(['lich_hen'], taiLich); Pethy.khiDoi(['mui_tiem', 'thu_cung'], taiTiem); Pethy.khiDoi(['lich_hen', 'danh_gia'], taiDaKham);
 })();

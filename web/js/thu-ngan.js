@@ -108,4 +108,5 @@
   }
 
   await tai();
+  Pethy.khiDoi(['hoa_don', 'thanh_toan', 'lich_hen'], tai); // hóa đơn mới lập hiện ngay
 })();
