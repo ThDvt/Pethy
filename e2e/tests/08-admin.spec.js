@@ -197,7 +197,9 @@ test('admin thêm ca cho nhiều thứ cùng lúc, trùng giờ bị chặn, s�
     const muc = p.locator('section.muc', { hasText: TK.bac_si.ten });
     const truoc = ok(await dnAd.from('lich_lam_viec').select('id').eq('bac_si_id', bsId), 'đếm ca hiện có').length; // lấy từ cơ sở dữ liệu, không đếm giao diện khi danh sách chưa tải xong
     await muc.getByRole('button', { name: 'Thêm ca' }).click();
-    // mặc định tích sẵn thứ hai đến thứ sáu; thêm thứ bảy bằng tay
+    // không tích sẵn thứ nào: admin tự chọn (nút chọn nhanh thứ hai đến thứ sáu, rồi thêm thứ bảy bằng tay)
+    await expect(hop(p).locator('.thu-chon input:checked')).toHaveCount(0);
+    await hop(p).getByRole('button', { name: 'Thứ hai đến thứ sáu' }).click();
     for (const t of ['Thứ hai', 'Thứ sáu']) await expect(hop(p).getByRole('checkbox', { name: t })).toBeChecked();
     await expect(hop(p).getByRole('checkbox', { name: 'Chủ nhật' })).not.toBeChecked();
     await hop(p).getByRole('checkbox', { name: 'Thứ bảy' }).check();

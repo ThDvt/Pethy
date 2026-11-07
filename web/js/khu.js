@@ -65,7 +65,7 @@
   const NGAY_VN = () => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
   const dem = r => (r && !r.error) ? (typeof r.count === 'number' ? r.count : (r.data || []).length) : 0;
   const DEM_HEAD = { count: 'exact', head: true };
-  let vaiHienTai = null, dangDem = false;
+  let vaiHienTai = null, dangDem = false, canDemLai = false;
   async function demSo(vai){
     const me = (await db.auth.getUser()).data?.user?.id; if (!me) return [];
     const kq = [];
@@ -88,12 +88,33 @@
     return kq;
   }
   async function lamMoiSo(){
-    if (!vaiHienTai || dangDem || !window.PethyThanhBen) return;
+    if (!vaiHienTai || !window.PethyThanhBen) return;
+    if (dangDem) { canDemLai = true; return; } // có thay đổi mới lúc đang đếm: đếm lại ngay sau đó, không bỏ sót
     dangDem = true;
-    try { (await demSo(vaiHienTai)).forEach(([href, n]) => window.PethyThanhBen.datSo(href, n)); } catch (e) {} finally { dangDem = false; }
+    try { (await demSo(vaiHienTai)).forEach(([href, n]) => window.PethyThanhBen.datSo(href, n)); } catch (e) {} finally { dangDem = false; if (canDemLai) { canDemLai = false; lamMoiSo(); } }
+  }
+  // Nhận thay đổi tức thời từ máy chủ (Supabase Realtime, vẫn theo RLS): làm mới số ở thanh bên và báo cho trang đang mở
+  // qua sự kiện 'pethy:doi'. Vẫn giữ đếm định kỳ làm đường dự phòng khi kết nối thời gian thực bị chặn hoặc đứt.
+  const BANG_THEO_VAI = { admin: ['tin_nhan', 'lich_hen'], le_tan: ['tin_nhan', 'lich_hen'], bac_si: ['tin_nhan', 'lich_hen'], thu_ngan: ['tin_nhan', 'hoa_don'], kho: ['tin_nhan'], chu_nuoi: ['hoa_don'] };
+  function theoDoiTrucTuyen(vai){
+    const bang = BANG_THEO_VAI[vai] || [];
+    if (!bang.length || typeof db.channel !== 'function') return;
+    const cho = {};
+    try {
+      const kenh = db.channel('pethy-' + Math.random().toString(36).slice(2));
+      bang.forEach(b => kenh.on('postgres_changes', { event: '*', schema: 'public', table: b }, () => {
+        clearTimeout(cho[b]);
+        cho[b] = setTimeout(() => {
+          document.dispatchEvent(new CustomEvent('pethy:doi', { detail: { bang: b } }));
+          // trên trang trao đổi, để trang kịp đánh dấu "đã đọc" trước khi đếm, tránh số nháy lên rồi tắt
+          setTimeout(lamMoiSo, b === 'tin_nhan' && /trao-doi\.html$/.test(location.pathname) ? 900 : 0);
+        }, 250);
+      }));
+      kenh.subscribe();
+    } catch (e) { /* không có thời gian thực thì dùng đếm định kỳ */ }
   }
   function batDauDemSo(vai){
-    vaiHienTai = vai; lamMoiSo();
+    vaiHienTai = vai; lamMoiSo(); theoDoiTrucTuyen(vai);
     setInterval(() => { if (!document.hidden) lamMoiSo(); }, 60000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) lamMoiSo(); });
   }
