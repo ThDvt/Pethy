@@ -9,7 +9,7 @@
     if (ok) {
       $('vung').replaceChildren(
         el('div',{style:'margin-top:20px;border-top:2px solid var(--muc);padding-top:16px'},
-          el('span',{class:'tt'}, 'Đang bật'),
+          el('span',{class:'tt xanh'}, 'Đang bật'),
           el('p',{style:'margin:12px 0 0'}, 'Mỗi lần đăng nhập, tài khoản quản trị phải nhập mã 6 số từ ứng dụng xác thực. Máy chủ cũng từ chối quyền quản trị với phiên chưa nhập mã.'),
           el('p',{class:'nho',style:'margin:8px 0 16px'}, 'Nếu mất điện thoại, gỡ yếu tố bằng SQL Editor của Supabase (xem db/05_mfa_admin.sql).'),
           el('button',{class:'lien-ket',type:'button',style:'color:var(--loi)',onclick:async () => {

@@ -16,7 +16,7 @@
         el('button',{class:'lien-ket',type:'button',onclick:() => them(b)}, 'Thêm ca')),
         ...(cs.length ? cs.map(c => el('div',{class:'hang'}, el('div',{class:'ten',style:'font-weight:500'}, THU[c.thu_trong_tuan]), el('div',{class:'so'}, gio(c.gio_bat_dau) + ' đến ' + gio(c.gio_ket_thuc)),
           el('div',{style:'display:flex;gap:16px'}, el('button',{class:'lien-ket',type:'button',onclick:() => sua(b, c)}, 'Sửa'),
-          el('button',{class:'lien-ket',type:'button',onclick:async () => { if (!await Pethy.xacNhan('Xóa ca này?', 'Ca làm việc sẽ bị xóa khỏi lịch.', 'Xóa ca')) return; const { error } = await db.from('lich_lam_viec').delete().eq('id', c.id); A.baoLoi(error ? 'Không xóa được ca.' : ''); await tai(); }}, 'Xóa')))) : [A.rong('Chưa có ca nào, bác sĩ này chưa nhận được lịch đặt.')]));
+          el('button',{class:'lien-ket nguy',type:'button',onclick:async () => { if (!await Pethy.xacNhan('Xóa ca này?', 'Ca làm việc sẽ bị xóa khỏi lịch.', 'Xóa ca')) return; const { error } = await db.from('lich_lam_viec').delete().eq('id', c.id); A.baoLoi(error ? 'Không xóa được ca.' : ''); await tai(); }}, 'Xóa')))) : [A.rong('Chưa có ca nào, bác sĩ này chưa nhận được lịch đặt.')]));
     }) : [A.rong('Chưa có tài khoản bác sĩ nào. Hãy phân vai bác sĩ ở trang Tài khoản.')]));
   }
   // Thêm ca cho nhiều thứ cùng lúc: tích các thứ cần làm, chọn giờ, một lần bấm là xong cả tuần.
@@ -30,7 +30,7 @@
       el('button',{class:'lien-ket',type:'button',onclick:dat(() => true)}, 'Cả tuần'),
       el('button',{class:'lien-ket',type:'button',onclick:dat(() => false)}, 'Bỏ chọn'));
     const tu = el('input',{id:'c-a',type:'time',value:'08:00'}), den = el('input',{id:'c-b',type:'time',value:'17:00'});
-    A.hop('Thêm ca làm việc', b.ho_ten, [el('div',{class:'truong'}, el('label',{}, 'Các thứ trong tuần'), ds, nhanh), A.o('c-a','Từ giờ',tu), A.o('c-b','Đến giờ',den)], 'Thêm', async () => {
+    A.hop('Thêm ca làm việc', b.ho_ten, [el('div',{class:'truong'}, el('label',{}, 'Các thứ trong tuần'), ds, nhanh), el('div',{class:'luoi'}, A.o('c-a','Từ giờ',tu), A.o('c-b','Đến giờ',den))], 'Thêm', async () => {
       const thus = [...ds.querySelectorAll('input:checked')].map(i => Number(i.value));
       if (!thus.length) return 'Chọn ít nhất một thứ.';
       if (!tu.value || !den.value || den.value <= tu.value) return 'Giờ kết thúc phải sau giờ bắt đầu.';
@@ -42,7 +42,7 @@
   // Sửa giờ của một ca đã có, khỏi phải xóa rồi thêm lại.
   function sua(b, c){
     const tu = el('input',{id:'c-a',type:'time',value:gio(c.gio_bat_dau)}), den = el('input',{id:'c-b',type:'time',value:gio(c.gio_ket_thuc)});
-    A.hop('Sửa ca làm việc', b.ho_ten + ', ' + THU[c.thu_trong_tuan], [A.o('c-a','Từ giờ',tu), A.o('c-b','Đến giờ',den)], 'Lưu', async () => {
+    A.hop('Sửa ca làm việc', b.ho_ten + ', ' + THU[c.thu_trong_tuan], [el('div',{class:'luoi'}, A.o('c-a','Từ giờ',tu), A.o('c-b','Đến giờ',den))], 'Lưu', async () => {
       if (!tu.value || !den.value || den.value <= tu.value) return 'Giờ kết thúc phải sau giờ bắt đầu.';
       const { error } = await db.from('lich_lam_viec').update({ gio_bat_dau: tu.value, gio_ket_thuc: den.value }).eq('id', c.id);
       return error ? (error.code === '23505' ? 'Đã có ca khác bắt đầu giờ này trong ngày.' : 'Không lưu được ca.') : null; }, tai);

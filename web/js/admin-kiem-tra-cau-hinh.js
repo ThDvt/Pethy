@@ -15,7 +15,7 @@
   }
   const dong = (ok, ten, ghiChu) => el('div',{class:'hang'},
     el('div',{class:'ten'}, ten, el('div',{class:'nho',style:'font-weight:400'}, ghiChu)),
-    el('span',{class:'tt' + (ok === true ? '' : ok === 'luu-y' ? ' vang' : ' do')}, ok === true ? 'Đạt' : ok === 'luu-y' ? 'Lưu ý' : 'Chưa đạt'));
+    el('span',{class:'tt' + (ok === true ? ' xanh' : ok === 'luu-y' ? ' vang' : ' do')}, ok === true ? 'Đạt' : ok === 'luu-y' ? 'Lưu ý' : 'Chưa đạt'));
 
   async function chay(ev){
     if (ev) ev.currentTarget.disabled = true;
