@@ -30,4 +30,5 @@
     el('div',{class:'truong',style:'margin:0'}, el('label',{for:'tu'}, 'Từ ngày'), tu), el('div',{class:'truong',style:'margin:0'}, el('label',{for:'den'}, 'Đến ngày'), den),
     el('button',{class:'nut chinh',type:'button',onclick:xem,style:'padding:12px 20px'}, 'Xem')), ra);
   await xem();
+  Pethy.khiDoi(['hoa_don', 'thanh_toan'], xem);
 })();

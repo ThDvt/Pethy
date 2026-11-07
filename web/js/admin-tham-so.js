@@ -20,4 +20,5 @@
     })));
   }
   await tai();
+  Pethy.khiDoi(['cau_hinh'], tai);
 })();

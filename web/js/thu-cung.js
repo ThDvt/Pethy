@@ -27,4 +27,5 @@
     $('form').reset(); await tai();
   });
   await tai();
+  Pethy.khiDoi(['thu_cung'], tai);
 })();

@@ -104,5 +104,13 @@
     nut.addEventListener('click', () => { o.type = o.type === 'password' ? 'text' : 'password'; capNhat(); o.focus(); });
     o.replaceWith(bao); bao.append(o, nut); capNhat();
   }
-  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan, matKhau };
+  // Khi có thay đổi ở một trong các bảng đã nêu (qua thời gian thực, xem khu.js) thì chạy lại hàm tải của trang.
+  // Hoãn lại nếu người dùng đang gõ vào ô nhập hoặc đang mở hộp thoại, để không làm mất chữ đang gõ.
+  const khiDoi = (bang, fn) => {
+    const ds = [].concat(bang); let cho = false;
+    const dangGo = () => { const a = document.activeElement; return !!document.querySelector('dialog[open]') || (a && (a.tagName === 'TEXTAREA' || a.tagName === 'SELECT' || (a.tagName === 'INPUT' && !/^(checkbox|radio|button|submit)$/.test(a.type)))); };
+    const chay = lan => { if (dangGo() && lan < 40) { setTimeout(() => chay(lan + 1), 1500); return; } cho = false; Promise.resolve().then(fn).catch(() => {}); };
+    document.addEventListener('pethy:doi', e => { if (!ds.includes(e.detail.bang) || cho) return; cho = true; chay(0); });
+  };
+  window.Pethy = { khiDoi, db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan, matKhau };
 })();
