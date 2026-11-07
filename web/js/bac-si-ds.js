@@ -22,7 +22,7 @@
       return el('div',{class:'hang'},
         el('div',{class:'gio'}, gio(l.thoi_gian)),
         el('div',{style:'flex:2 1 220px'}, el('b',{}, l.thu_cung?.ten), ', ' + (l.thu_cung?.loai || '').toLowerCase()),
-        el('div',{style:'flex:2 1 160px'}, l.dich_vu?.ten, el('div',{class:'nho'}, TT[l.trang_thai])),
+        el('div',{style:'flex:2 1 160px'}, l.dich_vu?.ten, el('div',{style:'margin-top:4px'}, Pethy.tt(l.trang_thai, TT[l.trang_thai]))),
         duoc ? el('a',{class:'nut' + (l.trang_thai === 'da_xac_nhan' ? ' chinh' : ''),href:'/bac-si/kham.html?lich=' + encodeURIComponent(l.id)}, l.trang_thai === 'da_hoan_thanh' ? 'Xem hồ sơ' : 'Khám')
               : el('span',{class:'nho'},'Chờ lễ tân xác nhận'));
     })]));

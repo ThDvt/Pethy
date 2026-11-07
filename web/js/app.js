@@ -104,5 +104,8 @@
     nut.addEventListener('click', () => { o.type = o.type === 'password' ? 'text' : 'password'; capNhat(); o.focus(); });
     o.replaceWith(bao); bao.append(o, nut); capNhat();
   }
-  window.Pethy = { db, thuc, el, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan, matKhau };
+  // Nhãn trạng thái có màu theo ý nghĩa: vàng = đang chờ, xanh dương = đã xác nhận, xanh lá = hoàn tất, cam = làm dở, đỏ = có vấn đề, xám = đã hủy hoặc ngừng.
+  const MAU_TT = {cho_xac_nhan:'vang',da_xac_nhan:'xd',da_hoan_thanh:'xanh',da_huy:'xam',khong_den:'do',chua_thanh_toan:'vang',thanh_toan_mot_phan:'cam',da_thanh_toan:'xanh'};
+  const tt = (ma, nhan) => el('span',{class:'tt ' + (MAU_TT[ma] || '')}, nhan);
+  window.Pethy = { db, thuc, el, tt, tien, gio, KHU, vaiTro, dangXuat, MAU, maSdt, xacNhan, matKhau };
 })();

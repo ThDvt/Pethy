@@ -230,16 +230,11 @@ body:not(.khach) .bo-khu .cho h2{padding-left:0}
 body:not(.khach) .bo-khu .cot-phu{background:#fff;border-left:1px solid var(--vien-khoi)}
 /* ô số liệu: mỗi ô một thẻ, vạch màu phía trên */
 body:not(.khach) .bo-khu .the{border-top:0;gap:14px;margin-top:20px}
-body:not(.khach) .bo-khu .the>div{background:#fff;border:1px solid var(--vien-khoi);border-top:4px solid var(--nhan);border-radius:12px;padding:16px 20px;box-shadow:0 1px 2px rgba(20,22,26,.05)}
-body:not(.khach) .bo-khu .the>div:nth-child(2){border-top-color:var(--k-xanh)}
-body:not(.khach) .bo-khu .the>div:nth-child(3){border-top-color:var(--k-luc)}
-body:not(.khach) .bo-khu .the>div:nth-child(4){border-top-color:#B8860B}
+body:not(.khach) .bo-khu .the>div{background:#fff;border:1px solid var(--vien-khoi);border-top:4px solid #8A8D92;border-radius:12px;padding:16px 20px;box-shadow:0 1px 2px rgba(20,22,26,.05)}
 body:not(.khach) .bo-khu .the .n{font-weight:600}
 body:not(.khach) .bo-khu .the .v{font-size:28px;font-weight:700;letter-spacing:-.02em}
 body:not(.khach) .bo-khu .db-kpi{border-top:0;gap:14px;margin-top:20px}
-body:not(.khach) .bo-khu .db-kpi-o,body:not(.khach) .bo-khu .db-kpi-o:first-child{background:#fff;border:1px solid var(--vien-khoi);border-top:4px solid var(--k-xanh);border-radius:12px;padding:16px 20px;box-shadow:0 1px 2px rgba(20,22,26,.05)}
-body:not(.khach) .bo-khu .db-kpi-o:nth-child(3){border-top-color:var(--k-luc)}
-body:not(.khach) .bo-khu .db-kpi-o:nth-child(4){border-top-color:#B8860B}
+body:not(.khach) .bo-khu .db-kpi-o,body:not(.khach) .bo-khu .db-kpi-o:first-child{background:#fff;border:1px solid var(--vien-khoi);border-top:4px solid #8A8D92;border-radius:12px;padding:16px 20px;box-shadow:0 1px 2px rgba(20,22,26,.05)}
 body:not(.khach) .bo-khu .db-kpi-o.lon{background:var(--muc);border-color:var(--muc);border-top-color:#FFC83D;color:#fff}
 body:not(.khach) .bo-khu .db-kpi-o.lon .n,body:not(.khach) .bo-khu .db-kpi-o.lon .p,body:not(.khach) .bo-khu .db-kpi-o.lon .nho,body:not(.khach) .bo-khu .db-kpi-o.lon .db-delta{color:#C9CBC5}
 body:not(.khach) .bo-khu .db-kpi-o.lon .db-delta.tang b{color:#7BE0B0}body:not(.khach) .bo-khu .db-kpi-o.lon .db-delta.giam b{color:#FFA89B}
@@ -261,3 +256,14 @@ body:not(.khach) .bo-khu .tt.xanh{background:var(--k-luc-nhat);color:var(--k-luc
 body:not(.khach) .bo-khu .db-kpi-o .v{font-size:19px}
 body:not(.khach) .bo-khu .db-kpi-o.lon .v{font-size:clamp(20px,2vw,26px)}
 body:not(.khach) .bo-khu .cho .hang:first-of-type,body:not(.khach) .bo-khu .muc>h2+.hang{border-top:0}
+
+/* Màu theo ý nghĩa: xanh lá = ổn hoặc hoàn tất, vàng = cần theo dõi, đỏ = có vấn đề, xám = trung tính. Không tô màu theo vị trí. */
+body:not(.khach) .bo-khu .the>div:first-child{border-top-color:var(--k-luc)}
+body:not(.khach) .bo-khu .db-kpi-o.on{border-top-color:var(--k-luc)}
+body:not(.khach) .bo-khu .db-kpi-o.luuy{background:var(--k-vang-nhat);border-color:#EBCB7A;border-top-color:#B8860B}
+body:not(.khach) .bo-khu .db-kpi-o.luuy .v{color:var(--k-vang)}
+/* nhãn trạng thái: vàng = đang chờ, xanh dương = đã xác nhận, xanh lá = hoàn tất, cam = làm dở, đỏ = vấn đề, xám = đã hủy hoặc ngừng */
+.tt.xd{border-color:#1D5FB8;color:#1D5FB8}.tt.xanh{border-color:#0F7B5A;color:#0F7B5A}.tt.cam{border-color:#C2410C;color:#C2410C}.tt.xam{border-color:#6B6F76;color:#5B6068}
+body:not(.khach) .bo-khu .tt.xd{background:var(--k-xanh-nhat);color:var(--k-xanh)}
+body:not(.khach) .bo-khu .tt.cam{background:var(--k-cam-nhat);color:var(--nhan-dam)}
+body:not(.khach) .bo-khu .tt.xam{background:#ECEDE8;color:#5B6068}

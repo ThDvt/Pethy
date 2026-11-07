@@ -12,7 +12,7 @@
         const dang = b.trang_thai === 'da_dang';
         return el('div',{class:'hang'},
           el('div',{class:'ten'}, b.tieu_de, el('div',{class:'nho',style:'font-weight:400'}, (BV.NHOM[b.nhom] || b.nhom) + ' · ' + (dang ? 'Đã đăng ' + BV.ngay(b.ngay_dang) : 'Nháp'))),
-          dang ? el('span') : el('span',{class:'tt'}, 'Nháp'),
+          dang ? el('span') : el('span',{class:'tt xam'}, 'Nháp'),
           el('a',{class:'lien-ket',href:'/bai-viet.html?id=' + b.id,target:'_blank',rel:'noopener'}, 'Xem'),
           el('button',{class:'lien-ket',type:'button',onclick:() => soan(b)}, 'Sửa'),
           el('button',{class:'lien-ket',type:'button',onclick:() => luu(b.id, { trang_thai: dang ? 'nhap' : 'da_dang' })}, dang ? 'Gỡ xuống' : 'Đăng'),

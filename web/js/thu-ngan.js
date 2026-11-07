@@ -44,7 +44,7 @@
     const dongHd = h => el('div',{class:'hang'},
       el('div',{class:'ct'}, el('div',{}, el('span',{class:'ten'}, h.lich_hen?.thu_cung?.ten), ', ' + (h.lich_hen?.thu_cung?.chu_nuoi?.ho_ten || '')),
         el('div',{class:'nho'}, 'Lập ' + ngay(h.created_at) + ' ' + gio(h.created_at))),
-      h.trang_thai === 'da_thanh_toan' ? el('span',{class:'tt'}, 'Đã thanh toán') : el('span',{class:'tt'}, TT[h.trang_thai]),
+      Pethy.tt(h.trang_thai, TT[h.trang_thai]),
       el('div',{class:'tien'}, tien(h.trang_thai === 'da_thanh_toan' ? h.tong_tien : h.tong_tien - da(h))),
       el('button',{class:'nut',type:'button',onclick:() => moHoaDon(h)}, h.trang_thai === 'da_thanh_toan' ? 'Xem' : 'Thu tiền'));
     trong($('ds-thu'), chua.length ? chua.map(dongHd) : [rong('Không có hóa đơn nào cần thu.')]);

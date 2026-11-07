@@ -148,7 +148,7 @@
       el('div',{class:'nho'}, 'Đã thu ' + tien(x.da_thu) + ' / ' + tien(x.tong_tien)),
       el('div',{class:'gt'}, tien(x.con_no)));
     const hangKho = x => el('div',{class:'hang'},
-      el('div',{class:'ten'}, x.ten), el('span',{class:'tt do'}, CB[x.loai_canh_bao]),
+      el('div',{class:'ten'}, x.ten), el('span',{class:'tt ' + (x.loai_canh_bao === 'het_han' ? 'do' : 'vang')}, CB[x.loai_canh_bao]),
       el('div',{class:'nho'}, (x.so_lo ? 'Lô ' + x.so_lo + ', hạn ' + A.ngay(x.han_dung) + ', ' : '') + 'còn ' + x.ton));
     const GIOI = 4;
     const xemDu = (nhan, ds, hang) => ds.length > GIOI ? el('details',{class:'db-chi-tiet'}, el('summary',{}, nhan + ' (' + ds.length + ')'), ...ds.slice(GIOI).map(hang)) : null;
@@ -160,9 +160,9 @@
     khung.replaceChildren(
       el('div',{class:'db-kpi'},
         kpi('Đã thu trong kỳ', tien(c.tong), el('div',{}, dd, el('div',{class:'nho',style:'margin-top:4px'}, dm(k.tu) + ' đến ' + dm(k.den) + ', ' + k.len + ' ngày')), 'lon'),
-        kpi('Công nợ hiện tại', tien(tongNo), dsNo.length ? dsNo.length + ' hóa đơn chưa thu đủ, cũ nhất ' + soNgayQua(dsNo[0].created_at) + ' ngày' : 'Không có hóa đơn nào còn nợ', dsNo.length ? 'canh' : '', dsNo.length ? el('span',{class:'tt do',style:'margin-left:8px'}, 'Cần thu') : null),
-        kpi('Lượt khám hoàn thành', String(hoanThanh), tongLich ? 'Hủy hoặc không đến: ' + phanTram((huy + khongDen) / tongLich * 100) + ' (' + (huy + khongDen) + ' lịch)' : 'Chưa có lịch trong kỳ này'),
-        kpi('Cảnh báo kho', dsKho.length + ' mục', dsKho.length ? sap + ' sắp hết hàng, ' + hh + ' lô sắp hoặc đã hết hạn' : 'Kho đang ổn', dsKho.length ? 'canh' : '', dsKho.length ? el('span',{class:'tt do',style:'margin-left:8px'}, 'Cần xử lý') : null)),
+        kpi('Công nợ hiện tại', tien(tongNo), dsNo.length ? dsNo.length + ' hóa đơn chưa thu đủ, cũ nhất ' + soNgayQua(dsNo[0].created_at) + ' ngày' : 'Không có hóa đơn nào còn nợ', dsNo.length ? 'luuy' : 'on', dsNo.length ? el('span',{class:'tt do',style:'margin-left:8px'}, 'Cần thu') : null),
+        kpi('Lượt khám hoàn thành', String(hoanThanh), tongLich ? 'Hủy hoặc không đến: ' + phanTram((huy + khongDen) / tongLich * 100) + ' (' + (huy + khongDen) + ' lịch)' : 'Chưa có lịch trong kỳ này', 'on'),
+        kpi('Cảnh báo kho', dsKho.length + ' mục', dsKho.length ? sap + ' sắp hết hàng, ' + hh + ' lô sắp hoặc đã hết hạn' : 'Kho đang ổn', dsKho.length ? 'canh' : 'on', dsKho.length ? el('span',{class:'tt do',style:'margin-left:8px'}, 'Cần xử lý') : null)),
       el('div',{class:'db-chinh'},
         el('section',{class:'muc'}, dau('Đã thu theo ' + (k.len > 92 ? 'tháng' : 'ngày')), el('div',{class:'db-khung-bd'}, bieuDoCot(rows)),
           el('div',{class:'nho',style:'margin-top:8px'}, c.so + ' lần thu, trung bình ' + tien(dtb) + ' mỗi lần.'),

@@ -26,7 +26,7 @@
       return el('details',{},
         el('summary',{class:'hang',style:'cursor:pointer;list-style:none'},
           el('div',{class:'ten'}, t.ten, el('span',{class:'nho',style:'font-weight:400'}, '  ' + KIEU[t.loai] + ', ' + t.don_vi), t.dang_ap_dung ? '' : el('span',{class:'nho',style:'font-weight:400'}, ', đã ngừng')),
-          sap ? el('span',{class:'tt do'}, 'Sắp hết') : el('span'),
+          sap ? el('span',{class:'tt vang'}, 'Sắp hết') : el('span'),
           t.ton_het_han > 0 ? el('span',{class:'tt do'}, t.ton_het_han + ' hết hạn') : el('span'),
           el('div',{class:'sl'}, String(t.ton_con_han))),
         el('div',{class:'con'}, ...(lots.length ? lots.map(x => el('div',{class:'hang'},

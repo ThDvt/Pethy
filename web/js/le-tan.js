@@ -45,7 +45,7 @@
       el('div',{class:'c-ct'}, el('b',{}, l.thu_cung?.ten), ', ' + (cn.ho_ten || '')),
       el('div',{class:'c-dv'}, l.dich_vu?.ten),
       el('div',{class:'c-bs'}, tenBs[l.bac_si_id] ? 'Bs. ' + tenBs[l.bac_si_id] : ''),
-      el('div',{class:'c-tt'}, TT[l.trang_thai], act));
+      el('div',{class:'c-tt'}, Pethy.tt(l.trang_thai, TT[l.trang_thai]), act));
   }
 
   async function tai(){

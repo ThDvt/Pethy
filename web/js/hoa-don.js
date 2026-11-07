@@ -13,7 +13,7 @@
     return el('details',{style:'border-top:1px solid var(--vach)'},
       el('summary',{class:'hang',style:'cursor:pointer;list-style:none;border-bottom:0'},
         el('div',{class:'ten'}, h.lich_hen?.thu_cung?.ten || 'Thú cưng', el('div',{class:'nho',style:'font-weight:400'}, A.ngay(h.created_at))),
-        el('span',{class:'tt' + (h.trang_thai === 'da_thanh_toan' ? '' : ' do')}, TT[h.trang_thai]),
+        Pethy.tt(h.trang_thai, TT[h.trang_thai]),
         el('div',{class:'gt'}, tien(h.tong_tien))),
       el('div',{style:'padding:0 0 16px'}, ...(h.ct_hoa_don || []).map(c => el('div',{class:'hang',style:'padding:6px 0;border-bottom:0;font-size:14px'}, el('div',{class:'ten',style:'font-weight:400'}, c.mo_ta + (c.so_luong > 1 ? ' x ' + c.so_luong : '')), el('div',{class:'gt',style:'font-size:14px'}, tien(c.thanh_tien)))),
         ...(h.thanh_toan || []).map(t => el('div',{class:'hang nho',style:'padding:4px 0;border-bottom:0'}, el('div',{class:'ten',style:'font-weight:400'}, 'Đã trả ' + A.ngay(t.thoi_gian) + ', ' + PT[t.phuong_thuc]), el('div',{class:'gt',style:'font-size:14px'}, tien(t.so_tien)))),
