@@ -258,6 +258,6 @@ body:not(.khach) .bo-khu .tt.do{background:#FDECEA;color:var(--loi)}
 body:not(.khach) .bo-khu .tt.vang{background:var(--k-vang-nhat);color:var(--k-vang)}
 body:not(.khach) .bo-khu .tt.xanh{background:var(--k-luc-nhat);color:var(--k-luc)}
 @media(max-width:640px){body:not(.khach) .bo-khu main>section,body:not(.khach) .bo-khu .muc,body:not(.khach) .bo-khu .cho,body:not(.khach) .bo-khu #ds,body:not(.khach) .bo-khu .db-hero{padding:16px;border-radius:12px}}
-body:not(.khach) .bo-khu .db-kpi-o .v{font-size:20px;overflow-wrap:anywhere}
-body:not(.khach) .bo-khu .db-kpi-o.lon .v{font-size:clamp(22px,2.3vw,28px)}
+body:not(.khach) .bo-khu .db-kpi-o .v{font-size:19px}
+body:not(.khach) .bo-khu .db-kpi-o.lon .v{font-size:clamp(20px,2vw,26px)}
 body:not(.khach) .bo-khu .cho .hang:first-of-type,body:not(.khach) .bo-khu .muc>h2+.hang{border-top:0}
