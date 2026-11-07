@@ -115,3 +115,5 @@ select.nho,input.nho{font-size:14px;padding:6px 8px}
 @keyframes hd-moi{0%{background:#FFF1E7;box-shadow:inset 4px 0 0 var(--nhan)}100%{background:transparent;box-shadow:inset 4px 0 0 transparent}}
 @media(prefers-reduced-motion:reduce){.hd-moi{animation:none;background:#FFF1E7}}
 @media(max-width:560px){.hd-dong{flex-wrap:wrap;gap:4px 12px}.hd-gio{flex:1 0 100%}}
+
+.db-icon{padding:0;width:36px;flex:0 0 36px}
