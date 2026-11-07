@@ -61,10 +61,10 @@ BEGIN
       WHEN t.bang = 'don_thuoc' THEN 'Kê đơn thuốc'
       WHEN t.bang = 'mui_tiem' THEN 'Ghi mũi tiêm ' || COALESCE(t.thuoc_ten, '') || ' cho ' || COALESCE(t.pet, 'thú cưng')
       WHEN t.bang = 'tai_khoan' THEN CASE
-          WHEN t.hanh_dong = 'them' THEN 'Tạo tài khoản ' || (t.v->>'ho_ten') || ' (' || (t.v->>'vai_tro') || ')'
+          WHEN t.hanh_dong = 'them' THEN 'Tạo tài khoản ' || (t.v->>'ho_ten') || ' (' || CASE (t.v->>'vai_tro') WHEN 'admin' THEN 'quản trị' WHEN 'bac_si' THEN 'bác sĩ' WHEN 'le_tan' THEN 'lễ tân' WHEN 'thu_ngan' THEN 'thu ngân' WHEN 'kho' THEN 'thủ kho' WHEN 'chu_nuoi' THEN 'chủ nuôi' ELSE (t.v->>'vai_tro') END || ')'
           WHEN t.hanh_dong = 'xoa' THEN 'Xóa tài khoản ' || COALESCE(t.v->>'ho_ten', '')
           WHEN t.moi->>'trang_thai' IS DISTINCT FROM t.cu->>'trang_thai' THEN CASE WHEN t.moi->>'trang_thai' = 'khoa' THEN 'Khóa tài khoản ' ELSE 'Mở khóa tài khoản ' END || (t.v->>'ho_ten')
-          WHEN t.moi->>'vai_tro' IS DISTINCT FROM t.cu->>'vai_tro' THEN 'Đổi vai trò của ' || (t.v->>'ho_ten') || ' thành ' || (t.moi->>'vai_tro')
+          WHEN t.moi->>'vai_tro' IS DISTINCT FROM t.cu->>'vai_tro' THEN 'Đổi vai trò của ' || (t.v->>'ho_ten') || ' thành ' || CASE (t.moi->>'vai_tro') WHEN 'admin' THEN 'quản trị' WHEN 'bac_si' THEN 'bác sĩ' WHEN 'le_tan' THEN 'lễ tân' WHEN 'thu_ngan' THEN 'thu ngân' WHEN 'kho' THEN 'thủ kho' WHEN 'chu_nuoi' THEN 'chủ nuôi' ELSE (t.moi->>'vai_tro') END
           ELSE 'Sửa thông tin tài khoản ' || (t.v->>'ho_ten') END
       WHEN t.bang = 'chu_nuoi' THEN CASE t.hanh_dong WHEN 'them' THEN 'Thêm khách ' WHEN 'sua' THEN 'Sửa thông tin khách ' ELSE 'Xóa khách ' END || COALESCE(t.v->>'ho_ten', '')
       WHEN t.bang = 'thu_cung' THEN CASE t.hanh_dong WHEN 'them' THEN 'Thêm thú cưng ' WHEN 'sua' THEN 'Sửa thông tin thú cưng ' ELSE 'Xóa thú cưng ' END || COALESCE(t.v->>'ten', '')
