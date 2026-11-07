@@ -16,7 +16,7 @@
         el('button',{class:'lien-ket',type:'button',onclick:() => them(b)}, 'Thêm ca')),
         ...(cs.length ? cs.map(c => el('div',{class:'hang'}, el('div',{class:'ten',style:'font-weight:500'}, THU[c.thu_trong_tuan]), el('div',{class:'so'}, gio(c.gio_bat_dau) + ' đến ' + gio(c.gio_ket_thuc)),
           el('div',{style:'display:flex;gap:16px'}, el('button',{class:'lien-ket',type:'button',onclick:() => sua(b, c)}, 'Sửa'),
-          el('button',{class:'lien-ket',type:'button',onclick:async () => { if (!await Pethy.xacNhan('Xóa ca này?', 'Ca làm việc sẽ bị xóa khỏi lịch.', 'Xóa ca')) return; const { error } = await db.from('lich_lam_viec').delete().eq('id', c.id); A.baoLoi(error ? 'Không xóa được ca.' : ''); await tai(); }}, 'Xóa')))) : [A.rong('Chưa có ca nào, bác sĩ này chưa nhận được lịch đặt.')]));
+          el('button',{class:'lien-ket nguy',type:'button',onclick:async () => { if (!await Pethy.xacNhan('Xóa ca này?', 'Ca làm việc sẽ bị xóa khỏi lịch.', 'Xóa ca')) return; const { error } = await db.from('lich_lam_viec').delete().eq('id', c.id); A.baoLoi(error ? 'Không xóa được ca.' : ''); await tai(); }}, 'Xóa')))) : [A.rong('Chưa có ca nào, bác sĩ này chưa nhận được lịch đặt.')]));
     }) : [A.rong('Chưa có tài khoản bác sĩ nào. Hãy phân vai bác sĩ ở trang Tài khoản.')]));
   }
   // Thêm ca cho nhiều thứ cùng lúc: tích các thứ cần làm, chọn giờ, một lần bấm là xong cả tuần.

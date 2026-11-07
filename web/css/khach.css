@@ -264,3 +264,12 @@ img.bv-bia{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cov
 .cs-chan{margin-top:12px;padding-top:24px;border-top:1px solid rgba(0,0,0,.1)}
 .cs-chan a{display:inline-block;text-decoration:none}
 @media (max-width:600px){.cs{padding:0 16px 56px}.cs .cs-tomtat{grid-template-columns:1fr}.cs-ben{grid-template-columns:1fr}.cs-ben dt{padding-bottom:0;border-top:1px solid rgba(0,0,0,.08)}.cs-ben dd{border-top:0;padding-top:2px}.cs-ben dt:first-of-type{border-top:0}}
+
+/* nút phụ trong khu chủ nuôi: cùng ngôn ngữ viên thuốc, không còn chữ gạch chân */
+.khach .lien-ket{border:2px solid var(--muc);border-radius:999px;background:#fff;padding:7px 16px;min-height:38px}
+.khach .lien-ket:hover{background:var(--kem2);border-color:var(--muc)}
+.khach .lien-ket.nguy{color:#B42318;border-color:#B42318}.khach .lien-ket.nguy:hover{background:#FFE1DC}
+.khach .lien-ket.nhe{border-color:transparent;background:transparent;color:var(--nhan-dam)}.khach .lien-ket.nhe:hover{background:#FFE9D6;border-color:transparent}
+.khach .hanh-dong{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.khach .hanh-dong a{display:inline-flex;align-items:center;border:2px solid var(--muc);border-radius:999px;background:#fff;padding:7px 16px;min-height:38px;font-weight:700;font-size:14px;text-decoration:none;color:var(--muc)}
+.khach .hanh-dong a:hover{background:var(--kem2);color:var(--muc)}

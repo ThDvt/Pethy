@@ -87,8 +87,6 @@ html{scroll-behavior:smooth}
 .nut.dang-xu-ly::before{content:"";display:inline-block;width:12px;height:12px;margin-right:8px;vertical-align:-1px;
   border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:quay .7s linear infinite}
 @keyframes quay{to{transform:rotate(360deg)}}
-.lien-ket{transition:color .15s}
-.lien-ket:hover{color:var(--nhan)}
 .menu a:not(.nut){background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .25s var(--ra),color .15s;padding-bottom:2px}
 .menu a:not(.nut):hover{background-size:100% 1px}
 .hang,.dong,.bs,.lich,.nhac{transition:background-color .15s}

@@ -28,7 +28,13 @@ a{color:var(--muc)} a:hover{color:var(--nhan)}
 .nut.phu{background:#E7E5DF;color:var(--muc)} .nut.phu:hover{background:#D5D2CA;color:var(--muc)}
 .nut.nguy-hiem{background:#C62828} .nut.nguy-hiem:hover{background:#9F1D1D}
 .nut[disabled]{opacity:.5;cursor:not-allowed}
-.lien-ket{background:none;border:0;padding:0;font:inherit;text-decoration:underline;cursor:pointer;color:var(--muc)}
+.lien-ket{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#fff;border:1px solid #BFC0BA;border-radius:8px;padding:6px 14px;min-height:36px;font:600 14px/1.2 var(--chu);text-decoration:none;cursor:pointer;color:var(--muc);transition:background-color .15s,border-color .15s,color .15s}
+.lien-ket:hover{background:#F3F3F0;border-color:var(--muc);color:var(--muc)}
+.lien-ket[disabled]{opacity:.5;cursor:not-allowed}
+.lien-ket.nguy,.lien-ket[style*="--loi"]{color:var(--loi);border-color:#E7B4AE;background:#fff}
+.lien-ket.nguy:hover,.lien-ket[style*="--loi"]:hover{background:#FDECEA;border-color:var(--loi);color:var(--loi)}
+.lien-ket.nhe{border-color:transparent;background:transparent;padding:6px 10px;color:var(--nhan-dam)}
+.lien-ket.nhe:hover{background:#F6E9E1;border-color:transparent;color:var(--nhan-dam)}
 
 /* biểu mẫu */
 label{display:block;font-size:13px;color:var(--xam);margin-bottom:8px}

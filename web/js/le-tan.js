@@ -30,7 +30,7 @@
           if (error) { nutBam.disabled = false; baoLoi(loiRpc(error)); }
           await tai();
         }}, 'Xác nhận'),
-        el('button',{class:'lien-ket',type:'button',onclick:() => moTuChoi(l)}, 'Từ chối')));
+        el('button',{class:'lien-ket nguy',type:'button',onclick:() => moTuChoi(l)}, 'Từ chối')));
   }
 
   function dongBang(l, laBayGio){

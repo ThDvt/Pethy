@@ -26,7 +26,7 @@
         el('div',{class:'ghi-chu',style:'margin-top:4px'}, TRANG_THAI[l.trang_thai]),
         el('div',{class:'hanh-dong'},
           con ? el('a',{href:'/chu-nuoi/dat-lich.html?doi=' + encodeURIComponent(l.id)},'Đổi lịch') : null,
-          con ? el('button',{class:'lien-ket',type:'button',onclick:() => moHuy(l)},'Hủy lịch')
+          con ? el('button',{class:'lien-ket nguy',type:'button',onclick:() => moHuy(l)},'Hủy lịch')
               : el('span',{class:'ghi-chu'},'Còn dưới ' + hanGio + ' giờ nữa nên không đổi hoặc hủy được, vui lòng gọi phòng khám.')));
     }));
   }
