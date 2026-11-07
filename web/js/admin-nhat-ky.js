@@ -2,21 +2,18 @@
   const { db, el } = Pethy, A = Pethy.admin, $ = A.$;
   if (!await A.boot('/admin/nhat-ky.html')) return;
   const HD = {them:'Thêm',sua:'Sửa',xoa:'Xóa',xem:'Xem hồ sơ'};
-  const BANG = {tai_khoan:'Tài khoản',chu_nuoi:'Chủ nuôi',ho_so_bac_si:'Hồ sơ bác sĩ',danh_gia:'Đánh giá',lich_lam_viec:'Lịch làm việc',cau_hinh:'Tham số',thu_cung:'Thú cưng',dich_vu:'Dịch vụ',thuoc:'Thuốc',lo_thuoc:'Lô thuốc',lich_hen:'Lịch hẹn',ho_so_kham:'Hồ sơ khám',don_thuoc:'Đơn thuốc',mui_tiem:'Mũi tiêm',hoa_don:'Hóa đơn',thanh_toan:'Thanh toán'};
+  const SO = 100;
   const loc = el('select',{id:'loc',class:'nho','aria-label':'Lọc theo hành động'}, el('option',{value:''}, 'Mọi hành động'), Object.entries(HD).map(([k, v]) => el('option',{value:k}, v)));
-  const ds = el('div',{style:'border-top:2px solid var(--muc);margin-top:12px'});
-  async function tai(){
-    let q = db.from('nhat_ky').select('id,hanh_dong,bang_tac_dong,ban_ghi_id,thoi_gian,tai_khoan(ho_ten)', { count: 'exact' }).order('thoi_gian',{ascending:false}).limit(100);
+  const hd = A.luongHoatDong(SO, loc);
+  const ghiChu = el('div');
+  async function dem(){
+    let q = db.from('nhat_ky').select('id', { count: 'exact', head: true });
     if (loc.value) q = q.eq('hanh_dong', loc.value);
-    const r = await q; if (r.error) return A.baoLoi('Không tải được nhật ký.');
-    ds.replaceChildren(...((r.data || []).length ? r.data.map(n => el('div',{class:'hang'},
-      el('div',{class:'nho so',style:'flex:0 0 150px'}, A.ngay(n.thoi_gian) + ' ' + new Date(n.thoi_gian).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Ho_Chi_Minh'})),
-      el('div',{class:'ten',style:'font-weight:500'}, n.tai_khoan?.ho_ten || 'Hệ thống / SQL'),
-      el('span',{class:'tt'}, HD[n.hanh_dong] || n.hanh_dong), el('div',{style:'flex:1 1 140px'}, BANG[n.bang_tac_dong] || n.bang_tac_dong || ''))) : [A.rong('Chưa có bản ghi nào.')]),
-      ...(r.count > (r.data || []).length ? [el('p',{class:'nho',id:'nk-con',style:'padding:12px 0'},'Đang hiển thị ' + r.data.length + ' bản ghi gần nhất trong tổng số ' + r.count + '. Dùng ô lọc để thu hẹp.')] : []));
+    const r = await q;
+    ghiChu.replaceChildren(...(!r.error && r.count > SO ? [el('p',{class:'nho',id:'nk-con',style:'padding:12px 0'}, 'Đang hiển thị ' + SO + ' bản ghi gần nhất trong tổng số ' + r.count + '.')] : []));
   }
-  loc.addEventListener('change', tai);
-  $('vung').replaceChildren(el('div',{style:'margin-top:20px'}, loc), ds);
-  await tai();
-  Pethy.khiDoi(['nhat_ky'], tai);
+  loc.addEventListener('change', () => { hd.tai(); dem(); });
+  $('vung').replaceChildren(el('div',{style:'margin-top:20px'}, loc), el('div',{class:'muc',style:'margin-top:12px'}, hd.ds, ghiChu));
+  await Promise.all([hd.tai(), dem()]);
+  Pethy.khiDoi(['nhat_ky'], dem);
 })();

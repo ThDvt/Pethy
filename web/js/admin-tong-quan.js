@@ -93,10 +93,14 @@
   const gl = k => { ky = k; ve(); };
   // Giờ cập nhật số liệu và nút làm mới nằm cuối hàng lọc.
   const gioCapNhat = el('span',{role:'status'}, 'Đang tải…');
-  const lamMoi = el('button',{type:'button',class:'lien-ket',onclick:() => ve()}, 'Làm mới');
+  const lamMoi = el('button',{type:'button',class:'lien-ket db-icon',title:'Làm mới','aria-label':'Làm mới',onclick:() => ve()},
+    sv('svg',{viewBox:'0 0 24 24',width:'18',height:'18','aria-hidden':'true',fill:'none',stroke:'currentColor','stroke-width':'2','stroke-linecap':'round','stroke-linejoin':'round'}, sv('path',{d:'M21 12a9 9 0 1 1-2.64-6.36'}), sv('path',{d:'M21 4v5h-5'})));
   const phai = el('div',{class:'db-cap'}, gioCapNhat, lamMoi);
   function veLoc(){ loc.replaceChildren(...TRUOC.map(t => el('button',{type:'button',class:'db-nut','aria-pressed':String(t.k === ky),onclick:() => gl(t.k)}, t.ten)), phai); }
-  $('vung').replaceChildren(loc, khung);
+  const hd = A.luongHoatDong(12);
+  $('vung').replaceChildren(loc, khung,
+    el('section',{class:'muc'}, el('div',{class:'muc-dau',style:'display:flex;justify-content:space-between;align-items:center;gap:12px'}, el('h2',{}, 'Hoạt động gần đây'), el('a',{class:'lien-ket',href:'/admin/nhat-ky.html'}, 'Xem tất cả')), hd.ds));
+  hd.tai();
   const gop = rows => ({ tong: rows.reduce((s, r) => s + Number(r.tong_thu), 0), so: rows.reduce((s, r) => s + Number(r.so_giao_dich), 0), tm: rows.reduce((s, r) => s + Number(r.tien_mat), 0), ck: rows.reduce((s, r) => s + Number(r.chuyen_khoan), 0) });
   const dem = async (tt, tu, den) => { const r = await db.from('lich_hen').select('id,trang_thai', { count:'exact', head:true }).eq('trang_thai', tt).gte('thoi_gian', new Date(tu + 'T00:00:00+07:00').toISOString()).lt('thoi_gian', new Date(cong(den, 1) + 'T00:00:00+07:00').toISOString());
     return r.count != null ? r.count : (r.data || []).filter(x => x.trang_thai === tt).length; };

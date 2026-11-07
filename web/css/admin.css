@@ -104,3 +104,16 @@ select.nho,input.nho{font-size:14px;padding:6px 8px}
 .thu-chon input:checked+span{background:var(--muc);border-color:var(--muc);color:#fff}
 .thu-chon input:focus-visible+span{outline:2px solid var(--nhan);outline-offset:2px}
 .thu-nhanh{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:10px}
+
+/* Luồng hoạt động gần đây */
+.hd-dong{display:flex;gap:16px;align-items:flex-start;padding:12px 8px;border-top:1px solid var(--vach);border-radius:6px}
+.hd-dong:first-child{border-top:0}
+.hd-gio{flex:0 0 96px;padding-top:2px}
+.hd-noi{flex:1 1 auto;min-width:0}
+.hd-nd{font-weight:600;overflow-wrap:anywhere}
+.hd-moi{animation:hd-moi 6s ease-out}
+@keyframes hd-moi{0%{background:#FFF1E7;box-shadow:inset 4px 0 0 var(--nhan)}100%{background:transparent;box-shadow:inset 4px 0 0 transparent}}
+@media(prefers-reduced-motion:reduce){.hd-moi{animation:none;background:#FFF1E7}}
+@media(max-width:560px){.hd-dong{flex-wrap:wrap;gap:4px 12px}.hd-gio{flex:1 0 100%}}
+
+.db-icon{padding:0;width:36px;flex:0 0 36px}
