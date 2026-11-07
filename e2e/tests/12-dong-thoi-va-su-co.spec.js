@@ -76,7 +76,7 @@ test('hai bác sĩ kê đơn cùng lúc vượt tồn kho: kho không bao giờ 
 });
 
 test('bấm đúp nút Đặt lịch chỉ tạo một lịch; mất mạng thì báo lỗi, có mạng lại bấm lại được và vẫn chỉ một lịch', async ({ browser }) => {
-  test.setTimeout(150_000);
+  test.setTimeout(240_000);
   await chuanBiDuLieuDatLich();
   const ten = 'Dup' + Date.now().toString().slice(-6);
   const cn = await dn(TK.chu_nuoi), bs = await dn(TK.bac_si);
@@ -109,6 +109,14 @@ test('bấm đúp nút Đặt lịch chỉ tạo một lịch; mất mạng thì
     // có mạng lại: bấm đúp liên tiếp
     await c.setOffline(false);
     await nutDat.dblclick();
+    // Năm cấu hình trình duyệt chạy song song cùng dùng một tài khoản chủ nuôi, mà hệ thống chỉ cho đặt 10 lịch mỗi phút (đúng thiết kế),
+    // nên có lúc trang báo "thao tác quá nhanh". Chờ một lát rồi bấm lại, như người dùng thật; mỗi lần vẫn là bấm đúp.
+    for (let lan = 0; lan < 5; lan++) {
+      const xong = await p.locator('#tieu-de').filter({ hasText: 'Đã gửi yêu cầu' }).waitFor({ timeout: 8_000 }).then(() => true, () => false);
+      if (xong || !/quá nhanh/.test(await p.locator('#loi').innerText().catch(() => ''))) break;
+      await p.waitForTimeout(12_000);
+      await nutDat.dblclick({ timeout: 5_000 }).catch(() => {});
+    }
     try { await expect(p.locator('#tieu-de')).toHaveText('Đã gửi yêu cầu đặt lịch', { timeout: 20_000 }); }
     catch (e) { // kèm thông báo lỗi đang hiện trên trang để biết vì sao đặt lịch không thành công
       const loi = await p.locator('#loi').innerText().catch(() => '(không có)');
