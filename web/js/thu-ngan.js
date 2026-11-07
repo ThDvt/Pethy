@@ -108,5 +108,5 @@
   }
 
   await tai();
-  document.addEventListener('pethy:doi', e => { if (e.detail.bang === 'hoa_don') tai(); }); // hóa đơn mới lập hiện ngay
+  Pethy.khiDoi(['hoa_don', 'thanh_toan', 'lich_hen'], tai); // hóa đơn mới lập hiện ngay
 })();

@@ -95,7 +95,16 @@
   }
   // Nhận thay đổi tức thời từ máy chủ (Supabase Realtime, vẫn theo RLS): làm mới số ở thanh bên và báo cho trang đang mở
   // qua sự kiện 'pethy:doi'. Vẫn giữ đếm định kỳ làm đường dự phòng khi kết nối thời gian thực bị chặn hoặc đứt.
-  const BANG_THEO_VAI = { admin: ['tin_nhan', 'lich_hen'], le_tan: ['tin_nhan', 'lich_hen'], bac_si: ['tin_nhan', 'lich_hen'], thu_ngan: ['tin_nhan', 'hoa_don'], kho: ['tin_nhan'], chu_nuoi: ['hoa_don'] };
+  const BANG_THEO_VAI = {
+    admin: ['tin_nhan', 'lich_hen', 'hoa_don', 'thanh_toan', 'lich_lam_viec', 'thu_cung', 'chu_nuoi', 'dich_vu', 'thuoc', 'lo_thuoc', 'bien_dong_kho', 'tai_khoan', 'ho_so_bac_si', 'danh_gia', 'bai_viet', 'cau_hinh', 'nhat_ky', 'mui_tiem', 'nhac_lich'],
+    le_tan: ['tin_nhan', 'lich_hen', 'thu_cung', 'chu_nuoi', 'nhac_lich', 'lich_lam_viec', 'ho_so_bac_si'],
+    bac_si: ['tin_nhan', 'lich_hen', 'lich_lam_viec', 'ho_so_bac_si', 'thu_cung', 'mui_tiem'],
+    thu_ngan: ['tin_nhan', 'hoa_don', 'thanh_toan', 'lich_hen'],
+    kho: ['tin_nhan', 'thuoc', 'lo_thuoc', 'bien_dong_kho'],
+    chu_nuoi: ['hoa_don', 'thanh_toan', 'lich_hen', 'thu_cung', 'mui_tiem', 'danh_gia']
+  };
+  // số trên thanh bên (tin chưa đọc, lịch chờ, hóa đơn, cảnh báo kho) chỉ đổi khi các bảng này đổi
+  const BANG_DEM_SO = ['tin_nhan', 'lich_hen', 'hoa_don', 'thuoc', 'lo_thuoc', 'bien_dong_kho'];
   function theoDoiTrucTuyen(vai){
     const bang = BANG_THEO_VAI[vai] || [];
     if (!bang.length || typeof db.channel !== 'function') return;
@@ -107,7 +116,7 @@
         cho[b] = setTimeout(() => {
           document.dispatchEvent(new CustomEvent('pethy:doi', { detail: { bang: b } }));
           // trên trang trao đổi, để trang kịp đánh dấu "đã đọc" trước khi đếm, tránh số nháy lên rồi tắt
-          setTimeout(lamMoiSo, b === 'tin_nhan' && /trao-doi\.html$/.test(location.pathname) ? 900 : 0);
+          if (BANG_DEM_SO.includes(b)) setTimeout(lamMoiSo, b === 'tin_nhan' && /trao-doi\.html$/.test(location.pathname) ? 900 : 0);
         }, 250);
       }));
       kenh.subscribe();

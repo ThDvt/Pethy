@@ -48,4 +48,5 @@
       return error ? (error.code === '23505' ? 'Đã có ca khác bắt đầu giờ này trong ngày.' : 'Không lưu được ca.') : null; }, tai);
   }
   await tai();
+  Pethy.khiDoi(['lich_lam_viec', 'tai_khoan'], tai);
 })();

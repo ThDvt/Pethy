@@ -32,4 +32,5 @@
       return error ? (error.code === '23505' ? 'Tên dịch vụ đã tồn tại.' : 'Không thêm được dịch vụ.') : null; }, tai);
   }
   await tai();
+  Pethy.khiDoi(['dich_vu'], tai);
 })();
