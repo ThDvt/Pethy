@@ -18,4 +18,5 @@
   loc.addEventListener('change', tai);
   $('vung').replaceChildren(el('div',{style:'margin-top:20px'}, loc), ds);
   await tai();
+  Pethy.khiDoi(['nhat_ky'], tai);
 })();

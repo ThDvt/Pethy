@@ -110,5 +110,5 @@
   });
 
   await tai();
-  document.addEventListener('pethy:doi', e => { if (e.detail.bang === 'lich_hen') tai(); }); // lịch mới của khách hiện ngay, không cần tải lại
+  Pethy.khiDoi(['lich_hen', 'nhac_lich', 'ho_so_bac_si'], tai); // lịch mới của khách hiện ngay, không cần tải lại
 })();

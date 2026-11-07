@@ -53,4 +53,5 @@
   }
   $('vung').before(el('button',{class:'nut chinh',type:'button',id:'them-nv',onclick:themNV}, '+ Thêm nhân viên'));
   await tai();
+  Pethy.khiDoi(['tai_khoan'], tai);
 })();

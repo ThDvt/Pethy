@@ -31,4 +31,5 @@
       }) : [A.rong('Chưa có đánh giá nào. Chủ nuôi đánh giá được sau mỗi lần khám hoàn thành.')])));
   }
   await tai();
+  Pethy.khiDoi(['danh_gia'], tai);
 })();

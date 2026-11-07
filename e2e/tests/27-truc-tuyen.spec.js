@@ -1,5 +1,6 @@
 import { test, expect, CFG, TK, KHU, dangNhap } from '../helpers.js';
-import { chuanBiDuLieuDatLich } from '../seed.js';
+import { chuanBiDuLieuDatLich, dn } from '../seed.js';
+import { ok } from '../api.js';
 
 const cauHinh = c => c.route('**/js/config.js', r => r.fulfill({ contentType: 'text/javascript',
   body: `window.PETHY_CONFIG={SUPABASE_URL:${JSON.stringify(CFG.url)},SUPABASE_ANON_KEY:${JSON.stringify(CFG.anon)},TURNSTILE_SITE_KEY:""};` }));
@@ -41,4 +42,36 @@ test('tin nhắn và số chưa đọc cập nhật tức thời giữa hai tài
     await expect(lt.locator('.tn-tin', { hasText: tin2 })).toBeVisible({ timeout: 8000 });
     await expect(lt.locator(`a[href="${NHAN}"] .tb-so`)).toHaveCount(0, { timeout: 8000 }); // đang xem nên không để số tồn đọng
   } finally { await ca.close(); await cl.close(); }
+});
+
+// Không chỉ tin nhắn: mọi trang dữ liệu đều cập nhật khi nơi khác thay đổi.
+test('trang dịch vụ của admin và trang thú cưng của chủ nuôi cập nhật tức thời khi dữ liệu đổi ở nơi khác', async ({ browser }) => {
+  test.setTimeout(120_000);
+  await chuanBiDuLieuDatLich();
+  const ca = await browser.newContext(); await cauHinh(ca);
+  const cc = await browser.newContext(); await cauHinh(cc);
+  try {
+    // 1) admin mở trang Dịch vụ; một phiên admin khác thêm dịch vụ → xuất hiện, không tải lại
+    const ad = await ca.newPage();
+    await dangNhap(ad, TK.admin, KHU.admin);
+    await ad.goto('/admin/dich-vu.html');
+    await expect(ad.getByRole('button', { name: 'Thêm dịch vụ' })).toBeVisible();
+    await ad.waitForTimeout(1500); // chờ kênh thời gian thực đăng ký xong
+    const tenDv = 'Dịch vụ trực tuyến ' + Date.now();
+    const admin = (await dn(TK.admin)).c;
+    ok(await admin.from('dich_vu').insert({ ten: tenDv, loai: 'kham', gia: 12345 }), 'thêm dịch vụ');
+    await expect(ad.locator('#vung')).toContainText(tenDv, { timeout: 8000 });
+
+    // 2) chủ nuôi mở trang Thú cưng; thú cưng thêm từ nơi khác (thiết bị khác) → xuất hiện, không tải lại
+    const cn = await cc.newPage();
+    await dangNhap(cn, TK.chu_nuoi, KHU.chu_nuoi);
+    await cn.goto('/chu-nuoi/thu-cung.html');
+    await expect(cn.locator('#ds')).toBeVisible();
+    await cn.waitForTimeout(1500);
+    const tenTc = 'Trực tuyến' + Date.now();
+    const kh = await dn(TK.chu_nuoi);
+    const chu = ok(await kh.c.from('chu_nuoi').select('id').limit(1), 'đọc hồ sơ chủ nuôi')[0];
+    ok(await kh.c.from('thu_cung').insert({ chu_nuoi_id: chu.id, ten: tenTc, loai: 'Chó' }), 'thêm thú cưng');
+    await expect(cn.locator('#ds')).toContainText(tenTc, { timeout: 8000 });
+  } finally { await ca.close(); await cc.close(); }
 });
