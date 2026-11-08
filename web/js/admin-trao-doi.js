@@ -34,7 +34,7 @@
       await taiTin(false, true); await taiLuong();
     });
     const lui = el('button', { type: 'button', class: 'tn-lui', 'aria-label': 'Quay lại danh sách', onclick: () => { goc.classList.remove('dang-chat'); chon = null; taiLuong(); } });
-    lui.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></svg>';
+    lui.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>';
     vungChat.replaceChildren(el('div', { class: 'tn-dau' }, lui, H.avatar(x.ho_ten, anhBs[x.nhan_vien_id]), el('div', {}, el('div', { class: 'tn-ten' }, x.ho_ten), el('div', { class: 'tn-vai' }, A.VAI[x.vai_tro]))), tin, soan.khung);
     return { tin, soan };
   }
