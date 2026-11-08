@@ -85,12 +85,12 @@
     const ve = hien => {
       const s = document.createElementNS(NS, 'svg');
       s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('width', '20'); s.setAttribute('height', '20');
-      s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '1.8');
+      s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '2');
       s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('aria-hidden', 'true');
-      const p = d => { const e = document.createElementNS(NS, 'path'); e.setAttribute('d', d); s.appendChild(e); };
-      p('M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z');
-      if (hien) { const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', '12'); c.setAttribute('cy', '12'); c.setAttribute('r', '3'); s.appendChild(c); }
-      else p('M4 4l16 16');
+      const them = ([t, at]) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); s.appendChild(e); };
+      // Biểu tượng mắt và mắt gạch chéo từ bộ Lucide (ISC).
+      const HINH = {"hien": [["path", {"d": "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"}], ["circle", {"cx": "12", "cy": "12", "r": "3"}]], "an": [["path", {"d": "M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"}], ["path", {"d": "M14.084 14.158a3 3 0 0 1-4.242-4.242"}], ["path", {"d": "M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"}], ["path", {"d": "m2 2 20 20"}]]};
+      (hien ? HINH.hien : HINH.an).forEach(them);
       return s;
     };
     const bao = document.createElement('div'); bao.className = 'o-mk';
