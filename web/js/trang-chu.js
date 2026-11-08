@@ -17,6 +17,16 @@
 
   try {
     const d = await lay();
+    // Dải số liệu dưới phần đầu trang: chỉ lấy từ dữ liệu thật, không hiện khi đang dùng dữ liệu mẫu.
+    if (!d.mau) {
+      const o = [], nDv = (d.dich_vu || []).filter(x => x.ten).length, nBs = (d.bac_si || []).filter(x => x.ho_ten).length, g = (d.danh_gia || [])[0];
+      if (nBs) o.push([String(nBs), 'bác sĩ đang làm việc']);
+      if (nDv) o.push([String(nDv), 'dịch vụ khám và tiêm']);
+      if (g && g.tong) o.push([Number(g.diem_tb).toFixed(1) + ' / 5', g.tong + ' đánh giá của chủ nuôi']);
+      o.push(['1 phút', 'để đặt xong một lịch khám']);
+      const sl = document.getElementById('so-lieu');
+      sl.replaceChildren(...o.map(([so, nd]) => el('div',{}, el('b',{}, so), el('span',{}, nd)))); sl.hidden = false;
+    }
     // Tranh minh họa do chủ dự án vẽ, chọn theo tên dịch vụ (không dấu). Dịch vụ chưa có tranh thì thẻ không hiện ảnh.
     const bo = t => ' ' + String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd') + ' ';
     const TRANH = [[/ (tai kham|kiem tra lai)/, 'tai-kham'], [/ (tiem|vaccine|vac xin)/, 'tiem'], [/ kham/, 'kham']];
