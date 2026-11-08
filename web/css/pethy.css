@@ -283,3 +283,8 @@ body:not(.khach) .tb-nhom{color:#4F6B66}
 body:not(.khach) .thanh-ben.gon .tb-nhom,body:not(.khach) .tb-chan{border-top-color:#BCD3CD;background-color:transparent}
 body:not(.khach) .thanh-ben.gon .tb-nhom{background:#BCD3CD}
 body:not(.khach) .tb-ra:hover{background:#F6DAD6}
+/* chuyển động nhẹ cho biểu tượng (tắt khi người dùng chọn giảm chuyển động) */
+.tb-m svg,.db-icon svg{transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+.tb-m:hover svg{transform:scale(1.14) rotate(-4deg)}
+.db-icon:hover svg{transform:rotate(180deg)}
+@media(prefers-reduced-motion:reduce){.tb-m svg,.db-icon svg{transition:none}.tb-m:hover svg,.db-icon:hover svg{transform:none}}

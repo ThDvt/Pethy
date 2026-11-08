@@ -10,29 +10,29 @@
     if (!co) document.documentElement.classList.add('khong-phien');
   } catch (e) {}
   var NS = 'http://www.w3.org/2000/svg';
-  // Biểu tượng nét 24x24. Mỗi phần tử: [thẻ, thuộc tính].
+  // Biểu tượng nét 24x24 từ bộ Lucide (giấy phép ISC, https://lucide.dev). Mỗi phần tử: [thẻ, thuộc tính].
   var BT = {
-    nha:[['path',{d:'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10'}]],
-    bieudo:[['path',{d:'M4 20V10M10 20V4M16 20v-8M22 20H2'}]],
-    nguoi:[['circle',{cx:9,cy:8,r:3}],['path',{d:'M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5a3 3 0 010 6M18 14c2.2.6 3.5 2.6 3.5 5'}]],
-    nhan:[['path',{d:'M3 12V4h8l10 10-8 8L3 12z'}],['circle',{cx:7.5,cy:8.5,r:1.2}]],
-    lich:[['rect',{x:3,y:5,width:18,height:16,rx:2}],['path',{d:'M3 10h18M8 3v4M16 3v4'}]],
-    lichDuyet:[['rect',{x:3,y:5,width:18,height:16,rx:2}],['path',{d:'M3 10h18M8 3v4M16 3v4M9 16l2 2 4-4'}]],
-    lichThem:[['rect',{x:3,y:5,width:18,height:16,rx:2}],['path',{d:'M3 10h18M8 3v4M16 3v4M12 13v6M9 16h6'}]],
-    thamSo:[['path',{d:'M4 6h10M20 6h-2M4 12h4M20 12h-8M4 18h12M20 18h-2'}],['circle',{cx:16,cy:6,r:2}],['circle',{cx:10,cy:12,r:2}],['circle',{cx:18,cy:18,r:2}]],
-    nhatKy:[['path',{d:'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01'}]],
-    tinNhan:[['path',{d:'M21 12a8 8 0 01-11.5 7.2L3 21l1.8-5.5A8 8 0 1121 12z'}]],
-    khien:[['path',{d:'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4'}]],
-    hop:[['path',{d:'M21 8l-9-5-9 5v8l9 5 9-5V8zM3 8l9 5 9-5M12 13v8'}]],
-    the:[['rect',{x:2,y:5,width:20,height:14,rx:2}],['path',{d:'M2 10h20M6 15h4'}]],
-    chan:[['circle',{cx:6,cy:11,r:1.8}],['circle',{cx:10,cy:6,r:1.8}],['circle',{cx:14,cy:6,r:1.8}],['circle',{cx:18,cy:11,r:1.8}],['path',{d:'M12 12c-3 0-5 3-5 5 0 2 2 2.5 5 2.5s5-.5 5-2.5c0-2-2-5-5-5z'}]],
-    hoaDon:[['path',{d:'M6 3h12v18l-3-2-3 2-3-2-3 2V3zM9 8h6M9 12h6'}]],
-    ra:[['path',{d:'M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9'}]],
-    menu:[['path',{d:'M4 7h16M4 12h16M4 17h16'}]],
-    baiViet:[['path',{d:'M6 3h9l4 4v14H6V3zM14 3v5h5M9 12h7M9 16h7'}]],
-    sao:[['path',{d:'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z'}]],
-    trai:[['rect',{x:'3',y:'3',width:'18',height:'18',rx:'5'}],['path',{d:'M9 3v18'}]],
-    cham:[['circle',{cx:12,cy:12,r:3}]]
+    nha:[['path',{'d':'M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8'}],['path',{'d':'M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'}]],
+    bieudo:[['path',{'d':'M3 3v16a2 2 0 0 0 2 2h16'}],['path',{'d':'M18 17V9'}],['path',{'d':'M13 17V5'}],['path',{'d':'M8 17v-3'}]],
+    nguoi:[['path',{'d':'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'}],['path',{'d':'M16 3.128a4 4 0 0 1 0 7.744'}],['path',{'d':'M22 21v-2a4 4 0 0 0-3-3.87'}],['circle',{'cx':'9','cy':'7','r':'4'}]],
+    nhan:[['path',{'d':'M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z'}],['circle',{'cx':'7.5','cy':'7.5','r':'.5','fill':'currentColor'}]],
+    lich:[['path',{'d':'M8 2v3'}],['path',{'d':'M16 2v3'}],['rect',{'x':'3','y':'3','width':'18','height':'18','rx':'2'}],['path',{'d':'M3 9h18'}],['path',{'d':'M8 13h.01'}],['path',{'d':'M12 13h.01'}],['path',{'d':'M16 13h.01'}],['path',{'d':'M8 17h.01'}],['path',{'d':'M12 17h.01'}],['path',{'d':'M16 17h.01'}]],
+    lichDuyet:[['path',{'d':'M8 2v3'}],['path',{'d':'M16 2v3'}],['rect',{'x':'3','y':'3','width':'18','height':'18','rx':'2'}],['path',{'d':'M3 9h18'}],['path',{'d':'m9 15 2 2 4-4'}]],
+    lichThem:[['path',{'d':'M16 18h6'}],['path',{'d':'M16 2v3'}],['path',{'d':'M19 15v6'}],['path',{'d':'M21 11.5V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h8.3'}],['path',{'d':'M3 9h18'}],['path',{'d':'M8 2v3'}]],
+    thamSo:[['path',{'d':'M10 5H3'}],['path',{'d':'M12 19H3'}],['path',{'d':'M14 3v4'}],['path',{'d':'M16 17v4'}],['path',{'d':'M21 12h-9'}],['path',{'d':'M21 19h-5'}],['path',{'d':'M21 5h-7'}],['path',{'d':'M8 10v4'}],['path',{'d':'M8 12H3'}]],
+    nhatKy:[['path',{'d':'M3 5h.01'}],['path',{'d':'M3 12h.01'}],['path',{'d':'M3 19h.01'}],['path',{'d':'M8 5h13'}],['path',{'d':'M8 12h13'}],['path',{'d':'M8 19h13'}]],
+    tinNhan:[['path',{'d':'M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719'}]],
+    khien:[['path',{'d':'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z'}],['path',{'d':'m9 12 2 2 4-4'}]],
+    hop:[['path',{'d':'M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z'}],['path',{'d':'M12 22V12'}],['polyline',{'points':'3.29 7 12 12 20.71 7'}],['path',{'d':'m7.5 4.27 9 5.15'}]],
+    the:[['rect',{'width':'20','height':'14','x':'2','y':'5','rx':'2'}],['line',{'x1':'2','x2':'22','y1':'10','y2':'10'}],['path',{'d':'M6 14h2'}]],
+    chan:[['circle',{'cx':'11','cy':'4','r':'2'}],['circle',{'cx':'18','cy':'8','r':'2'}],['circle',{'cx':'20','cy':'16','r':'2'}],['path',{'d':'M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z'}]],
+    hoaDon:[['path',{'d':'M13 16H8'}],['path',{'d':'M14 8H8'}],['path',{'d':'M16 12H8'}],['path',{'d':'M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z'}]],
+    ra:[['path',{'d':'m16 17 5-5-5-5'}],['path',{'d':'M21 12H9'}],['path',{'d':'M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'}]],
+    menu:[['path',{'d':'M4 5h16'}],['path',{'d':'M4 12h16'}],['path',{'d':'M4 19h16'}]],
+    baiViet:[['path',{'d':'M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z'}],['path',{'d':'M14 2v5a1 1 0 0 0 1 1h5'}],['path',{'d':'M10 9H8'}],['path',{'d':'M16 13H8'}],['path',{'d':'M16 17H8'}]],
+    sao:[['path',{'d':'M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z'}]],
+    trai:[['rect',{'width':'18','height':'18','x':'3','y':'3','rx':'2'}],['path',{'d':'M9 3v18'}]],
+    cham:[['circle',{'cx':'12','cy':'12','r':'10'}]]
   };
   // Chọn biểu tượng theo đường dẫn, để không phải sửa từng thực đơn.
   var THEO_TRANG = [['doanh-thu','bieudo'],['danh-gia','sao'],['bai-viet','baiViet'],['tai-khoan','nguoi'],['dich-vu','nhan'],['lich-lam-viec','lich'],['lich-hen','lichDuyet'],['tham-so','thamSo'],['nhat-ky','nhatKy'],
@@ -46,7 +46,7 @@
   function svg(ten){
     var s = document.createElementNS(NS, 'svg');
     s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('width', '20'); s.setAttribute('height', '20');
-    s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '1.8');
+    s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '2');
     s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('aria-hidden', 'true');
     (BT[ten] || BT.cham).forEach(function(p){ var e = document.createElementNS(NS, p[0]); for (var k in p[1]) e.setAttribute(k, p[1][k]); s.appendChild(e); });
     return s;
