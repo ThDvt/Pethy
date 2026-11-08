@@ -273,3 +273,13 @@ body:not(.khach) .bo-khu .db-kpi-o.luuy .v{color:var(--k-vang)}
 body:not(.khach) .bo-khu .tt.xd{background:var(--k-xanh-nhat);color:var(--k-xanh)}
 body:not(.khach) .bo-khu .tt.cam{background:var(--k-cam-nhat);color:var(--nhan-dam)}
 body:not(.khach) .bo-khu .tt.xam{background:#ECEDE8;color:#5B6068}
+
+/* thanh bên khu nhân viên: nền xanh ngọc nhạt, khác hẳn nền trang xám và các thẻ trắng */
+body:not(.khach) .thanh-ben{background:#DCEBE7;border-right:1px solid #BCD3CD}
+body:not(.khach) .tb-m:hover{background:#C9DFD9}
+body:not(.khach) .tb-m[aria-current=page]{background:#fff;box-shadow:0 1px 2px rgba(15,63,68,.12),0 0 0 1px #BCD3CD}
+body:not(.khach) .tb-gon:hover{background:#C9DFD9}
+body:not(.khach) .tb-nhom{color:#4F6B66}
+body:not(.khach) .thanh-ben.gon .tb-nhom,body:not(.khach) .tb-chan{border-top-color:#BCD3CD;background-color:transparent}
+body:not(.khach) .thanh-ben.gon .tb-nhom{background:#BCD3CD}
+body:not(.khach) .tb-ra:hover{background:#F6DAD6}
