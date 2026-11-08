@@ -287,3 +287,10 @@ img.bv-bia{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cov
 .so-lieu span{font-size:14px;color:var(--xam)}
 @media(max-width:860px){.hero-the{left:4%;bottom:-8%}.so-lieu{margin-top:28px}}
 @media(prefers-reduced-motion:reduce){.hero-the{animation:none}}
+
+/* biểu tượng trang chủ: nảy nhẹ khi rê vào thẻ, mạng xã hội nhấc lên */
+.the-buoc img{transition:transform .3s cubic-bezier(.3,1.5,.5,1)}
+.the-buoc:hover img{transform:translateY(-4px) rotate(-6deg) scale(1.06)}
+.khach .mang-xh a svg{transition:transform .22s cubic-bezier(.3,1.5,.5,1)}
+.khach .mang-xh a:hover svg{transform:scale(1.18) rotate(-6deg)}
+@media(prefers-reduced-motion:reduce){.the-buoc:hover img,.khach .mang-xh a:hover svg{transform:none}}
