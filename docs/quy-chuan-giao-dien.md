@@ -55,15 +55,16 @@ Từ khi có cập nhật thời gian thực, mọi trang phải:
 - Hoãn làm mới khi người dùng đang gõ hoặc đang mở hộp thoại (`Pethy.khiDoi`).
 - Giữ nguyên các mục đang mở (`<details>`) khi dựng lại danh sách, nhận diện bằng `data-id` (đã áp dụng ở trang Hóa đơn và Kho sau khi test e2e phát hiện lỗi).
 
-## Đối chiếu nhanh với Astryx
+## Kết quả rà soát (ngày 09/11/2026)
 
-Phần này do người viết tài liệu đọc mã CSS và đối chiếu, chưa phải kiểm tra toàn diện.
+Rà soát bằng cách đọc mã CSS và JS, và tính tỷ lệ tương phản WCAG cho các cặp màu chính. Chưa chạy công cụ kiểm tra trên trang thật.
 
-| Nguyên tắc (Astryx) | Pethy |
+| Nguyên tắc (Astryx) | Kết quả |
 | --- | --- |
 | Trạng thái không chỉ dựa vào màu | Đạt: nhãn trạng thái luôn có chữ |
-| Một nút chính trong mỗi nhóm hành động | Áp dụng ở trang chủ và các thẻ nhân viên, chưa rà soát hết mọi trang |
-| Giảm chuyển động vẫn giữ nghĩa | Có `prefers-reduced-motion` trong 5 tệp CSS, chưa kiểm tra từng hiệu ứng |
-| Trạng thái chờ giữ nguyên kích thước (tránh xê dịch bố cục) | Chưa kiểm tra |
-| Độ tương phản chữ và nền đạt chuẩn | Chưa đo bằng công cụ |
-| Vùng bấm tách khỏi hình icon | Có ở nút chính, chưa kiểm tra mọi nút icon |
+| Độ tương phản chữ và nền (cần 4,5:1) | Đạt cho 15 cặp màu chính (chữ thường, chữ mờ, thanh bên, nút, sáu nhãn trạng thái; thấp nhất 4,65:1). Màu xanh lá của biểu đồ chỉ đạt 2,82:1 (cần 3:1 cho đồ họa), đã đổi từ `#1baf7a` sang `#14a06e` (3,34:1) |
+| Nút chỉ có icon có tên truy cập | Đạt: nút gửi, quay lại, mắt mật khẩu, làm mới và hai liên kết mạng xã hội đều có `aria-label` |
+| Vùng bấm tối thiểu 44px trên điện thoại | Có lỗi: nút thu gọn thanh bên (28px), nút làm mới (36px), nút viền nhỏ (36 đến 38px) và nút quay lại tin nhắn (40px) dưới 44px. Đã nới lên 44px trên màn hình cảm ứng |
+| Giảm chuyển động vẫn giữ nghĩa | Có `prefers-reduced-motion` trong 5 tệp CSS; mọi hiệu ứng icon mới đều có nhánh tắt |
+| Trạng thái chờ giữ nguyên kích thước | Chưa đạt: nhiều trang thay dòng "Đang tải…" bằng danh sách nên nội dung bị đẩy xuống. Chưa sửa |
+| Một nút chính trong mỗi nhóm hành động | Chưa rà soát từng trang |
