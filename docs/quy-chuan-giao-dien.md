@@ -67,4 +67,4 @@ Rà soát bằng cách đọc mã CSS và JS, và tính tỷ lệ tương phản
 | Vùng bấm tối thiểu 44px trên điện thoại | Có lỗi: nút thu gọn thanh bên (28px), nút làm mới (36px), nút viền nhỏ (36 đến 38px) và nút quay lại tin nhắn (40px) dưới 44px. Đã nới lên 44px trên màn hình cảm ứng |
 | Giảm chuyển động vẫn giữ nghĩa | Có `prefers-reduced-motion` trong 5 tệp CSS; mọi hiệu ứng icon mới đều có nhánh tắt |
 | Trạng thái chờ giữ nguyên kích thước | Một phần: mọi trang dùng khung chờ dạng skeleton có chiều cao cố định (`.trang-thai-tai`, 248px hoặc 392px) nên không còn nhảy chữ "Đang tải…", nhưng danh sách thật cao hơn hay thấp hơn khung chờ thì nội dung bên dưới vẫn dịch một lần khi tải xong. Chưa đo từng trang |
-| Một nút chính trong mỗi nhóm hành động | Chưa rà soát từng trang |
+| Một nút chính trong mỗi nhóm hành động | Đã xem mã các tệp có từ hai nút chính trở lên (đặt lịch, thu ngân, khám bệnh, khách hàng, bảo mật, đăng nhập): các nút nằm ở từng bước, từng hộp thoại hoặc từng dòng danh sách khác nhau, chưa thấy trường hợp hai nút chính đứng cạnh nhau. Chưa xem bằng mắt trên trang thật |
