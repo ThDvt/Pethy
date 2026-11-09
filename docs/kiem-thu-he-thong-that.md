@@ -12,7 +12,6 @@ Thời gian dự kiến: khoảng 60 đến 90 phút. Nên dùng hai trình duy�
 | 0.2 | Chạy `db/06_...sql` rồi `db/07_danh_gia.sql` `db/08_email_tai_khoan.sql` và `db/09_chung_chi_bac_si.sql` trong Supabase SQL Editor (nếu chưa chạy) | Mỗi file báo Success |
 | 0.3 | Mở `https://<project>.supabase.co/auth/v1/settings?apikey=<anon key>` | `email` là true, `mailer_autoconfirm` là false |
 | 0.4 | Authentication, URL Configuration: Site URL là địa chỉ web thật (`pethy.bo3tuoi1999.workers.dev`) | Link trong email xác nhận mở đúng web thật, không về localhost |
-| 0.5 | Đăng nhập admin, vào trang Bảo mật, bấm kiểm tra cấu hình Supabase | Mọi dòng đều đạt |
 | 0.6 | Chuẩn bị 2 email thật còn dùng được để đăng ký chủ nuôi A và B (Supabase miễn phí chỉ gửi khoảng 2 email mỗi giờ) | Có sẵn hai hộp thư |
 
 ## 1. Chủ nuôi A: đăng ký và đặt lịch
