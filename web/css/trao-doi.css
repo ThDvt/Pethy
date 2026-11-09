@@ -66,3 +66,4 @@
 .tn-chat{animation:tn-hien .2s ease-out}
 @media (max-width:760px){.tn.dang-chat:not(.mot-cot) .tn-chat{animation:tn-truot .24s ease-out}}
 @media (prefers-reduced-motion:reduce){.tn *,.tn-chat{animation:none!important;transition:none!important}}
+.tn-gui svg{transform:translateX(.75px)}   /* máy bay giấy nặng bên trái, nhích nhẹ sang phải cho cân giữa hình tròn */

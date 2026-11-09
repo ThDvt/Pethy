@@ -20,10 +20,12 @@
     thuocs = rt.data || [];
     const lo = {}; (rl.data || []).forEach(x => (lo[x.thuoc_id] = lo[x.thuoc_id] || []).push(x));
 
+    // Làm mới tự động không được làm đóng mục thuốc người dùng đang mở.
+    const mo = new Set([...document.querySelectorAll('#ds-ton details[open]')].map(d => d.dataset.id));
     $('ds-ton').replaceChildren(...(thuocs.length ? thuocs.map(t => {
       const sap = t.dang_ap_dung && t.ton_con_han <= t.nguong_canh_bao;
       const lots = (lo[t.thuoc_id] || []).filter(x => x.ton > 0 || !x.het_han);
-      return el('details',{},
+      return el('details',{'data-id':t.thuoc_id},
         el('summary',{class:'hang',style:'cursor:pointer;list-style:none'},
           el('div',{class:'ten'}, t.ten, el('span',{class:'nho',style:'font-weight:400'}, '  ' + KIEU[t.loai] + ', ' + t.don_vi), t.dang_ap_dung ? '' : el('span',{class:'nho',style:'font-weight:400'}, ', đã ngừng')),
           sap ? el('span',{class:'tt vang'}, 'Sắp hết') : el('span'),
@@ -34,6 +36,7 @@
           el('div',{class:'sl'}, String(x.ton)),
           el('button',{class:'lien-ket',type:'button',onclick:() => moDieuChinh(t, x)}, 'Kiểm kê, sửa số lượng'))) : [el('p',{class:'nho',style:'padding:10px 0;margin:0'}, 'Chưa có lô nào.')])));
     }) : [el('p',{class:'nho',style:'padding:14px 0'}, 'Chưa có thuốc nào trong danh mục.')]));
+    $('ds-ton').querySelectorAll('details').forEach(d => { if (mo.has(d.dataset.id)) d.open = true; });
 
     $('ds-ls').replaceChildren(...((rb.data || []).length ? rb.data.map(b => el('div',{class:'hang'},
       el('div',{class:'ten',style:'font-weight:400'}, (b.lo_thuoc?.thuoc?.ten || '') + ', lô ' + (b.lo_thuoc?.so_lo || ''),

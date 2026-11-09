@@ -273,3 +273,20 @@ body:not(.khach) .bo-khu .db-kpi-o.luuy .v{color:var(--k-vang)}
 body:not(.khach) .bo-khu .tt.xd{background:var(--k-xanh-nhat);color:var(--k-xanh)}
 body:not(.khach) .bo-khu .tt.cam{background:var(--k-cam-nhat);color:var(--nhan-dam)}
 body:not(.khach) .bo-khu .tt.xam{background:#ECEDE8;color:#5B6068}
+
+/* chuyển động nhẹ cho biểu tượng (tắt khi người dùng chọn giảm chuyển động) */
+.tb-m svg,.db-icon svg{transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+.tb-m:hover svg{transform:scale(1.14) rotate(-4deg)}
+.db-icon:hover svg{transform:rotate(180deg)}
+@media(prefers-reduced-motion:reduce){.tb-m svg,.db-icon svg{transition:none}.tb-m:hover svg,.db-icon:hover svg{transform:none}}
+
+/* chuyển động nhẹ cho thêm biểu tượng: chỉ khi rê chuột hoặc bấm, tắt khi chọn giảm chuyển động */
+.tb-ra svg,.o-mk-nut svg,.tn-gui svg,.nut span[aria-hidden],.tb-gon svg{transition:transform .22s cubic-bezier(.3,1.4,.5,1)}
+.tb-ra:hover svg{transform:translateX(3px)}
+.o-mk-nut:hover svg{transform:scale(1.18)}
+.o-mk-nut:active svg{transform:scale(.88)}
+.tn-gui:hover:not(:disabled) svg{transform:translate(3.75px,-2px)}
+.tn-gui:active:not(:disabled) svg{transform:translate(8px,-4px)}
+.nut:hover span[aria-hidden]{transform:translateX(4px);display:inline-block}
+.nut span[aria-hidden]{display:inline-block}
+@media(prefers-reduced-motion:reduce){.tb-ra:hover svg,.o-mk-nut:hover svg,.o-mk-nut:active svg,.tn-gui:hover:not(:disabled) svg,.tn-gui:active:not(:disabled) svg,.nut:hover span[aria-hidden]{transform:none}}

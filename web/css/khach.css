@@ -271,8 +271,8 @@ img.bv-bia{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cov
 .khach .lien-ket.nguy{color:#B42318;border-color:#B42318}.khach .lien-ket.nguy:hover{background:#FFE1DC}
 .khach .lien-ket.nhe{border-color:transparent;background:transparent;color:var(--nhan-dam)}.khach .lien-ket.nhe:hover{background:#FFE9D6;border-color:transparent}
 .khach .hanh-dong{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
-.khach .hanh-dong a{display:inline-flex;align-items:center;border:2px solid var(--muc);border-radius:999px;background:#fff;padding:7px 16px;min-height:38px;font-weight:700;font-size:14px;text-decoration:none;color:var(--muc)}
-.khach .hanh-dong a:hover{background:var(--kem2);color:var(--muc)}
+.khach .hanh-dong a:not(.nut){display:inline-flex;align-items:center;border:2px solid var(--muc);border-radius:999px;background:#fff;padding:7px 16px;min-height:38px;font-weight:700;font-size:14px;text-decoration:none;color:var(--muc)}
+.khach .hanh-dong a:not(.nut):hover{background:var(--kem2);color:var(--muc)}
 
 /* hero: mảng màu nền sau hình, thẻ nổi, dải số liệu */
 .hero-hinh{position:relative}
@@ -287,3 +287,10 @@ img.bv-bia{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cov
 .so-lieu span{font-size:14px;color:var(--xam)}
 @media(max-width:860px){.hero-the{left:4%;bottom:-8%}.so-lieu{margin-top:28px}}
 @media(prefers-reduced-motion:reduce){.hero-the{animation:none}}
+
+/* biểu tượng trang chủ: nảy nhẹ khi rê vào thẻ, mạng xã hội nhấc lên */
+.the-buoc img{transition:transform .3s cubic-bezier(.3,1.5,.5,1)}
+.the-buoc:hover img{transform:translateY(-4px) rotate(-6deg) scale(1.06)}
+.khach .mang-xh a svg{transition:transform .22s cubic-bezier(.3,1.5,.5,1)}
+.khach .mang-xh a:hover svg{transform:scale(1.18) rotate(-6deg)}
+@media(prefers-reduced-motion:reduce){.the-buoc:hover img,.khach .mang-xh a:hover svg{transform:none}}

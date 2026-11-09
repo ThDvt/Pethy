@@ -53,7 +53,7 @@
     const etm = em && !matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (etm && v.scrollTo) v.scrollTo({ top: v.scrollHeight, behavior: 'smooth' }); else v.scrollTop = v.scrollHeight;
   }
-  const BIEU_TUONG = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg>';
+  const BIEU_TUONG = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"/><path d="M6 12h16"/></svg>';
   // Ô soạn tin: tự cao lên theo nội dung; Enter gửi (máy có chuột), Shift+Enter xuống dòng; trên điện thoại Enter xuống dòng.
   function soanTin(guiDi){
     const o = el('textarea', { rows: '1', placeholder: 'Nhập tin nhắn…', maxlength: '1000', 'aria-label': 'Nội dung tin nhắn' });
