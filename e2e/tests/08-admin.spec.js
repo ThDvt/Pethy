@@ -40,7 +40,7 @@ test('admin quản lý dịch vụ: kiểm tra đầu vào, sửa giá, mô tả
     await expect(p.locator('#loi-chung')).toContainText('Giá phải là số');
     await o.fill('120000'); await dong.getByRole('button', { name: 'Lưu giá' }).click();
     await p.reload();
-    await expect(p.locator('.hang', { hasText: ten }).locator('input')).toHaveValue('120000');
+    await expect(p.locator('.hang', { hasText: ten }).locator('input')).toHaveValue('120.000'); // ô giá hiện dấu chấm ngăn cách hàng nghìn
 
     // mô tả
     await p.locator('.hang', { hasText: ten }).getByRole('button', { name: 'Mô tả' }).click();
