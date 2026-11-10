@@ -275,7 +275,7 @@ test('không phải admin thì không ghi được dịch vụ, tham số, lịc
   }
 });
 
-test('admin xem mọi lịch hẹn, xác nhận và hủy có lý do; vào được các khu làm việc và quay về', async ({ browser }) => {
+test('admin chỉ xem lịch hẹn (không có nút thao tác) và lọc theo trạng thái; không vào được các khu làm việc và quay về', async ({ browser }) => {
   test.setTimeout(120_000);
   await chuanBiDuLieuDatLich();
   const ten = 'LichAdmin' + Date.now().toString().slice(-6);
@@ -288,19 +288,13 @@ test('admin xem mọi lịch hẹn, xác nhận và hủy có lý do; vào đư�
     const dong = p.locator('.hang', { hasText: ten });
     await expect(dong).toHaveCount(1);
     await expect(dong).toContainText('Chờ xác nhận');
-    await dong.getByRole('button', { name: 'Xác nhận' }).click();
-    await expect(dong).toContainText('Đã xác nhận');
-    await p.getByLabel('Trạng thái').selectOption('da_xac_nhan');
-    await expect(p.locator('.hang', { hasText: ten })).toHaveCount(1);
+    // admin chỉ theo dõi: không có nút thao tác trên lịch hẹn
+    await expect(dong.getByRole('button')).toHaveCount(0);
     await p.getByLabel('Trạng thái').selectOption('cho_xac_nhan');
+    await expect(p.locator('.hang', { hasText: ten })).toHaveCount(1);
+    await p.getByLabel('Trạng thái').selectOption('da_xac_nhan');
     await expect(p.locator('.hang', { hasText: ten })).toHaveCount(0); // bộ lọc theo trạng thái hoạt động
     await p.getByLabel('Trạng thái').selectOption('');
-    await dong.getByRole('button', { name: 'Hủy', exact: true }).click();
-    await hop(p).locator('#ly-do').fill('Khách báo bận');
-    await hop(p).getByRole('button', { name: 'Hủy lịch' }).click();
-    await expect(hop(p)).not.toBeVisible();
-    await expect(dong).toContainText('Đã hủy');
-    await expect(dong.getByRole('button', { name: 'Xác nhận' })).toHaveCount(0);
 
     // admin chỉ theo dõi, không vào khu làm việc của nhân viên: không có lối vào trên thanh bên và gõ địa chỉ cũng bị đưa về trang quản trị
     for (const href of ['/le-tan/', '/bac-si/', '/thu-ngan/', '/kho/']) await expect(p.locator('a[href="' + href + '"]')).toHaveCount(0);

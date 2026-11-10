@@ -117,3 +117,7 @@ select.nho,input.nho{font-size:14px;padding:6px 8px}
 @media(max-width:560px){.hd-dong{flex-wrap:wrap;gap:4px 12px}.hd-gio{flex:1 0 100%}}
 
 .db-icon{padding:0;width:36px;flex:0 0 36px}
+
+/* nhãn trạng thái cạnh tên chỉ số: không bẻ chữ, xuống dòng nguyên cụm */
+.db-kpi-o .n{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.db-kpi-o .n .tt{margin-left:0!important;white-space:nowrap}
