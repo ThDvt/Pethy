@@ -22,8 +22,8 @@
       el('div',{class:'gio'}, gio(l.thoi_gian)),
       el('div',{class:'ct'}, el('div',{}, el('span',{class:'ten'}, l.thu_cung?.ten), ', ' + (cn.ho_ten || '')), el('div',{class:'nho so'}, sdt(cn.so_dien_thoai)),
         el('div',{class:'nho'}, new Date(l.thoi_gian).toLocaleDateString('vi-VN',{weekday:'short',day:'2-digit',month:'2-digit',timeZone:'Asia/Ho_Chi_Minh'}))),
-      el('div',{style:'flex:2 1 180px'}, l.dich_vu?.ten, el('div',{class:'nho'}, 'Bác sĩ ' + (tenBs[l.bac_si_id] || ''))),
-      el('div',{style:'display:flex;gap:16px;align-items:center'},
+      el('div',{style:'flex:1 1 110px'}, l.dich_vu?.ten, el('div',{class:'nho'}, 'Bác sĩ ' + (tenBs[l.bac_si_id] || ''))),
+      el('div',{class:'nhom-nut',style:'display:flex;gap:10px;align-items:center'},
         el('button',{class:'nut chinh',type:'button',onclick:async ev => {
           const nutBam = ev.currentTarget; nutBam.disabled = true; baoLoi('');
           const { error } = await db.rpc('xac_nhan_lich', { p_lich: l.id });
