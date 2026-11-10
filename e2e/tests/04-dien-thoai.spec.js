@@ -7,8 +7,20 @@ test('trang công khai không tràn ngang trên điện thoại', async ({ page 
 });
 
 for (const v of [...VAI, 'admin']) {
-  test(`${v}: nút menu góc dưới phải mở bảng lưới, đủ lớn để chạm`, async ({ page }) => {
+  test(`${v}: thanh điều hướng dưới đáy dùng được trên điện thoại (admin: nút menu mở bảng lưới; còn lại: thanh biểu tượng nổi)`, async ({ page }) => {
     await dangNhap(page, TK[v], KHU[v]);
+    if (v !== 'admin') {
+      // tài khoản ít mục: thanh viên thuốc nổi chỉ có biểu tượng, không có bảng mở lên
+      const thanh = page.locator('.thanh-noi .tb-vien');
+      await expect(thanh).toBeVisible();
+      await expect(page.locator('.tb-them')).toBeHidden();
+      const mucs = thanh.locator('.tb-v[href]');
+      expect(await mucs.count()).toBeGreaterThan(0);
+      for (const m of await mucs.all()) { expect(await m.getAttribute('aria-label'), 'nút chỉ có biểu tượng phải có tên').toBeTruthy(); const bb = await m.boundingBox(); expect(bb.width).toBeGreaterThanOrEqual(44); expect(bb.height).toBeGreaterThanOrEqual(44); }
+      await expect(thanh.getByRole('button', { name: 'Đăng xuất' })).toBeVisible();
+      await khongTranNgang(page);
+      return;
+    }
     const nut = page.locator('.tb-them');
     await expect(nut).toBeVisible();
     const kt = page.viewportSize(), b = await nut.boundingBox();
