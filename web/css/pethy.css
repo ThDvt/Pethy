@@ -315,3 +315,11 @@ body:not(.khach) .bo-khu main [style*="border-top:2px solid var(--muc)"]>.hang:l
 .thanh-ben.thanh-noi .tb-them{display:none}
 .thanh-ben.thanh-noi .tb-tam{display:none!important}
 }
+
+/* màn hình cảm ứng: vùng bấm tối thiểu 44px (quy chuẩn giao diện, mục 3) */
+@media(pointer:coarse){
+  .lien-ket,.khach .lien-ket{min-height:44px}
+  .db-icon{width:44px;flex-basis:44px}
+  .tb-gon{width:44px;height:44px}
+  .tn-lui{width:44px;height:44px}
+}

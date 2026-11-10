@@ -23,7 +23,7 @@ select.nho,input.nho{font-size:14px;padding:6px 8px}
 .hang select,.hang input{width:auto;flex:0 0 auto}
 .hang select{min-width:130px}
 /* ---- Dashboard kinh tế (tổng quan) ---- */
-:root{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--tang:#006300}
+:root{--s1:#2a78d6;--s2:#eb6834;--s3:#14a06e;--tang:#006300}
 .db-loc{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 4px}
 .db-nut{font:inherit;font-size:14px;font-weight:600;padding:8px 14px;min-height:40px;border:1px solid var(--vach);border-radius:4px;background:#fff;color:var(--muc);cursor:pointer}
 .db-nut:hover{border-color:var(--muc)}
