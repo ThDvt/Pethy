@@ -45,7 +45,7 @@
     const r = await q;
     if (r.error) return A.baoLoi('Không tải được lịch hẹn.');
     ds.replaceChildren(...((r.data || []).length ? r.data.map(dong) : [A.rong('Không có lịch hẹn nào trong khoảng này.')]));
-    dem.textContent = (r.data || []).length ? (r.count > r.data.length ? 'Hiển thị ' + r.data.length + ' trong tổng số ' + r.count + ' lịch. Dùng bộ lọc để thu hẹp.' : r.count + ' lịch hẹn.') : '';
+    dem.textContent = (r.data || []).length ? (r.count > r.data.length ? 'Hiển thị ' + r.data.length + ' trong tổng số ' + r.count + ' lịch. Dùng bộ lọc để thu hẹp.' : (r.count != null ? r.count : r.data.length) + ' lịch hẹn.') : '';
   }
   [chonKhoang, chonTT, chonBs].forEach(s => s.addEventListener('change', tai));
   $('vung').replaceChildren(el('div', { style: 'display:flex;flex-wrap:wrap;gap:12px;margin-top:20px' }, chonKhoang, chonTT, chonBs), dem, ds);

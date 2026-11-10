@@ -299,3 +299,7 @@ body:not(.khach) .tb-ra:hover{background:#F6DAD6}
 .nut:hover span[aria-hidden]{transform:translateX(4px);display:inline-block}
 .nut span[aria-hidden]{display:inline-block}
 @media(prefers-reduced-motion:reduce){.tb-ra:hover svg,.o-mk-nut:hover svg,.o-mk-nut:active svg,.tn-gui:hover:not(:disabled) svg,.tn-gui:active:not(:disabled) svg,.nut:hover span[aria-hidden]{transform:none}}
+
+/* khu nhân viên: danh sách nằm trong thẻ, không có vạch đen trên cùng (các trang dựng bằng style nội tuyến) */
+body:not(.khach) .bo-khu main [style*="border-top:2px solid var(--muc)"]{background:#fff;border:1px solid var(--vien-khoi)!important;border-radius:14px;padding:6px 24px!important;box-shadow:0 1px 2px rgba(20,22,26,.05),0 6px 18px rgba(20,22,26,.04)}
+body:not(.khach) .bo-khu main [style*="border-top:2px solid var(--muc)"]>.hang:last-child{border-bottom:0}
