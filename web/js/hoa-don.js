@@ -22,7 +22,7 @@
           ...(h.thanh_toan || []).map(t => el('div',{class:'hang nho',style:'padding:4px 0;border-bottom:0'}, el('div',{class:'ten',style:'font-weight:400'}, 'Đã trả ' + A.ngay(t.thoi_gian) + ', ' + PT[t.phuong_thuc]), el('div',{class:'gt',style:'font-size:14px'}, tien(t.so_tien)))),
           h.trang_thai !== 'da_thanh_toan' ? el('div',{style:'font-weight:700;padding-top:8px'}, 'Còn lại ' + tien(h.tong_tien - da)) : null, ckCho));
     }) : [A.rong('Bạn chưa có hóa đơn nào.')]));
-    $('vung').firstChild && ($('vung').style.cssText = 'margin-top:20px;border-bottom:1px solid var(--vach)');
+    $('vung').firstChild && ($('vung').style.cssText = 'margin-top:20px');
     if (r.count > ds.length) $('vung').after(el('p',{class:'nho',id:'hd-con'},'Đang hiển thị ' + ds.length + ' hóa đơn gần nhất trong tổng số ' + r.count + '.'));
     $('vung').querySelectorAll('details').forEach(d => { if (mo.has(d.dataset.id)) d.open = true; });
   }

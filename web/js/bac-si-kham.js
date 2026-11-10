@@ -6,7 +6,7 @@
   const id = new URLSearchParams(location.search).get('lich');
   const thongBao = m => { $('trang-thai').textContent = m || ''; };
   const hien = (cha, ...con) => cha.replaceChildren(...con);
-  if (!id) { hien($('vung'), el('p',{class:'loi'},'Thiếu lịch hẹn. Hãy chọn một lịch ở trang Lịch khám.'), el('a',{href:'/bac-si/'},'Về Lịch khám')); hien($('thu-cung-kham')); return; }
+  if (!id) { hien($('vung'), el('p',{class:'loi'},'Thiếu lịch hẹn. Hãy chọn một lịch ở trang Lịch khám.'), el('a',{class:'nut phu',href:'/bac-si/',style:'display:inline-block'},'Về Lịch khám')); hien($('thu-cung-kham')); return; }
 
   const [rl, rt, rv] = await Promise.all([
     db.from('lich_hen').select('id,thoi_gian,trang_thai,ghi_chu,vaccine_id,thu_cung_id,thu_cung(id,ten,loai,ngay_sinh,chu_nuoi(ho_ten,so_dien_thoai)),dich_vu(ten,loai)').eq('id', id).limit(1),
@@ -14,7 +14,7 @@
     db.from('thuoc').select('id,ten').eq('loai','vaccine').eq('dang_ap_dung', true).order('ten')
   ]);
   const l = rl.data && rl.data[0];
-  if (rl.error || !l) { hien($('vung'), el('p',{class:'loi'},'Không tìm thấy lịch hẹn.'), el('a',{href:'/bac-si/'},'Về Lịch khám')); hien($('thu-cung-kham')); return; }
+  if (rl.error || !l) { hien($('vung'), el('p',{class:'loi'},'Không tìm thấy lịch hẹn.'), el('a',{class:'nut phu',href:'/bac-si/',style:'display:inline-block'},'Về Lịch khám')); hien($('thu-cung-kham')); return; }
   const thuocs = rt.data || [], vaccines = rv.data || [];
   const laTiem = l.dich_vu?.loai === 'tiem';
 

@@ -106,6 +106,12 @@
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && nav.classList.contains('mo-menu')) { dongMo(); them.focus(); } });
     document.addEventListener('click', function(e){ if (nav.classList.contains('mo-menu') && !nav.contains(e.target)) dongMo(); });
     vien.appendChild(them); nav.appendChild(vien);
+    // Tài khoản ít mục (không phải quản trị): điện thoại hiện thanh viên thuốc nổi, chỉ có biểu tượng, thay cho nút tròn mở bảng.
+    if (muc.length <= 4) {
+      nav.classList.add('thanh-noi');
+      var rv = dd('button', 'tb-v tb-ra-v'); rv.type = 'button'; rv.title = 'Đăng xuất'; rv.setAttribute('aria-label', 'Đăng xuất');
+      rv.appendChild(svg('ra')); rv.onclick = raKhoi; vien.insertBefore(rv, them);
+    }
     // Có mục nào có số mới thì nút menu hiện chấm đỏ, để không bỏ sót.
     nav.capNhatCham = function(){
       var co = false, mm = tam.querySelectorAll('.tb-m');

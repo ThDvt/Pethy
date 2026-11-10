@@ -9,11 +9,12 @@
     $('vung').replaceChildren(
       el('div',{style:'margin-top:20px;text-align:right'}, el('button',{class:'nut chinh',type:'button',onclick:them},'Thêm dịch vụ')),
       el('div',{style:'border-top:2px solid var(--muc);margin-top:12px'}, ...((r.data || []).length ? r.data.map(d => {
-        const g = el('input',{class:'nho so',inputmode:'numeric',value:d.gia,style:'width:110px;text-align:right','aria-label':'Giá ' + d.ten});
+        const g = el('input',{class:'nho so',inputmode:'numeric',value:new Intl.NumberFormat('vi-VN').format(d.gia),style:'width:110px;text-align:right','aria-label':'Giá ' + d.ten});
+        g.addEventListener('input', () => { const so = g.value.replace(/\D/g, ''); g.value = so ? new Intl.NumberFormat('vi-VN').format(Number(so)) : ''; });
         return el('div',{class:'hang'},
           el('div',{class:'ten'}, d.ten, el('div',{class:'nho',style:'font-weight:400'}, (LOAI[d.loai] || d.loai) + (d.mo_ta ? '' : ', chưa có mô tả'))),
           d.dang_ap_dung ? el('span') : el('span',{class:'tt xam'}, 'Đã ngừng'), g, el('span',{class:'nho'}, 'đ'),
-          el('button',{class:'lien-ket',type:'button',onclick:() => { const v = Number(g.value); if (!Number.isInteger(v) || v < 0) return A.baoLoi('Giá phải là số nguyên không âm.'); luu(d.id, { gia: v }); }}, 'Lưu giá'),
+          el('button',{class:'lien-ket',type:'button',onclick:() => { const v = Number(g.value.replace(/\./g, '').replace(/\s/g, '')); if (!g.value.trim() || !Number.isInteger(v) || v < 0) return A.baoLoi('Giá phải là số nguyên không âm.'); luu(d.id, { gia: v }); }}, 'Lưu giá'),
           el('button',{class:'lien-ket',type:'button',onclick:() => suaMoTa(d)}, 'Mô tả'),
           el('button',{class:'lien-ket',type:'button',onclick:() => luu(d.id, { dang_ap_dung: !d.dang_ap_dung })}, d.dang_ap_dung ? 'Ngừng' : 'Áp dụng lại'));
       }) : [A.rong('Chưa có dịch vụ nào.')])));

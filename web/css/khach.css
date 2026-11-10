@@ -294,3 +294,7 @@ img.bv-bia{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cov
 .khach .mang-xh a svg{transition:transform .22s cubic-bezier(.3,1.5,.5,1)}
 .khach .mang-xh a:hover svg{transform:scale(1.18) rotate(-6deg)}
 @media(prefers-reduced-motion:reduce){.the-buoc:hover img,.khach .mang-xh a:hover svg{transform:none}}
+
+/* hóa đơn của chủ nuôi: mỗi hóa đơn là một thẻ, giống danh sách lịch hẹn */
+.khach-khu #vung>details[data-id]{background:#fff;border:2px solid var(--muc)!important;border-radius:22px;padding:6px 22px;margin-bottom:14px}
+.khach-khu #vung>details[data-id] summary.hang{padding:14px 0}

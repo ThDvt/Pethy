@@ -24,7 +24,7 @@ for (const [v, ds] of Object.entries(TRANG)) {
   test(`${v}: các trang chức năng không tràn ngang trên điện thoại`, async ({ page }) => {
     if (v === 'chu_nuoi' || v === 'bac_si') await chuanBiDuLieuTiem();
     await dangNhap(page, TK[v], KHU[v]);
-    for (const u of ds) { await page.goto(u); await page.waitForLoadState('networkidle'); await expect(page.locator('.tb-them')).toBeVisible(); await khongTranNgang(page, v + ' ' + u); }
+    for (const u of ds) { await page.goto(u); await page.waitForLoadState('networkidle'); await expect(page.locator(v === 'admin' ? '.tb-them' : '.thanh-noi .tb-vien')).toBeVisible(); await khongTranNgang(page, v + ' ' + u); }
   });
 }
 
