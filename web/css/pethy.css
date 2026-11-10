@@ -299,3 +299,11 @@ body:not(.khach) .tb-ra:hover{background:#F6DAD6}
 .nut:hover span[aria-hidden]{transform:translateX(4px);display:inline-block}
 .nut span[aria-hidden]{display:inline-block}
 @media(prefers-reduced-motion:reduce){.tb-ra:hover svg,.o-mk-nut:hover svg,.o-mk-nut:active svg,.tn-gui:hover:not(:disabled) svg,.tn-gui:active:not(:disabled) svg,.nut:hover span[aria-hidden]{transform:none}}
+
+/* màn hình cảm ứng: vùng bấm tối thiểu 44px (quy chuẩn giao diện, mục 3) */
+@media(pointer:coarse){
+  .lien-ket,.khach .lien-ket{min-height:44px}
+  .db-icon{width:44px;flex-basis:44px}
+  .tb-gon{width:44px;height:44px}
+  .tn-lui{width:44px;height:44px}
+}
