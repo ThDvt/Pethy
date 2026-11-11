@@ -45,10 +45,10 @@
   soNgay = Number((cfg.data||[]).find(c => c.khoa === 'dat_truoc_toi_da_ngay')?.gia_tri || 30);
 
   function chonDS(ten, ds_, hien, dat){
-    return ds_.map(x => el('label',{class:'chon'},
+    return [el('div',{class:'nhom-chon'}, ...ds_.map(x => el('label',{class:'chon'},
       el('input',{type:'radio',name:ten,value:x.id,checked: dat === x.id, required:true}),
       el('span',{style:'flex:1'}, hien(x)[0], hien(x)[1] ? el('span',{class:'ghi-chu',style:'display:block'}, hien(x)[1]) : null),
-      hien(x)[2] ? el('span',{class:'so',style:'font-size:15px'}, hien(x)[2]) : null));
+      hien(x)[2] ? el('span',{class:'so',style:'font-size:15px'}, hien(x)[2]) : null)))];
   }
 
   // ---- Bước 1: chọn thú cưng, dịch vụ, bác sĩ

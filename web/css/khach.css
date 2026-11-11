@@ -298,3 +298,8 @@ img.bv-bia{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cov
 /* hóa đơn của chủ nuôi: mỗi hóa đơn là một thẻ, giống danh sách lịch hẹn */
 .khach-khu #vung>details[data-id]{background:#fff;border:2px solid var(--muc)!important;border-radius:22px;padding:6px 22px;margin-bottom:14px}
 .khach-khu #vung>details[data-id] summary.hang{padding:14px 0}
+
+/* danh sách chọn (thú cưng, dịch vụ, bác sĩ...) nằm trong thẻ */
+.khach-khu .nhom-chon{background:#fff;border:2px solid var(--muc);border-radius:22px;padding:4px 18px}
+.khach-khu .nhom-chon .chon:last-child{border-bottom:0}
+.khach-khu .nhom-chon .chon:first-child{border-top:0}

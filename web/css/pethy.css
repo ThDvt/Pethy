@@ -326,3 +326,8 @@ body:not(.khach) .bo-khu main [style*="border-top:2px solid var(--muc)"]>.hang:l
 
 /* khu nhân viên: dòng cuối trong thẻ không kẻ vạch ngăn thừa */
 body:not(.khach) .bo-khu :is(.muc,.cho,section)>.hang:last-child,body:not(.khach) .bo-khu :is(.muc,.cho,section)>:last-child>.hang:last-child{border-bottom:0}
+
+/* khu nhân viên: danh sách chọn trong thẻ */
+body:not(.khach) .bo-khu .nhom-chon{background:#fff;border:1px solid var(--vien-khoi);border-radius:14px;padding:4px 18px;box-shadow:0 1px 2px rgba(20,22,26,.05)}
+body:not(.khach) .bo-khu .nhom-chon .chon:last-child{border-bottom:0}
+body:not(.khach) .bo-khu .nhom-chon .chon:first-child{border-top:0}
