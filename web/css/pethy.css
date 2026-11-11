@@ -331,3 +331,14 @@ body:not(.khach) .bo-khu :is(.muc,.cho,section)>.hang:last-child,body:not(.khach
 body:not(.khach) .bo-khu .nhom-chon{background:#fff;border:1px solid var(--vien-khoi);border-radius:14px;padding:4px 18px;box-shadow:0 1px 2px rgba(20,22,26,.05)}
 body:not(.khach) .bo-khu .nhom-chon .chon:last-child{border-bottom:0}
 body:not(.khach) .bo-khu .nhom-chon .chon:first-child{border-top:0}
+
+/* thanh điều hướng điện thoại: nền sáng hợp tông web, không dùng khối đen */
+.tb-v{background:rgba(255,255,255,.96);color:var(--muc,#14161A);border:1px solid rgba(20,22,26,.12);box-shadow:0 6px 20px rgba(20,22,26,.14)}
+@media(max-width:760px){
+.thanh-ben.thanh-noi .tb-vien{background:rgba(255,255,255,.96);border:1px solid rgba(20,22,26,.12);box-shadow:0 8px 24px rgba(20,22,26,.16);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.thanh-ben.thanh-noi .tb-v{background:transparent;border:0;box-shadow:none;color:var(--muc,#14161A)}
+.thanh-ben.thanh-noi .tb-v:hover{background:rgba(20,22,26,.06)}
+.thanh-ben.thanh-noi .tb-v[aria-current=page]{background:#FFC83D;color:var(--muc,#14161A)}
+.thanh-ben.thanh-noi .tb-v.tb-ra-v{color:#B3321A}
+.thanh-ben.thanh-noi .tb-v.tb-ra-v::before{background:rgba(20,22,26,.15)}
+}
