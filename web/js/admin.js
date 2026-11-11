@@ -47,8 +47,9 @@ Pethy.admin = (function(){
     async function tai(){
       const r = await Pethy.db.rpc('hoat_dong_gan_day', { p_gioi_han: gioiHan, p_hanh_dong: loc ? (loc.value || null) : null });
       if (r.error) { ds.replaceChildren(el('p',{class:'loi'}, 'Không tải được hoạt động. Nếu mới cập nhật web, hãy chạy db/15_hoat_dong.sql trong Supabase.')); return; }
-      const moi = new Set((r.data || []).map(x => x.id));
-      ds.replaceChildren(...((r.data || []).length ? r.data.map(x => el('div',{class:'hang hd-dong' + (daThay && !daThay.has(x.id) ? ' hd-moi' : '')},
+      const dl = Array.isArray(r.data) ? r.data : [];
+      const moi = new Set(dl.map(x => x.id));
+      ds.replaceChildren(...(dl.length ? dl.map(x => el('div',{class:'hang hd-dong' + (daThay && !daThay.has(x.id) ? ' hd-moi' : '')},
         el('div',{class:'hd-gio nho'}, thoiGian(x.thoi_gian)),
         el('div',{class:'hd-noi'}, el('div',{class:'hd-nd'}, x.noi_dung), el('div',{class:'nho'}, x.nguoi + (x.vai_tro ? ' (' + VAI_HD[x.vai_tro] + ')' : ''))),
         el('span',{class:'tt xam'}, MUC_HD[x.muc] || ''))) : [rong('Chưa có hoạt động nào.')]));

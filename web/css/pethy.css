@@ -70,7 +70,7 @@ form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 .tab button[aria-selected=true]{color:var(--muc);border-bottom-color:var(--muc)}
 
 /* khu làm việc (sau đăng nhập) */
-.bo-khu{display:flex;flex-wrap:wrap;min-height:100vh}
+.bo-khu{display:flex;flex-wrap:wrap;min-height:100vh;align-content:flex-start}
 .thanh-ben{flex:0 0 240px;width:240px;position:sticky;top:0;align-self:flex-start;height:100vh;background:var(--muc);color:#fff;padding:16px;display:flex;flex-direction:column;gap:0;transition:width .2s ease,flex-basis .2s ease;z-index:5}
 .thanh-ben.gon{flex-basis:80px;width:80px}
 .tb-dau{display:flex;align-items:center;justify-content:space-between;height:44px;margin-bottom:16px;padding:0 4px;position:relative}
@@ -323,3 +323,6 @@ body:not(.khach) .bo-khu main [style*="border-top:2px solid var(--muc)"]>.hang:l
   .tb-gon{width:44px;height:44px}
   .tn-lui{width:44px;height:44px}
 }
+
+/* khu nhân viên: dòng cuối trong thẻ không kẻ vạch ngăn thừa */
+body:not(.khach) .bo-khu :is(.muc,.cho,section)>.hang:last-child,body:not(.khach) .bo-khu :is(.muc,.cho,section)>:last-child>.hang:last-child{border-bottom:0}
