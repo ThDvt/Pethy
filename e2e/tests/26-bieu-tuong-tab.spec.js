@@ -11,6 +11,8 @@ test('mọi trang HTML đều có biểu tượng thẻ trình duyệt', () => {
     if (f.isDirectory()) duyet(p); else if (f.name.endsWith('.html')) ds.push(p);
   } })(goc);
   expect(ds.length).toBeGreaterThan(20);
-  const thieu = ds.filter(p => !/<link[^>]+rel="icon"[^>]*href="\/img\/logo\.svg"/.test(fs.readFileSync(p, 'utf8'))).map(p => path.relative(goc, p));
+  const thieu = ds.filter(p => !/<link[^>]+rel="icon"[^>]*href="\/img\/favicon\.svg"/.test(fs.readFileSync(p, 'utf8'))).map(p => path.relative(goc, p));
   expect(thieu).toEqual([]);
+  // các tệp biểu tượng phải tồn tại thật (Safari dùng .ico / apple-touch-icon thay cho SVG)
+  for (const f of ['img/favicon.svg', 'favicon.ico', 'apple-touch-icon.png']) expect(fs.existsSync(path.join(goc, f)), f).toBe(true);
 });
