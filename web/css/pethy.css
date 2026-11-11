@@ -70,7 +70,7 @@ form > .nut[type=submit], form > .loi + .nut{margin-top:8px}
 .tab button[aria-selected=true]{color:var(--muc);border-bottom-color:var(--muc)}
 
 /* khu làm việc (sau đăng nhập) */
-.bo-khu{display:flex;flex-wrap:wrap;min-height:100vh}
+.bo-khu{display:flex;flex-wrap:wrap;min-height:100vh;align-content:flex-start}
 .thanh-ben{flex:0 0 240px;width:240px;position:sticky;top:0;align-self:flex-start;height:100vh;background:var(--muc);color:#fff;padding:16px;display:flex;flex-direction:column;gap:0;transition:width .2s ease,flex-basis .2s ease;z-index:5}
 .thanh-ben.gon{flex-basis:80px;width:80px}
 .tb-dau{display:flex;align-items:center;justify-content:space-between;height:44px;margin-bottom:16px;padding:0 4px;position:relative}
@@ -322,4 +322,23 @@ body:not(.khach) .bo-khu main [style*="border-top:2px solid var(--muc)"]>.hang:l
   .db-icon{width:44px;flex-basis:44px}
   .tb-gon{width:44px;height:44px}
   .tn-lui{width:44px;height:44px}
+}
+
+/* khu nhân viên: dòng cuối trong thẻ không kẻ vạch ngăn thừa */
+body:not(.khach) .bo-khu :is(.muc,.cho,section)>.hang:last-child,body:not(.khach) .bo-khu :is(.muc,.cho,section)>:last-child>.hang:last-child{border-bottom:0}
+
+/* khu nhân viên: danh sách chọn trong thẻ */
+body:not(.khach) .bo-khu .nhom-chon{background:#fff;border:1px solid var(--vien-khoi);border-radius:14px;padding:4px 18px;box-shadow:0 1px 2px rgba(20,22,26,.05)}
+body:not(.khach) .bo-khu .nhom-chon .chon:last-child{border-bottom:0}
+body:not(.khach) .bo-khu .nhom-chon .chon:first-child{border-top:0}
+
+/* thanh điều hướng điện thoại: nền sáng hợp tông web, không dùng khối đen */
+.tb-v{background:rgba(255,255,255,.96);color:var(--muc,#14161A);border:1px solid rgba(20,22,26,.12);box-shadow:0 6px 20px rgba(20,22,26,.14)}
+@media(max-width:760px){
+.thanh-ben.thanh-noi .tb-vien{background:rgba(255,255,255,.96);border:1px solid rgba(20,22,26,.12);box-shadow:0 8px 24px rgba(20,22,26,.16);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.thanh-ben.thanh-noi .tb-v{background:transparent;border:0;box-shadow:none;color:var(--muc,#14161A)}
+.thanh-ben.thanh-noi .tb-v:hover{background:rgba(20,22,26,.06)}
+.thanh-ben.thanh-noi .tb-v[aria-current=page]{background:#FFC83D;color:var(--muc,#14161A)}
+.thanh-ben.thanh-noi .tb-v.tb-ra-v{color:#B3321A}
+.thanh-ben.thanh-noi .tb-v.tb-ra-v::before{background:rgba(20,22,26,.15)}
 }
