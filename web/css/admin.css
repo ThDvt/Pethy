@@ -5,6 +5,7 @@
 .muc{margin-top:32px}
 .muc>h2{font-size:14px;margin:0;color:var(--xam);border-bottom:2px solid var(--muc);padding-bottom:8px}
 .hang{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:12px 0;border-bottom:1px solid var(--vach)}
+.hang[hidden]{display:none}
 .hang .ten{flex:2 1 200px;min-width:0;font-weight:700}
 .hang .gt{flex:0 1 140px;text-align:right;font:500 16px var(--so)}
 .nho{font-size:13px;color:var(--xam)}

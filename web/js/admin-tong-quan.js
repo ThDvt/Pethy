@@ -98,7 +98,14 @@
   const phai = el('div',{class:'db-cap'}, gioCapNhat, lamMoi);
   function veLoc(){ loc.replaceChildren(...TRUOC.map(t => el('button',{type:'button',class:'db-nut','aria-pressed':String(t.k === ky),onclick:() => gl(t.k)}, t.ten)), phai); }
   const hd = A.luongHoatDong(12);
-  $('vung').replaceChildren(loc, khung,
+  // Dòng nhắc khi đang bật chế độ bảo trì (ẩn khi tắt). Quản trị vẫn vào được nên dễ quên tắt.
+  const ht = el('div',{role:'status',hidden:true,class:'hang',style:'margin-bottom:12px'},
+    el('span',{class:'tt do'}, 'Đang bảo trì'),
+    el('div',{class:'nho'}, 'Khách và nhân viên đang bị chặn, chỉ quản trị vào được.'),
+    el('a',{class:'lien-ket',href:'/admin/tham-so.html'}, 'Tắt ở trang Tham số'));
+  db.from('cau_hinh').select('gia_tri').eq('khoa','che_do_bao_tri').maybeSingle().then(r => { ht.hidden = !(r.data && String(r.data.gia_tri) === 'true'); });
+  Pethy.khiDoi(['cau_hinh'], () => db.from('cau_hinh').select('gia_tri').eq('khoa','che_do_bao_tri').maybeSingle().then(r => { ht.hidden = !(r.data && String(r.data.gia_tri) === 'true'); }));
+  $('vung').replaceChildren(ht, loc, khung,
     el('section',{class:'muc'}, el('div',{class:'muc-dau',style:'display:flex;justify-content:space-between;align-items:center;gap:12px'}, el('h2',{}, 'Hoạt động gần đây'), el('a',{class:'lien-ket',href:'/admin/nhat-ky.html'}, 'Xem tất cả')), hd.ds));
   hd.tai();
   const gop = rows => ({ tong: rows.reduce((s, r) => s + Number(r.tong_thu), 0), so: rows.reduce((s, r) => s + Number(r.so_giao_dich), 0), tm: rows.reduce((s, r) => s + Number(r.tien_mat), 0), ck: rows.reduce((s, r) => s + Number(r.chuyen_khoan), 0) });
